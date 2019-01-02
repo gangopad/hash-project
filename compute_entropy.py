@@ -4,6 +4,7 @@
 import math
 import os 
 import sys 
+from decimal import * 
 
 def absoluteFilePaths(directory):
    for dirpath,_,filenames in os.walk(directory):
@@ -29,8 +30,8 @@ num_uniq_strs = len(hex_strings)
 entropy = 0
 
 for k, v in hex_strings.items():
-  p_x = v / num_uniq_strs
-  entropy += p_x * math.log(p_x)
+  p_x = Decimal(v) / Decimal(num_uniq_strs)
+  entropy += getcontext().multiply(p_x, p_x.ln())
 
-entropy *= -1 
+entropy = getcontext().multiply(-1, entropy) 
 print("Entropy: " + str(entropy))
