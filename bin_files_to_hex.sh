@@ -3,5 +3,6 @@
 
 for f in $1/*; do 
 	hexdump -ve '1/1 "%.2x"' $f > ${f}.hex
+	echo "" >> ${f}.hex
 	rm -f $f
 done
