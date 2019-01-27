@@ -1,0 +1,7 @@
+paper/*.aux
+paper/*.log
+paper/*.gz
+paper/*.out
+
+.DS_Store
+
