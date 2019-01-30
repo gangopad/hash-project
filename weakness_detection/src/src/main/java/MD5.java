@@ -20,7 +20,14 @@ public class MD5 {
     public void computeTransxAndMD5(AdvSet input) {
         Iterator<byte[]> iter = input.iterator();
         while(iter.hasNext()) {
-            md5Output.add(computeMD5(iter.next()));
+            md5Output.add(computeMD5(iter.next(), true));
+        }
+    }
+
+    public void computeMD5(AdvSet input) {
+        Iterator<byte[]> iter = input.iterator();
+        while(iter.hasNext()) {
+            md5Output.add(computeMD5(iter.next(), false));
         }
     }
 
@@ -44,7 +51,7 @@ public class MD5 {
     }
 
 
-    public byte[] computeMD5(byte[] message)
+    public byte[] computeMD5(byte[] message, boolean buildTransx)
     {
         int messageLenBytes = message.length;
         int numBlocks = ((messageLenBytes + 8) >>> 6) + 1;
@@ -101,9 +108,11 @@ public class MD5 {
                 }
                 int temp = b + Integer.rotateLeft(a + f + buffer[bufferIndex] + TABLE_T[j], SHIFT_AMTS[(div16 << 2) | (j & 3)]);
 
-                String input  = statesIntToString(a, b, c, d);
-                String output = statesIntToString(d, c, b, temp);
-                insertToTransitionMatrix(input, output);
+                if (buildTransx == true) {
+                    String input  = statesIntToString(a, b, c, d);
+                    String output = statesIntToString(d, c, b, temp);
+                    insertToTransitionMatrix(input, output);
+                }
 
                 a = d;
                 d = c;
