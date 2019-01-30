@@ -60,9 +60,13 @@
 \usetikzlibrary{shapes}
 \usepackage{rotating} 
 \usepackage{amsmath}
+\usepackage{algorithm}% http://ctan.org/pkg/algorithms
+\usepackage{algpseudocode}% http://ctan.org/pkg/algorithmicx
+
 
 % inlined bib file
 \usepackage{filecontents}
+\newtheorem{theorem}{Theorem}
 
 %-------------------------------------------------------------------------------
 \begin{filecontents}{\jobname.bib}
@@ -113,10 +117,7 @@ Second Institution
 %-------------------------------------------------------------------------------
 \begin{abstract}
 %-------------------------------------------------------------------------------
-Your abstract text goes here. Just a few facts. Whet our appetites.
-Not more than 200 words, if possible, and preferably closer to 150.
-
-We present a novel machine learning framework which we apply here to uncover weaknesses in hash functions. Our framework extends the definition of adversarial learning to the domain of cryptographic systems. In this paper, we uncover weaknesses in Merkle?Damgard structured hash functions, which include MD5, SHA-1 and SHA-2 and are critical components of cryptographic systems such as key exchange, digital signatures, and password and file verification. Most attacks against these hash functions leverage properties of the particular function. We develop a broader framework of adversarial learning to probabilistically determine how a hash function differs from its ideal state. We show the efficacy of our framework by theoretically and empirically discovering known vulnerabilities in MD5 and discuss how our method can be applied to uncovering potential unknown weaknesses in other hash functions in the Merkle?Damgard class.
+We present a novel machine learning framework which we apply ere to uncover weaknesses in hash functions. Our framework extends the definition of adversarial learning to the domain of cryptographic systems. In this paper, we uncover weaknesses in Merkle{\textendash}Damg\r{a}rd structured hash functions, which include MD5, SHA-1 and SHA-2 and are critical components of cryptographic systems such as key exchange, digital signatures, and password and file verification. Most attacks against these hash functions leverage properties of the particular function. We develop a broader framework of adversarial learning to probabilistically determine how a hash function differs from its ideal state. We show the efficacy of our framework by theoretically and empirically discovering known vulnerabilities in MD5 and discuss how our method can be applied to uncovering potential unknown weaknesses in other hash functions in the Merkle{\textendash}Damg\r{a}rd class.
 \end{abstract}
 
 %-------------------------------------------------------------------------------
@@ -243,7 +244,6 @@ Define w.r.t to threat model. This isn't zero knowledge, an attacker needs to kn
 \caption{\label{fig:merkleconstruction} The Merkle{\textendash}Damg\r{a}rd construction of secure hash functions.}
 \end{figure} 
 
-\begin{figure}
 \tikzstyle{block} = [draw, rectangle, minimum height=3em, minimum width=3em]
 \tikzstyle{virtual} = [coordinate]
 \tikzstyle{init} = [pin edge={to-,thin,black}]
@@ -255,65 +255,128 @@ Define w.r.t to threat model. This isn't zero knowledge, an attacker needs to kn
     \draw[->] (a.east)  -- node[above]{$S_i$} ++(4em,0em);
 \end{tikzpicture}
 \end{center}
-\caption{\label{fig:blackboxcomp} A graphical model of a blackbox component, $B$.}
-\end{figure} 
 
 For the Merkle{\textendash}Damg\r{a}rd class of hash functions, we define a singular blackbox component, $B$ as the function $S_i =  B(S_{i-1}, x_{i-1})$. We will outline was this definition is sufficient to model any Merkle{\textendash}Damg\r{a}rd function later in this section. 
-
+\\
+\\
 We limit the scope of the empirical portion of our study to the Merkle{\textendash}Damg\r{a}rd class of hash functions, which includes MD5, SHA-1, and SHA-2. We limit the scope in this way to be able to give a definition for a blackbox component $B$ towards validating our framework, noting that our methods remain general and applicable to other contexts and for different definitions of $B$. 
-
-The Merkle{\textendash}Damg\r{a}rd construction is detailed in Figure \ref{fig:merkleconstruction}. In this construction, some padding is applied on the input message to generate $X = X_0X_1X_2\cdots X_n$, where $n$ is the number of chunks the input is broken into. A function, $f$, is applied to each of these chunks, $X_i$ and also to the state information output from the previous step, $S_i$. The state is seeded in some way for any particular function conforming to the Merkle{\textendash}Damg\r{a}rd construction. The primary creativity any particular hash function can apply is in the definition of the seed, the padding function and the definition of $f$. Each particular hash function, though, must define some function $f$ which takes as an input a chunk of the input message $X_i$ and state information from the previous state and only the previous state, $S_i$, and output its own state information for consumption by the next application of $f$. We model the blackbox component $B(S_{i-1}, x_{i-1})$ to assume these properties and only these properties, as modeled in Figure \ref{blackboxcomp}. The model remains agnostic to any particular padding function, seed, and especially definition of $f$ as defined by any conforming hash function, be it  MD5, SHA-1, or SHA-2. This implies that this methodology, unchanged, can be freely applied to any of these three hash functions towards analyzing their weaknesses. 
+\\
+\\
+The Merkle{\textendash}Damg\r{a}rd construction is detailed in Figure \ref{fig:merkleconstruction}. In this construction, some padding is applied on the input message to generate $X = X_0X_1X_2\cdots X_n$, where $n$ is the number of chunks the input is broken into. A function, $f$, is applied to each of these chunks, $X_i$ and also to the state information output from the previous step, $S_i$. The state is seeded in some way for any particular function conforming to the Merkle{\textendash}Damg\r{a}rd construction. 
+\\
+\\
+The primary creativity any particular hash function can apply is in the definition of the seed, the padding function and the definition of $f$. Each particular hash function, though, must define some function $f$ which takes as an input a chunk of the input message $X_i$ and state information from the previous state and only the previous state, $S_i$, and output its own state information for consumption by the next application of $f$. 
+\\
+\\
+We model the blackbox component $B(S_{i-1}, x_{i-1})$ to assume these properties and only these properties. The model remains agnostic to any particular padding function, seed, and especially definition of $f$ as defined by any conforming hash function, be it  MD5, SHA-1, or SHA-2. This implies that this methodology, unchanged, can be freely applied to any of these three hash functions towards analyzing their weaknesses. 
 
 
 \subsection{Markov Process}
-We discuss our machine learning framework which is designed to detect weaknesses in our blackbox function $B(\cdot)$ for Merkle{\textendash}Damg\r{a}rd structured hash functions. Our goal is to determine if a hash function is weak given an example set $X'$. We note that the states outlined in our framework are purely Markov states and dont represent any transform in the hash function itself. We specifically favor this blackbox construction since it generalizes to any Merkle Damgard hash construction. 
+We discuss our machine learning framework which is designed to detect weaknesses in our blackbox function $B(\cdot)$ for Merkle{\textendash}Damg\r{a}rd structured hash functions. Our goal is to determine if a hash function is weak given an example set of inputs $\hat{X}$. 
 \\
 \\
-We denote the set of Markov states to be the complete set $(S_{i})$ such that $S_{i} \in \{0,1\}^{n}$ where $n$ varies by hash function. We parametrize this set within the context of blackbox components $B = \{B_{1},..., B_{N}\}$ where $N = 2^{n}$.  
+We model the sequence of transitions for Merkle{\textendash}Damg\r{a}rd steps to be a random walk over a sequence of random variables, denoted as states. We make the Markov assumption on our model - namely the probability of the next state in the process depends only upon the present state, not on the sequence of events that preceded it. 
+\\
+\\
+We note that the states outlined in our framework are purely Markov states and dont represent any transform in the hash function itself. We specifically favor this blackbox construction since it generalizes to any Merkle Damgard hash construction. 
+
+\subsubsection{State Space}
+We start by defining our state space $Z$. Since our random walk is defined over the transition of steps, $S_{i} = B(S_{i-1}, x_{i-1})$, we consider the span of $Z$ to be over all possible instances of $S_{i}$. Since $S_{i} \in \{0, 1\}^{M}$ for some fixed $M$ (note $M$ varies by hash function), the cardinality of $Z$ is $2^{M}$. 
 \\
 \\
 A transition from $B_{i}$ to $B_{j}$ is represented as an input chunk-state pair $(S_{i-1}, X_{i})$ yielding the output state $S_{i}$.  
+
+\subsubsection{Markov Process}
+Given a set of inputs $\hat{X}$, we train our Markov states by considering the sequence of step transforms $S_{0} \rightarrow B^{1}(X_{i}, S_{i}) \rightarrow S_{1},..., \rightarrow S_{p-1} \rightarrow B^{P}(X_{i}, S_{i}) \rightarrow S_{p}$ where $P$ is the number of steps in a round of $B(\cdot)$ for each $X$. 
 \\
 \\
-Given a set of inputs $X'$, we train our Markov states by considering the sequence of chunk transforms $S_{0} \rightarrow B^{1}(X_{i}, S_{i}) \rightarrow S_{1},..., \rightarrow S_{p-1} \rightarrow B^{P}(X_{i}, S_{i}) \rightarrow S_{p}$ where $P$ is the number of steps in a round of $B(\cdot)$ for each $X$. 
+By using MLE estimates and applying the Markov assumption, we get $P(z^{i} | z^{j}) = \frac{count(B^{i}(x, S_{i} = z_{i}) \rightarrow S_{j} = z_{j})}{count(B^{i}(x, S_{i} = z_{i})}$. \textbf{Note:} \textcolor{red}{Can provide proof if necessary}
 \\
 \\
-By using MLE estimates and applying the Markov assumption, we get $P(B^{i} | B^{j}) = \frac{count(B^{i}(X_{i}, S_{i}) \rightarrow S_{j})}{count(B^{i}(X_{i}, S_{i})}$. \textbf{Note:} Can provide proof if necessary
+Hence, we can represent our Markov transition probabilities via a $M \times M$ probability matrix where $M$ denotes the cardinality of $Z$ as defined above.
+
+\subsubsection{Adversarial Set}
+Our goal is to identify given a set $\hat{X}$, where $\frac{P(\hat{Z})}{P_{ideal}(Z)} < \epsilon$ for some predefined $\epsilon$. If so we denote $\hat{X}$ adversarial. We note that $P_{ideal}(Z)$ denotes the transition matrix if the hash function were in its ideal state. We derive $P_{ideal}(Z)$ below based on the assumption of a perfect one way function.
 \\
 \\
-Hence, we can represent our Markov transition probabilities via a $N \times N'$ probability matrix where $N' = 2^{n}$, $N$ is defined as above.
+\textcolor{red}{Give definition of one way function and derive $P_{ideal}(Z)$ from there. Note that although there is a dimensionality reduction in the overall one way function (and hash definition), the steps (and hence states) themselves as they are defined map from $\{0,1\}^{M} \rightarrow \{0,1\}^{M}$.} 
 \\
 \\
-Our goal is to identify given a set $\hat{X}$, whether $\frac{E[P(\hat{B})]}{E[P(B)]} < \epsilon$ for some predefined $\epsilon$. If so we denote $\hat{X}$ adversarial. 
-\\
-\\
-We can define $P(B)$ as the Shannon entropy over the elements of the state transition matrix $S$. Specifically, we find the distribution of element values and then compute $H(S) = -\sum_{i=1}^{n} P(s_{i}) log P(s_{i})$.
-\\
-\\
-Define the Markov process, how this can be used to identify weak hash functions. Tie in the generative discussion here
-\\
-\\
-The current notion of a Markov state is defined as an input of a blackbox component ($\{0,1\}^{128})$. Can we define a state more coarsely (parametrized in some way). Ideas:
-\begin{itemize}
-\item Collapse Markov state in a cascading manner (Random forest analogy)
-\end{itemize}
+We can define $P(Z)$ as the Shannon entropy over the elements of the state transition matrix $Z$. Specifically, we find the distribution of element values and then compute $H(Z) = -\sum_{i=1}^{n} P(z_{i}) log P(z_{i})$.
+
+\subsubsection{Generative Assumption}
+Our Markov model can be viewed as a generative model that parametrizes the step transitions of the Merkle{\textendash}Damg\r{a}rd construction. In its ideal state, a hash function would have uniform probability across all transitions. So $(P(z_{i} | z_{j})$ would be uniformly probable for all $i,j$ in $|Z|$. The further the transition matrix deviates from uniform, the lower the entropy within the state of inputs. Hence, we can view our matrix as a parameter over the Multinomial distribution that measures entropy of the state space given a set of inputs $\hat{X}$.
+
+
 
 \subsection{Finding Adversarial Examples}
-Define the sampling scheme for finding adversarial examples. 
+In this section, we consider the problem of determining if a given hash function represented as $B(\cdot)$ is weak. We first present a theorem that establishes bounds on the expected number of examples $m$ that need to be drawn before we can determine if $P(Z)$ deviates significantly from the ideal state $P_{ideal}(Z)$. We then present our algorithm for uncovering an adversarial set $X_{adv}$, where $X_{adv}$ is a subset of $X$ and $|X_{adv}|  << |X|$. 
+
+\subsubsection{Weakness Detection}
+Consider the following theorem that, given the ability to query a subset $\hat{X}$ from $X$, identifies the number of samples $m$ needed (with probability $\delta$) to determine if $P(Z)$ deviates enough from its ideal state. 
+
+\begin{theorem}
+\label{mainThm}
+For a given $\epsilon, \delta$ how many samples $m$, where $m = F(\epsilon, \delta)$ are needed such that $P(\frac{P(Z)}{P_{ideal}(Z)}< \epsilon) > 1 - \delta$ for the state space $Z$ where the set of states are defined in our Markov model. 
+\end{theorem}
+
+\textcolor{red}{We present a proof of \ref{mainThm} in the appendix.}
 \\
 \\
-First define Theorem 1 (state as the naive sampling method).
+Given the nature of the state space $|X|$, we note that $m$ is intractable over reasonable values of $\epsilon, \delta$.\textcolor{red}{Include a discussion on mapping $m$ to number of cores for different values of $m$. Maybe include a table}. Hence, we present an intelligent sampling scheme that allows us to uncover a tractable adversarial set $X_{adv}$ using far less examples.
+
+
+\subsubsection{Sampling Scheme}
+We consider the strictly harder problem of providing a sampling strategy for uncovering the adversarial set $\hat{X}$ with the minimal number of examples $M$
+
+\begin{theorem}
+\label{samplingThm}
+We present a sampling mechanism such that given $\epsilon, \delta$ uncovers $\hat{X}$ such that $P(\frac{P(\hat{Z})}{P_{ideal}(Z)}< \epsilon) > 1 - \delta$ with the minimal number of examples $m_{min}$. \textcolor{red}{Derive the expected computational bounds ($O(E[\cdot])$) of this randomized algorithm.} 
+\end{theorem}
+
+We present our sampling mechanism below:
+
+\begin{algorithm}
+\caption{Sampling method}\label{sampling}
+\begin{algorithmic}[1]
+\State Assume the size $|\hat{X}|$ is fixed and equals $M$. Choose a burn in iteration rate $P$
+\State First derive $E[P(Z])$ for the input space $X$ by assuming $E[z_{i} | z_{j}] \sim Uniform(\Theta)$ 
+\State Then try to find $\hat{X}$ as follows:
+\State Burn in $M$ samples via the Greedy sampling method 
+\begin{itemize}
+\item Uniformly sample $M$ elements from $X$
+\item Compute $\epsilon^{*} = \frac{\hat{E}_{\hat{X}}[z_{i} | z_{j}]}{E_{X}[z_{i} | z_{j}]}$
+\item Drop element $x_{i}$ s.t. $\epsilon^{*}$ is minimal $\forall$ $i$ 
+\item Repeat for $p$ iterations
+\end{itemize}
+\State \textbf{E-step:} Compute $E[z_{i} | z_{j}]$ and the state space $z_{1},..., z_{N}$ over the sampled set of inputs
+\State \textbf{M-step:} Sample $x_{i}$ to form $\hat{X}$ that minimizes $\epsilon^{*}$ given the set of states in the E-step. 
+\item Iterate on E-step and M-step until $\epsilon^{*} < \epsilon$
+\end{algorithmic}
+\end{algorithm}
+
+
+\textcolor{red}{Discuss the concentration parameter $\Theta$ (presumably $\Theta = \frac{2}{N^{2}}$). Outline the E-step and M-step in alot more detail. DERIVE the relationship between input $x_{i}$ and states $z_{1},..., z_{N}$ for the M-step}
 \\
 \\
-Then state our novel sampling method along with Theorem 2
+We give a proof of \ref{samplingThm} in the appendix. 
+
+\subsubsection{Collapsing States}
+Due to the high dimensional nature of our state space we consider the problem of collapsing our state space down to a set of discriminating features. 
+\\
+\\
+\textcolor{red}{look into random forests to do this empirically. basically when any feature reduces the entropy, we add it as a state - can perhaps seed our initial state of discriminating features based on known weak properties although this would bias our framework a bit}
 
 \subsection{Finding Weak Hash Functions}
-Here we outline our specific algorithms for finding:
+In this section we show how our sampling mechanism can lead us to exploit the following weaknesses in a hash function if $B(\cdot)$ is weak.
+
 \begin{itemize}
-\item Collisions
-\item Correlations
-\item Preimage
+\item Collisions - define
+\item Correlations - define
+\item Preimage - define
 \end{itemize}
+
+
 The presentation of the algorithm should follow the following structure:
 \begin{enumerate}
 \item Provide a mathematical definition of the weakness
@@ -323,6 +386,9 @@ The presentation of the algorithm should follow the following structure:
 \item Consider the generative process or statistical properties that a given weakness enables
 \end{itemize}
 \end{enumerate}
+
+\subsubsection{Collisions}
+efedfedfe
 
 \subsection{Validating Adversarial Examples}
 Outline how domain based methods have uncovered specific weaknesses in MD5 (and if time SHA1), how to characterize the input and output sets of the weakness (show that the statistical properties that a given weakness described in the previous section apply), and how our algorithm ties to the same set of inputs and outputs (but using a completely different methodology)
