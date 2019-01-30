@@ -287,6 +287,7 @@ We start by defining our state space $Z$. Since our random walk is defined over 
 A transition from $B_{i}$ to $B_{j}$ is represented as an input chunk-state pair $(S_{i-1}, X_{i})$ yielding the output state $S_{i}$.  
 
 \subsubsection{Markov Process}
+\label{MarkovProcess}
 Given a set of inputs $\hat{X}$, we train our Markov states by considering the sequence of step transforms $S_{0} \rightarrow B^{1}(X_{i}, S_{i}) \rightarrow S_{1},..., \rightarrow S_{p-1} \rightarrow B^{P}(X_{i}, S_{i}) \rightarrow S_{p}$ where $P$ is the number of steps in a round of $B(\cdot)$ for each $X$. 
 \\
 \\
@@ -357,6 +358,12 @@ We present our sampling mechanism below:
 
 
 \textcolor{red}{Discuss the concentration parameter $\Theta$ (presumably $\Theta = \frac{2}{N^{2}}$). Outline the E-step and M-step in alot more detail. DERIVE the relationship between input $x_{i}$ and states $z_{1},..., z_{N}$ for the M-step}
+\\
+\\
+We compute the E-step based on our derivation of $P(z_{i} | z_{j}) = \frac{count(B^{i}(x, S_{i} = z_{i}) \rightarrow S_{j} = z_{j})}{count(B^{i}(x, S_{i} = z_{i})}$ as discussed in \ref{MarkovProcess}. 
+\\
+\\
+We compute the M-step by computing MLE to find argmax$_{X} P(X | Z)$ given the transition matrix $Z$. \textcolor{red}{Derive the generative process, then write out the joint PDF. Then do MLE}
 \\
 \\
 We give a proof of \ref{samplingThm} in the appendix. 
