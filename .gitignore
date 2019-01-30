@@ -2,6 +2,14 @@ paper/*.aux
 paper/*.log
 paper/*.gz
 paper/*.out
+paper/*.bib
+paper/*.pdf
 
 .DS_Store
 
+hash_sets/
+hashcat/
+klima_attack/.vagrant/
+*.pem
+scp.sh
+ssh.sh
