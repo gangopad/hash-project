@@ -1,6 +1,28 @@
+import java.util.Iterator;
+
 public class MD5 {
 
-    public MD5() {}
+    TransitionMatrix transx;
+    AdvSet md5Output;
+    public MD5() {
+        transx = new TransitionMatrix();
+        md5Output = new AdvSet();
+    }
+
+    public TransitionMatrix getTransitionMatrix() {
+        return transx;
+    }
+
+    public AdvSet getMd5Output() {
+        return md5Output;
+    }
+
+    public void computeTransxAndMD5(AdvSet input) {
+        Iterator<byte[]> iter = input.iterator();
+        while(iter.hasNext()) {
+            md5Output.add(computeMD5(iter.next()));
+        }
+    }
 
     private static final int INIT_A = 0x67452301;
     private static final int INIT_B = (int)0xEFCDAB89L;
@@ -21,7 +43,8 @@ public class MD5 {
             TABLE_T[i] = (int)(long)((1L << 32) * Math.abs(Math.sin(i + 1)));
     }
 
-    public static byte[] computeMD5(byte[] message)
+
+    public byte[] computeMD5(byte[] message)
     {
         int messageLenBytes = message.length;
         int numBlocks = ((messageLenBytes + 8) >>> 6) + 1;
@@ -77,6 +100,11 @@ public class MD5 {
                         break;
                 }
                 int temp = b + Integer.rotateLeft(a + f + buffer[bufferIndex] + TABLE_T[j], SHIFT_AMTS[(div16 << 2) | (j & 3)]);
+
+                String input  = statesIntToString(a, b, c, d);
+                String output = statesIntToString(d, c, b, temp);
+                insertToTransitionMatrix(input, output);
+
                 a = d;
                 d = c;
                 c = b;
@@ -103,6 +131,20 @@ public class MD5 {
         return md5;
     }
 
+    public static String statesIntToString(int a, int b, int c, int d) {
+        return "" + a + b + c + d;
+    }
+
+    public TransitionMatrix insertToTransitionMatrix(String input, String output)
+    {
+        if(transx.get(input + "" + output) != null) {
+            transx.put(input + "" + output, 1 + transx.get(input + "" + output));
+        } else {
+            transx.put(input + "" + output, 1);
+        }
+        return transx;
+    }
+
     public static String toHexString(byte[] b)
     {
         StringBuilder sb = new StringBuilder();
@@ -112,12 +154,4 @@ public class MD5 {
         }
         return sb.toString();
     }
-
-//    public static void main(String[] args)
-//    {
-//        String[] testStrings = { "", "a", "abc", "message digest", "abcdefghijklmnopqrstuvwxyz", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", "12345678901234567890123456789012345678901234567890123456789012345678901234567890" };
-//        for (String s : testStrings)
-//            System.out.println("0x" + toHexString(computeMD5(s.getBytes())) + " <== \"" + s + "\"");
-//        return;
-//    }
 }
