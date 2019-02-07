@@ -192,7 +192,7 @@ Define w.r.t to threat model. This isn't zero knowledge, an attacker needs to kn
 
 - 
 
-\subsection{Blackbox Definition}
+\subsection{Blackbox Definition} \label{bbdef}
 \textcolor{red}{Define the blackbox. Explain how it is general enough due to Merkle process to apply to MD5, SHA1, SHA2}
 
 \begin{figure}
@@ -249,27 +249,41 @@ Define w.r.t to threat model. This isn't zero knowledge, an attacker needs to kn
 \tikzstyle{init} = [pin edge={to-,thin,black}]
 \begin{center}
 \begin{tikzpicture}[>=stealth,auto, node distance=3cm]
-    \node [block, pin={[init]above:$X_{i-1}$}] (a) {$T^{p-1}$};
+    \node [block, pin={[init]above:$X_{i-1}$}] (a) {$B^r$};
     \node (b) [left of=a,node distance=2cm, coordinate] {a};
-    \path[->] (b) edge node {$S_{i-1}$} (a);
-    \draw[->] (a.east)  -- node[above]{$S_i$} ++(4em,0em);
+    \path[->] (b) edge node {$S_{i-1,j-1}$} (a);
+    \draw[->] (a.east)  -- node[above]{$S_{i,j}$} ++(4em,0em);
 \end{tikzpicture}
 \end{center}
 
-For the Merkle{\textendash}Damg\r{a}rd class of hash functions, we define a singular blackbox component, $B$ as the function $S_i =  B(S_{i-1}, x_{i-1})$. We will outline was this definition is sufficient to model any Merkle{\textendash}Damg\r{a}rd function later in this section. 
+For the Merkle{\textendash}Damg\r{a}rd class of hash functions, we define a singular blackbox component, $B$, as the function $S_{i,j} =  B^r(S_{i-1,j-1}, x_{i-1})$. We will outline was this definition is sufficient to model any Merkle{\textendash}Damg\r{a}rd function later in this section. 
 \\
 \\
 We limit the scope of the empirical portion of our study to the Merkle{\textendash}Damg\r{a}rd class of hash functions, which includes MD5, SHA-1, and SHA-2. We limit the scope in this way to be able to give a definition for a blackbox component $B$ towards validating our framework, noting that our methods remain general and applicable to other contexts and for different definitions of $B$. 
 \\
 \\
-The Merkle{\textendash}Damg\r{a}rd construction is detailed in Figure \ref{fig:merkleconstruction}. In this construction, some padding is applied on the input message to generate $X = X_0X_1X_2\cdots X_n$, where $n$ is the number of chunks the input is broken into. A function, $f$, is applied to each of these chunks, $X_i$ and also to the state information output from the previous step, $S_i$. The state is seeded in some way for any particular function conforming to the Merkle{\textendash}Damg\r{a}rd construction. 
+The Merkle{\textendash}Damg\r{a}rd construction is detailed in Figure \ref{fig:merkleconstruction}. In this construction, some padding is applied on the input message to generate $X = X_0X_1X_2\cdots X_n$, where $n$ is the number of chunks the input is broken into. A function, $f$, is applied to each of these chunks, $X_i$ and also to the state information output from the previous step, $S_i$ (we will introduce the index $j$ in \ref{sec:reducmd5}). The state is seeded in some way for any particular function conforming to the Merkle{\textendash}Damg\r{a}rd construction. 
 \\
 \\
-The primary creativity any particular hash function can apply is in the definition of the seed, the padding function and the definition of $f$. Each particular hash function, though, must define some function $f$ which takes as an input a chunk of the input message $X_i$ and state information from the previous state and only the previous state, $S_i$, and output its own state information for consumption by the next application of $f$. 
+The primary creativity any particular hash function can apply is in the definition of the seed, the padding function and the definition of $f$. Each particular hash function, though, must define some function $f$ which takes as an input a chunk of the input message $X_i$ and state information from the previous state and only the previous state, $S_i$, and output its own state information for consumption by the next application of $f$. In many hash functions of this construction, including MD5, SHA-1, and SHA-2, $f$ is a piecewise function of the step of the hash function.  
 \\
 \\
-We model the blackbox component $B(S_{i-1}, x_{i-1})$ to assume these properties and only these properties. The model remains agnostic to any particular padding function, seed, and especially definition of $f$ as defined by any conforming hash function, be it  MD5, SHA-1, or SHA-2. This implies that this methodology, unchanged, can be freely applied to any of these three hash functions towards analyzing their weaknesses. 
+We model the blackbox component $B(S_{i-1,j-1}, x_{i-1})$ to assume these properties and only these properties. The model remains agnostic to any particular padding function, seed, and especially definition of $f$ as defined by any conforming hash function, be it MD5, SHA-1, or SHA-2. This implies that this methodology, unchanged, can be freely applied to any of these three hash functions towards analyzing their weaknesses. 
 
+\subsubsection{Reducution to MD5} \label{sec:reducmd5}
+
+In this section we map our blackbox construction to the particular implementation of MD5. MD5 has 4 rounds and 64 steps. Thus, where $p \in [0,63]$ is the step in a single MD5 block $f$ can be defined as 
+$$  f(p) = 
+\begin{cases} 
+      F &   p \leq 15 \\
+      G &  15 \leq p \textless 32 \\
+      H &  32 \leq p \textless 48 \\
+      I   &  p \geq 48 \\
+      
+\end{cases}
+ $$
+ 
+Having given $f$, it is left only to define $B$. We define 4 blackbox components, $B^r$ where $r \in {1,2,3,4}$, one for each round in MD5. For example, $B^2$ captures transformation where $p \in [13,32)$  We further define $S_{i,j}$ where $i$ is the number of chunks $x_i$ in the input $X$ as defined in \ref{bbdef}, and $j \in [0,p]$. Thus, we capture the state at each of the $p$ steps for a single $i$. Thus, for example, the output state for the $i$th block is denoted $S_{i,p}$. 
 
 \subsection{Markov Process}
 We discuss our machine learning framework which is designed to detect weaknesses in our blackbox function $B(\cdot)$ for Merkle{\textendash}Damg\r{a}rd structured hash functions. Our goal is to determine if a hash function is weak given an example set of inputs $\hat{X}$. 
@@ -287,6 +301,7 @@ We start by defining our state space $Z$. Since our random walk is defined over 
 A transition from $B_{i}$ to $B_{j}$ is represented as an input chunk-state pair $(S_{i-1}, X_{i})$ yielding the output state $S_{i}$.  
 
 \subsubsection{Markov Process}
+\label{MarkovProcess}
 Given a set of inputs $\hat{X}$, we train our Markov states by considering the sequence of step transforms $S_{0} \rightarrow B^{1}(X_{i}, S_{i}) \rightarrow S_{1},..., \rightarrow S_{p-1} \rightarrow B^{P}(X_{i}, S_{i}) \rightarrow S_{p}$ where $P$ is the number of steps in a round of $B(\cdot)$ for each $X$. 
 \\
 \\
@@ -357,6 +372,12 @@ We present our sampling mechanism below:
 
 
 \textcolor{red}{Discuss the concentration parameter $\Theta$ (presumably $\Theta = \frac{2}{N^{2}}$). Outline the E-step and M-step in alot more detail. DERIVE the relationship between input $x_{i}$ and states $z_{1},..., z_{N}$ for the M-step}
+\\
+\\
+We compute the E-step based on our derivation of $P(z_{i} | z_{j}) = \frac{count(B^{i}(x, S_{i} = z_{i}) \rightarrow S_{j} = z_{j})}{count(B^{i}(x, S_{i} = z_{i})}$ as discussed in \ref{MarkovProcess}. 
+\\
+\\
+We compute the M-step by computing MLE to find argmax$_{X} P(X | Z)$ given the transition matrix $Z$. \textcolor{red}{Derive the generative process, then write out the joint PDF. Then do MLE}
 \\
 \\
 We give a proof of \ref{samplingThm} in the appendix. 
