@@ -1,4 +1,11 @@
-import java.util.Iterator;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import javax.xml.bind.DatatypeConverter;
+
 
 public class MD5 {
 
@@ -17,19 +24,19 @@ public class MD5 {
         return md5Output;
     }
 
-    public void computeTransxAndMD5(AdvSet input) {
-        Iterator<byte[]> iter = input.iterator();
-        while(iter.hasNext()) {
-            md5Output.add(computeMD5(iter.next(), true));
-        }
-    }
+//    public void computeTransxAndMD5(AdvSet input) {
+//        Iterator<byte[]> iter = input.iterator();
+//        while(iter.hasNext()) {
+//            md5Output.add(computeMD5(iter.next(), true));
+//        }
+//    }
 
-    public void computeMD5(AdvSet input) {
-        Iterator<byte[]> iter = input.iterator();
-        while(iter.hasNext()) {
-            md5Output.add(computeMD5(iter.next(), false));
-        }
-    }
+//    public void computeMD5(AdvSet input) {
+//        Iterator<byte[]> iter = input.iterator();
+//        while(iter.hasNext()) {
+//            md5Output.add(computeMD5(iter.next(), false));
+//        }
+//    }
 
     private static final int INIT_A = 0x67452301;
     private static final int INIT_B = (int)0xEFCDAB89L;
@@ -51,8 +58,12 @@ public class MD5 {
     }
 
 
-    public byte[] computeMD5(byte[] message, boolean buildTransx)
+    public byte[] computeMD5(byte[] message)
     {
+        File file = new File("./data2.txt");
+
+        ArrayList<String> states = new ArrayList<String>(131);
+
         int messageLenBytes = message.length;
         int numBlocks = ((messageLenBytes + 8) >>> 6) + 1;
         int totalLen = numBlocks << 6;
@@ -65,6 +76,8 @@ public class MD5 {
             paddingBytes[paddingBytes.length - 8 + i] = (byte)messageLenBits;
             messageLenBits >>>= 8;
         }
+
+        //System.out.println("block:" + DatatypeConverter.printHexBinary(Arrays.copyOfRange(message, messageLenBytes / 2, messageLenBytes)));
 
         int a = INIT_A;
         int b = INIT_B;
@@ -80,6 +93,7 @@ public class MD5 {
             int originalB = b;
             int originalC = c;
             int originalD = d;
+
             for (int j = 0; j < 64; j++)
             {
                 int div16 = j >>> 4;
@@ -108,22 +122,24 @@ public class MD5 {
                 }
                 int temp = b + Integer.rotateLeft(a + f + buffer[bufferIndex] + TABLE_T[j], SHIFT_AMTS[(div16 << 2) | (j & 3)]);
 
-                if (buildTransx == true) {
-                    String input  = statesIntToString(a, b, c, d);
-                    String output = statesIntToString(d, c, b, temp);
-                    insertToTransitionMatrix(input, output);
-                }
-
                 a = d;
                 d = c;
                 c = b;
                 b = temp;
+
+                if (i != 0) {
+                    //System.out.println(Integer.toHexString(a) + Integer.toHexString(b) + Integer.toHexString(c) + Integer.toHexString(d));
+                    states.add(Integer.toHexString(a) + Integer.toHexString(b) + Integer.toHexString(c) + Integer.toHexString(d));
+                }
             }
 
             a += originalA;
             b += originalB;
             c += originalC;
             d += originalD;
+
+            //System.out.println(Integer.toHexString(a) + Integer.toHexString(b) + Integer.toHexString(c) + Integer.toHexString(d));
+            states.add(Integer.toHexString(a) + Integer.toHexString(b) + Integer.toHexString(c) + Integer.toHexString(d));
         }
 
         byte[] md5 = new byte[16];
@@ -137,6 +153,31 @@ public class MD5 {
                 n >>>= 8;
             }
         }
+
+        //System.out.println(toHexString(md5));
+
+        try {
+            FileWriter fw = new FileWriter(file, true);
+            BufferedWriter writer = new BufferedWriter(fw);
+
+            //Write block
+            writer.write("block:" + DatatypeConverter.printHexBinary(Arrays.copyOfRange(message, messageLenBytes / 2, messageLenBytes)));
+            writer.newLine();
+
+            //Write states
+            for (String s : states) {
+                writer.write(s);
+                writer.newLine();
+            }
+
+            //Write md5
+            writer.write(toHexString(md5));
+            writer.newLine();
+
+            writer.close();
+
+        } catch (IOException e) { System.out.println(e.getStackTrace()); }
+
         return md5;
     }
 

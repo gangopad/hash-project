@@ -20,10 +20,33 @@ public class AdvSet extends HashSet<byte[]> {
     }
 
     /*
+     * @param number of items to seed set with
+     * Adds random 1024 bit strings to set
+     */
+    public void randomlySeedSet(int size, byte[] prefix) {
+        for (int i = 0; i < size; i++)
+        {
+            Random rand = new Random();
+            byte[] ranBytes = new byte[INPUT_BITE_SIZE];
+            rand.nextBytes(ranBytes);
+            this.add(ranBytes);
+        }
+    }
+
+    /*
      * @param Seed set
      * Adds specified elements to the set
      */
     public void seedSet(AdvSet seed) {
         this.addAll(seed);
     }
+
+    /*
+     * @param Seet w/ byte[]
+     */
+    public void seedSetByteArray(byte[] arr) {
+        this.add(arr);
+    }
+
+
 }

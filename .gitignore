@@ -13,4 +13,5 @@ klima_attack/.vagrant/
 *.pem
 scp.sh
 ssh.sh
-*.idea
+weakness_detection/src/.idea
+weakness_detection/src/build/
