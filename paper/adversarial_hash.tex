@@ -249,14 +249,14 @@ Define w.r.t to threat model. This isn't zero knowledge, an attacker needs to kn
 \tikzstyle{init} = [pin edge={to-,thin,black}]
 \begin{center}
 \begin{tikzpicture}[>=stealth,auto, node distance=3cm]
-    \node [block, pin={[init]above:$X_{i-1}$}] (a) {$B^r$};
+    \node [block, pin={[init]above:$X_{j}$}] (a) {$B^r$};
     \node (b) [left of=a,node distance=2cm, coordinate] {a};
-    \path[->] (b) edge node {$S_{i-1,j-1}$} (a);
+    \path[->] (b) edge node {$S_{i-1,j}$} (a);
     \draw[->] (a.east)  -- node[above]{$S_{i,j}$} ++(4em,0em);
 \end{tikzpicture}
 \end{center}
 
-For the Merkle{\textendash}Damg\r{a}rd class of hash functions, we define a singular blackbox component, $B$, as the function $S_{i,j} =  B^r(S_{i-1,j-1}, x_{i-1})$. We will outline was this definition is sufficient to model any Merkle{\textendash}Damg\r{a}rd function later in this section. 
+For the Merkle{\textendash}Damg\r{a}rd class of hash functions, we define a singular blackbox component, $B$, as the function $S_{i,j} =  B^r(S_{i-1,j}, x_{j})$. We will outline was this definition is sufficient to model any Merkle{\textendash}Damg\r{a}rd function later in this section. 
 \\
 \\
 We limit the scope of the empirical portion of our study to the Merkle{\textendash}Damg\r{a}rd class of hash functions, which includes MD5, SHA-1, and SHA-2. We limit the scope in this way to be able to give a definition for a blackbox component $B$ towards validating our framework, noting that our methods remain general and applicable to other contexts and for different definitions of $B$. 
@@ -289,26 +289,40 @@ Having given $f$, it is left only to define $B$. We define 4 blackbox components
 We discuss our machine learning framework which is designed to detect weaknesses in our blackbox function $B(\cdot)$ for Merkle{\textendash}Damg\r{a}rd structured hash functions. Our goal is to determine if a hash function is weak given an example set of inputs $\hat{X}$. 
 \\
 \\
-We model the sequence of transitions for Merkle{\textendash}Damg\r{a}rd steps to be a random walk over a sequence of random variables, denoted as states. We make the Markov assumption on our model - namely the probability of the next state in the process depends only upon the present state, not on the sequence of events that preceded it. 
+We posit a distribution over the states $z_{i+1j}$ as a function of $z_{ij}$ and $x_{j}$. We note the distribution represents a generative process that moels $B$. We make the following conditional independence assumptions about $p(z_{i+1j})$:
 \\
 \\
-We note that the states outlined in our framework are purely Markov states and dont represent any transform in the hash function itself. We specifically favor this blackbox construction since it generalizes to any Merkle Damgard hash construction. 
+$p(z_{i+1j}) = p(z_{i+1j} | z_{ij}) \cdot p(z_{i+1j} | x_{j})$. 
+\\
+\\
+We note $p(z_{i+1j}) = p(z_{i+1j} | z_{ij}, z_{i-1j},..., z_{0j})$. Given the Markov assumption, $p(z_{i+1j} | z_{ij})$ is only conditionally dependent on $z_{ij}$. Taking the maximum likelihood, we derive $p(z_{i+1j} | z_{ij})$ as:
+\\
+\\
+$p(z_{i+1j} | z_{ij}) = \frac{count(z_{i+1j}, z_{ij})}{count(z_{ij})}$. 
+\\
+\\
+We can similarly derive $p(z_{i+1j} | x_{j}) = \frac{p(z_{i+1j} \cap x_{j})}{p(x_{j})}$ 
+\\
+\\
+$\rightarrow p(z_{i+1j} | x_{j}) = \frac{count(z_{i+1j}, x_{j})}{count(x_{j})}$ by MLE derivations. 
+\\
+\\
+Therefore, we obtain our discrete probability distribution function that posits over our states $z_{ij}$ and input chunks $x_{j}$. We next define our state space and enumerate our training process.
+
 
 \subsubsection{State Space}
-We start by defining our state space $Z$. Since our random walk is defined over the transition of steps, $S_{i} = B(S_{i-1}, x_{i-1})$, we consider the span of $Z$ to be over all possible instances of $S_{i}$. Since $S_{i} \in \{0, 1\}^{M}$ for some fixed $M$ (note $M$ varies by hash function), the cardinality of $Z$ is $2^{M}$. 
-\\
-\\
-A transition from $B_{i}$ to $B_{j}$ is represented as an input chunk-state pair $(S_{i-1}, X_{i})$ yielding the output state $S_{i}$.  
+We start by defining our state space $Z$. Since our random walk is defined over the transition of steps, $S_{i} = B(S_{i-1}, x_{i-1})$, we consider the span of $Z$ to be over all possible instances of $S_{i}$. Since $S_{i} \in \{0, 1\}^{M}$ for some fixed $M$ (note $M$ varies by hash function), the cardinality of $Z$ is $2^{M}$. Similarly the state space of $x_{ij}$ is over $ \{0, 1\}^{N}$ where $N$ denotes the size of the input chunk for our given hash function.
 
-\subsubsection{Markov Process}
+
+\subsubsection{Training our PDF}
 \label{MarkovProcess}
-Given a set of inputs $\hat{X}$, we train our Markov states by considering the sequence of step transforms $S_{0} \rightarrow B^{1}(X_{i}, S_{i}) \rightarrow S_{1},..., \rightarrow S_{p-1} \rightarrow B^{P}(X_{i}, S_{i}) \rightarrow S_{p}$ where $P$ is the number of steps in a round of $B(\cdot)$ for each $X$. 
+Given a set of inputs $\hat{X}$, we train our probability distribution function by considering the sequence of step transforms $S_{0} \rightarrow B^{1}(X_{i}, S_{i}) \rightarrow S_{1},..., \rightarrow S_{p-1} \rightarrow B^{P}(X_{i}, S_{i}) \rightarrow S_{p}$ where $P$ is the number of steps in a round of $B(\cdot)$ for each $X$. 
 \\
 \\
-By using MLE estimates and applying the Markov assumption, we get $P(z^{i} | z^{j}) = \frac{count(B^{i}(x, S_{i} = z_{i}) \rightarrow S_{j} = z_{j})}{count(B^{i}(x, S_{i} = z_{i})}$. \textbf{Note:} \textcolor{red}{Can provide proof if necessary}
+By using MLE estimates and applying the Markov assumption, we get $P(z^{i} | z^{j}) = \frac{count(B^{i}(x, S_{i} = z_{i}) \rightarrow S_{j} = z_{j})}{count(B^{i}(x, S_{i} = z_{i})}$. \textbf{Note:} \textcolor{red}{Can provide proof if necessary}. Similarly, we obtain $P(z^{i} | x^{i}) = \frac{count(B^{i}(x_{i}, S_{i} = z_{i}))}{count(B^{i}(x_{i}, S)}$
 \\
 \\
-Hence, we can represent our Markov transition probabilities via a $M \times M$ probability matrix where $M$ denotes the cardinality of $Z$ as defined above.
+Hence, we can represent our Markov transition probabilities in matrix form and derive $p(z_{ij}$ accordingly. We note that the size of our transition matrix for $P(z^{i} | z^{j})$ and $P(z^{i} | x^{i})$ respectively are $M \times M$ and $M \times N$ respectively which are intractable for most hash functions. We note that for the purposes of finding weaknesses in our hash function, we dont need to learn the entire distribution but rather only a locally adversarial subset. We apply Laplace smoothing to initialize each element of our transition matrices via constant $\frac{\eta}{N^{2}}$ and $\frac{\eta}{N \cdot M}$ respectively. These represent uniform priors on the unobserved transition states. As we train our transition matrices, we renormalize the matrices to preserve stochasticity.
 
 \subsubsection{Adversarial Set}
 Our goal is to identify given a set $\hat{X}$, where $\frac{P(\hat{Z})}{P_{ideal}(Z)} < \epsilon$ for some predefined $\epsilon$. If so we denote $\hat{X}$ adversarial. We note that $P_{ideal}(Z)$ denotes the transition matrix if the hash function were in its ideal state. We derive $P_{ideal}(Z)$ below based on the assumption of a perfect one way function.
