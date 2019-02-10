@@ -117,7 +117,7 @@ Second Institution
 %-------------------------------------------------------------------------------
 \begin{abstract}
 %-------------------------------------------------------------------------------
-We present a novel machine learning framework which we apply ere to uncover weaknesses in hash functions. Our framework extends the definition of adversarial learning to the domain of cryptographic systems. In this paper, we uncover weaknesses in Merkle{\textendash}Damg\r{a}rd structured hash functions, which include MD5, SHA-1 and SHA-2 and are critical components of cryptographic systems such as key exchange, digital signatures, and password and file verification. Most attacks against these hash functions leverage properties of the particular function. We develop a broader framework of adversarial learning to probabilistically determine how a hash function differs from its ideal state. We show the efficacy of our framework by theoretically and empirically discovering known vulnerabilities in MD5 and discuss how our method can be applied to uncovering potential unknown weaknesses in other hash functions in the Merkle{\textendash}Damg\r{a}rd class.
+We present a novel machine learning framework which we apply here to uncover weaknesses in hash functions. Our framework extends the definition of adversarial learning to the domain of cryptographic systems. In this paper, we uncover weaknesses in Merkle{\textendash}Damg\r{a}rd structured hash functions, which include MD5, SHA-1 and SHA-2 and are critical components of cryptographic systems such as key exchange, digital signatures, and password and file verification. Most attacks against these hash functions leverage properties of the particular function. We develop a broader framework of adversarial learning to probabilistically determine how a hash function differs from its ideal state. We show the efficacy of our framework by theoretically and empirically discovering known vulnerabilities in MD5 and discuss how our method can be applied to uncovering potential unknown weaknesses in other hash functions in the Merkle{\textendash}Damg\r{a}rd class.
 \end{abstract}
 
 %-------------------------------------------------------------------------------
@@ -270,7 +270,7 @@ The primary creativity any particular hash function can apply is in the definiti
 \\
 We model the blackbox component $B(S_{i-1,j-1}, x_{i-1})$ to assume these properties and only these properties. The model remains agnostic to any particular padding function, seed, and especially definition of $f$ as defined by any conforming hash function, be it MD5, SHA-1, or SHA-2. This implies that this methodology, unchanged, can be freely applied to any of these three hash functions towards analyzing their weaknesses. 
 
-\subsubsection{Reducution to MD5} \label{sec:reducmd5}
+\subsubsection{Reduction to MD5} \label{sec:reducmd5}
 
 In this section we map our blackbox construction to the particular implementation of MD5. MD5 has 4 rounds and 64 steps. Thus, where $p \in [0,63]$ is the step in a single MD5 block $f$ can be defined as 
 $$  f(p) = 
@@ -409,7 +409,48 @@ The presentation of the algorithm should follow the following structure:
 \end{enumerate}
 
 \subsubsection{Collisions}
-efedfedfe
+\begin{theorem}
+Given an $\epsilon$-reduction in the entropy of states (where we define the $\epsilon$-reduction to be such that $\frac{H(z_{adv})}{H(Z_{ideal})} < \epsilon$), the probability of a collision in the final states is \textcolor{red}{ANSWER}
+\end{theorem}
+
+More rigorously, given $X_{adv}$, assume we have $\{x_{i}^{n}, z_{ij}^{n}\}$ pairs such that $H(Z) < K \cdot \epsilon$ where $K = H(Z_{ideal})$, $Z$ is the set of states indexed over $i, j, n$. (note $i$ indexes over the chunks of size $I$, $j$ indexes over the set of states for a given chunk of size $J$, $n$ indexes over the set of inputs in $X_{adv}$ of size $N$). We derive the probability that two elements in $Z_{Final}$ collide where $Z_{Final}$ denotes a subset of $Z$ that contains the final states (more specifically a given element in $Z_{final}$ is the output of the hash function given an input $x^{n}$). Note that the size of our set $Z_{final}$ is $N$ 
+\\
+\\
+We give the proof below:
+\\
+\\
+We first derive P(two states in Z collide | $H(Z) < K \cdot \epsilon$) $= P_{A}$. We then find P(two states in $Z_{final}$ collide | two states in $Z$ collide) $= P_{B}$. We note that P(two states in $Z_{final}$ collide |  $H(Z) < K \cdot \epsilon$) $=  P_{A} \cdot P_{B}$. 
+\\
+\\
+We derive a lower bound on $P_{A}$ as follows.
+\\
+\\
+Let us denote P(atleast two states collide) as $P(A)$. We want to derive $P(A)$ as a function of $\kappa \cdot \epsilon$. 
+\\
+\\
+$P(A) = 1 - \prod_{k=1}^{Z} (1- \sum_{j=1}^{k} p(z_{j}))$ where $\prod_{k=1}^{Z} (1- \sum_{j=1}^{k} p(z_{j}))$ represents the probability that no states collide. 
+\\
+\\
+We are given that $\sum_{j=1}^{|Z|} -p(z_{j}) \cdot log p(z_{j}) < K \cdot \epsilon$. 
+\\
+\\
+We note that $(1 - \sum_{j=1}^{k} p(z_{j})) < \sum_{j=1}^{|Z|} -p(z_{j}) \cdot log p(z_{j})$ \textcolor{red}{PROVE THIS}
+\\
+\\
+$\rightarrow \prod_{k=1}^{|Z|} (1 - \sum_{j=1}^{k} p(z_{j})) < \prod_{k=1}^{|Z|} K \cdot \epsilon$ since $\prod_{k=1}^{|Z|} K \cdot \epsilon > 0$. 
+\\
+\\
+$\rightarrow 1 - \prod_{k=1}^{|Z|} (1 - \sum_{j=1}^{k} p(z_{j}) \geq 1 - \prod_{k=1}^{|Z|} K \cdot \epsilon$. 
+\\
+\\
+$\rightarrow P_{A} \geq 1 - \prod_{k=1}^{|Z|} K \cdot \epsilon$. 
+\\
+\\
+We derive $P_{B}$ as follows
+\\
+\\
+Hence, we see that the probability of a collision in the final states is $P_{A} \cdot P_{B} \geq f$. We have established a lower bound on the probability of a collision as a function of the entropy.
+
 
 \subsection{Validating Adversarial Examples}
 Outline how domain based methods have uncovered specific weaknesses in MD5 (and if time SHA1), how to characterize the input and output sets of the weakness (show that the statistical properties that a given weakness described in the previous section apply), and how our algorithm ties to the same set of inputs and outputs (but using a completely different methodology)
@@ -462,6 +503,40 @@ USENIX program committees give extra points to submissions that are
 backed by artifacts that are publicly available. If you made your code
 or data available, it's worth mentioning this fact in a dedicated
 section.
+
+%-------------------------------------------------------------------------------
+\section*{Appendix}
+%-------------------------------------------------------------------------------
+\subsection{Proof of Theorem 1}
+We restate Theorem 1 and prove it below:
+
+\begin{theorem}
+\label{mainThm}
+For a given $\epsilon, \delta$ how many samples $m$, where $m = F(\epsilon, \delta)$ are needed such that $P(\frac{P(Z)}{P_{ideal}(Z)}< \epsilon) > 1 - \delta$ for the state space $Z$ where the set of states are defined in our Markov model. 
+\end{theorem}
+
+The proof is as follows:
+\\
+\\
+Chernoff bounds state that if $X$ is a random variable, then for any $a \in R$, $P(X \geq a) = P(e^{sx} \geq e^{sa})$ for $s > 0$. 
+\\
+\\
+By Markov's inequality, we can write $P(X \geq a)  = P(e^{sx} \geq e^{sa}) \leq \frac{E[e^{sx}]}{e^{sa}}$. 
+\\
+\\
+Note that $E[e^{sx}]$ is the moment generating function $M_{x}(s)$. 
+\\
+\\
+$\rightarrow P(X \geq a) \leq e^{-sa} M_{x}(s) \forall s > 0$
+\\
+\\
+$\rightarrow P(X \geq a) \leq $min$_{s >0}$ $e^{-sa} M_{x}(s)$.
+\\
+\\
+$\rightarrow P(H(Z) > C \cdot \epsilon) \leq $min$_{s >0}$ $e^{-sa} M_{x}(s)$.
+\\
+\\
+\textcolor{red}{Write the moment generating function as a function of $m$ and $\delta$}
 
 %-------------------------------------------------------------------------------
 \bibliographystyle{plain}
