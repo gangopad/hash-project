@@ -352,55 +352,49 @@ For a given $\epsilon, \delta$ how many samples $m$, where $m = F(\epsilon, \del
 \textcolor{red}{We present a proof of \ref{mainThm} in the appendix.}
 \\
 \\
-Given the nature of the state space $|X|$, we note that $m$ is intractable over reasonable values of $\epsilon, \delta$.\textcolor{red}{Include a discussion on mapping $m$ to number of cores for different values of $m$. Maybe include a table}. Hence, we present an intelligent sampling scheme that allows us to uncover a tractable adversarial set $X_{adv}$ using far less examples.
+We note the presented paradigm represents the naive approach of sampling the hash function $m$ times and measure the change in entropy of the states. 
+\\
+\\
+Given the nature of the state space $|X|$, we note that $m$ is intractable over reasonable values of $\epsilon, \delta$.\textcolor{red}{Include a discussion on mapping $m$ to number of cores for different values of $m$. Maybe include a table}. Hence, we present an algorithm that uses our machine learning framework to derive adversarial examples given a set of seeded known adversarial examples $X_{init}$. 
 
 
-\subsubsection{Sampling Scheme}
-We consider the strictly harder problem of providing a sampling strategy for uncovering the adversarial set $\hat{X}$ with the minimal number of examples $M$
-
-\begin{theorem}
-\label{samplingThm}
-We present a sampling mechanism such that given $\epsilon, \delta$ uncovers $\hat{X}$ such that $P(\frac{P(\hat{Z})}{P_{ideal}(Z)}< \epsilon) > 1 - \delta$ with the minimal number of examples $m_{min}$. \textcolor{red}{Derive the expected computational bounds ($O(E[\cdot])$) of this randomized algorithm.} 
-\end{theorem}
-
-We present our sampling mechanism below:
+\subsubsection{Uncovering Adversarial Examples}
+We present an algorithm that uses the presented Markovian framework, blackbox definition $B(\cdot)$ and an initial set of known adversarial examples $X_{init}$ to uncover a larger set of adversarial examples $X_{adv}$. 
+\\
+\\
+We present our algorithm below:
 
 \begin{algorithm}
-\caption{Sampling method}\label{sampling}
+\caption{Adversarial Alg}\label{sampling}
 \begin{algorithmic}[1]
-\State Assume the size $|\hat{X}|$ is fixed and equals $M$. Choose a burn in iteration rate $P$
-\State First derive $E[P(Z])$ for the input space $X$ by assuming $E[z_{i} | z_{j}] \sim Uniform(\Theta)$ 
-\State Then try to find $\hat{X}$ as follows:
-\State Burn in $M$ samples via the Greedy sampling method 
+\State Assume we have pdfs that give $p(z_{i} | z_{j})$, $p(z_{i} | x_{j})$ $\forall i,j$
+\State Assume as input we have $X_{init} = \{x_{1}, ..., x_{n}\}$
+\State Derive the set of states $Z$ by processing $x_{i}$ through $B(\cdot)$
+\State Initial $X_{adv}$, $X_{seen}$ as the empty state
+\State While $|X_{adv} | < n$
 \begin{itemize}
-\item Uniformly sample $M$ elements from $X$
-\item Compute $\epsilon^{*} = \frac{\hat{E}_{\hat{X}}[z_{i} | z_{j}]}{E_{X}[z_{i} | z_{j}]}$
-\item Drop element $x_{i}$ s.t. $\epsilon^{*}$ is minimal $\forall$ $i$ 
-\item Repeat for $p$ iterations
+\item Derive $x_{new} =$ argmax $_{x} \sum_{i=1}^{|Z|} p(x | z_{i})$
+\item If $x_{new}$ is not in $X_{seen}$, add $x_{new}$ to $X_{adv}$
 \end{itemize}
-\State \textbf{E-step:} Compute $E[z_{i} | z_{j}]$ and the state space $z_{1},..., z_{N}$ over the sampled set of inputs
-\State \textbf{M-step:} Sample $x_{i}$ to form $\hat{X}$ that minimizes $\epsilon^{*}$ given the set of states in the E-step. 
-\item Iterate on E-step and M-step until $\epsilon^{*} < \epsilon$
+\State set $X_{init} = X_{adv}$
+\State append $X_{adv}$ to $X_{seen}$
 \end{algorithmic}
 \end{algorithm}
 
+We derive $x_{new} =$ argmax $_{x} \sum_{i=1}^{|Z|} p(x | z_{i})$ using Bayes rule. 
+\\
+\\
+Specifically, $p(x | z_{i}) = \frac{p(z_{i} | x) \cdot p(x)}{p(z_{i})}$. 
+\\
+\\
+We can derive $p(z_{i} | x)$ via our pdf. We can derive $p(z_{i})$ similarly by marginalizing out the conditional variables from our pdf. We assign a uniform prior on $p(x)$ such that $p(x) = \frac{1}{2^{N}}$ where $N$ is the number of bits that represent $x$. This is because $x$ represents a randomly chosen input.
+\\
+\\
+We note that although \ref{sampling} isnt tractable when asked to find the global set of inputs that yield low entropy states, given a set of seeded examples \ref{sampling} uses the properties of the derived pdfs to find locally similar adversarial examples. 
+\\
+\\
+This allows us to implicitly characterize a notion of similarity around the properties of adversarial states and inputs for a given hash function. 
 
-\textcolor{red}{Discuss the concentration parameter $\Theta$ (presumably $\Theta = \frac{2}{N^{2}}$). Outline the E-step and M-step in alot more detail. DERIVE the relationship between input $x_{i}$ and states $z_{1},..., z_{N}$ for the M-step}
-\\
-\\
-We compute the E-step based on our derivation of $P(z_{i} | z_{j}) = \frac{count(B^{i}(x, S_{i} = z_{i}) \rightarrow S_{j} = z_{j})}{count(B^{i}(x, S_{i} = z_{i})}$ as discussed in \ref{MarkovProcess}. 
-\\
-\\
-We compute the M-step by computing MLE to find argmax$_{X} P(X | Z)$ given the transition matrix $Z$. \textcolor{red}{Derive the generative process, then write out the joint PDF. Then do MLE}
-\\
-\\
-We give a proof of \ref{samplingThm} in the appendix. 
-
-\subsubsection{Collapsing States}
-Due to the high dimensional nature of our state space we consider the problem of collapsing our state space down to a set of discriminating features. 
-\\
-\\
-\textcolor{red}{look into random forests to do this empirically. basically when any feature reduces the entropy, we add it as a state - can perhaps seed our initial state of discriminating features based on known weak properties although this would bias our framework a bit}
 
 \subsection{Finding Weak Hash Functions}
 In this section we show how our sampling mechanism can lead us to exploit the following weaknesses in a hash function if $B(\cdot)$ is weak.
