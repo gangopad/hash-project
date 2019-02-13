@@ -63,7 +63,7 @@ def theorem_1_routine(e, X):
 		Z.extend(z)
 		entropy = computeEntropy(Z, 2)
 
-		print "Entropy: " + entropy
+		print "Entropy: " + str(entropy)
 
 	return m
 
