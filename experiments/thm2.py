@@ -268,7 +268,7 @@ if __name__ == "__main__":
 	n = 3
 	res = dict()
 	data_res = dict()
-	M = [0,1,2,3,4,5,6,7]
+	M = [20, 200, 2000, 20000, 200000, 1999999]
 	#M = np.arange(100, 10000, step=1000) #Alter later
 
 	for m in M:
