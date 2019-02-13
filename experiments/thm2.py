@@ -5,9 +5,12 @@ examples
 """
 
 import numpy as np 
-from scipy.stats import entropy
+import scipy.stats
 import sys
 import random
+import pandas as pd 
+import pickle
+import matplotlib.pyplot as plt
 
 ''' 
 Compute 
@@ -132,7 +135,7 @@ def compute_p_z(state_counts):
 #computes the entropy given the list Z
 def computeEntropy(Z, base):
 	value,counts = np.unique(Z, return_counts=True)
-  	return entropy(counts, base=base)
+  	return scipy.stats.entropy(counts, base=base)
 
 
 #computes the number of collisions given Z
@@ -204,12 +207,12 @@ def getEntropy(res, b):
 			top_states = b_res[b]
 			ent = computeEntropy(top_states, 2)
 			
-			if data_res in entropy:
-				l = entropy[data_res]
+			if ds in entropy:
+				l = entropy[ds]
 				l.append(ent)
-				entropy[data_res] = l
+				entropy[ds] = l
 			else:
-				entropy[data_res] = [ent]
+				entropy[ds] = [ent]
 
 	return entropy
 
@@ -226,19 +229,21 @@ def getCollisions(res, b):
 			top_states = b_res[b]
 			col = computeCollisions(top_states)
 			
-			if data_res in collisions:
-				l = collisions[data_res]
+			if ds in collisions:
+				l = collisions[ds]
 				l.append(col)
-				collisions[data_res] = l
+				collisions[ds] = l
 			else:
-				collisions[data_res] = [col]
+				collisions[ds] = [col]
 
 	return collisions
 
 
 #generates a line plot over values of epsilon 
 def plot(M, fname, xlabel, ylabel, title, res):
-	df=pd.DataFrame({'x': epsilon, 'y1': res['data0.txt'], 'y2': res['data1.txt'], 'y3': res['data2.txt'] })
+	print(m)
+	print(res['data0_short.txt'])
+	df=pd.DataFrame({'x': M, 'y1': res['data0_short.txt'], 'y2': res['data0_short.txt'], 'y3': res['data0_short.txt'] })
 	fout = open(fname + ".pickle", "wb")
 	pickle.dump(df, fout)
 
@@ -251,6 +256,7 @@ def plot(M, fname, xlabel, ylabel, title, res):
 	plt.xlabel(xlabel)
 	plt.ylabel(ylabel)
 	plt.title(title)
+	plt.show()
 	f = plt.figure()
 	f.savefig(fname + ".png")
 
@@ -281,7 +287,7 @@ if __name__ == "__main__":
 				for x in top_x:
 					top_states.extend(X_all[x])
 
-				b_res[b] = top_states
+				b_res[i] = top_states
 
 			data_res[ds_path] = b_res
 
@@ -290,7 +296,7 @@ if __name__ == "__main__":
 
 
 			
-	for b in pdfs_by_b.values():
+	for b in range(0, len(state_ranges)):
 		entropy = getEntropy(res, b)
 		plot(M, "entropy_" + str(b), "M", "Entropy", "Entropy values by M", entropy)
 		collisions = getCollisions(res, b)
