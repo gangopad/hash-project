@@ -73,7 +73,7 @@ Given a block, computes the number of examples
 needed to get H(Z) < epsilon over datasets
 """
 def computeBlock(b, epsilon):
-	dataset_paths = ['data0.txt', 'data1.txt', 'data2.txt']
+	dataset_paths = ['data1.txt']
 
 	for ds_path in dataset_paths:
 		res = computeDataset(ds_path, b, epsilon)
