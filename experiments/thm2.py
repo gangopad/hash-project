@@ -129,6 +129,25 @@ def compute_p_z(state_counts):
 	return dic
 
 
+#computes the entropy given the list Z
+def computeEntropy(Z, base):
+	value,counts = np.unique(Z, return_counts=True)
+  	return entropy(counts, base=base)
+
+
+#computes the number of collisions given Z
+def computeCollisions(Z):
+	seen = set()
+	col = 0
+
+	for z in Z:
+		if z in seen:
+			col = col + 1
+		seen.add(z)
+
+	return col
+
+
 """
 Returns a set of adversarial x's of size M. Takes in as input
 the pdfs for p(z) and p(z_i | x_j) respectively, a set
@@ -173,8 +192,8 @@ def getNewX(states_pdf, conditional_states_pdf, input_space, states):
 	return X_new
 
 
-#returns a list of entropy values per n
-def computeEntropy(res, b):
+#returns a list of entropy values per b
+def getEntropy(res, b):
 	M = res.keys()
 	entropy = dict()
 
@@ -182,7 +201,39 @@ def computeEntropy(res, b):
 		data_res = res[m]
 		for ds in data_res:
 			b_res = data_res[ds]
-			top_x = b_res[b]
+			top_states = b_res[b]
+			ent = computeEntropy(top_states, 2)
+			
+			if data_res in entropy:
+				l = entropy[data_res]
+				l.append(ent)
+				entropy[data_res] = l
+			else:
+				entropy[data_res] = [ent]
+
+	return entropy
+
+
+#returns a list of collisions per b
+def getCollisions(res, b):
+	M = res.keys()
+	collisions = dict()
+
+	for m in res:
+		data_res = res[m]
+		for ds in data_res:
+			b_res = data_res[ds]
+			top_states = b_res[b]
+			col = computeCollisions(top_states)
+			
+			if data_res in collisions:
+				l = collisions[data_res]
+				l.append(col)
+				collisions[data_res] = l
+			else:
+				collisions[data_res] = [col]
+
+	return collisions
 
 
 #generates a line plot over values of epsilon 
@@ -225,7 +276,12 @@ if __name__ == "__main__":
 				x_new = advAlg(M, p_z, z_given_x, X, X_init)
 				print "X new is " + str(x_new)
 				top_x = getTopM(x_new, m)
-				b_res[b] = top_x
+				top_states = []
+
+				for x in top_x:
+					top_states.extend(X_all[x])
+
+				b_res[b] = top_states
 
 			data_res[ds_path] = b_res
 
@@ -235,9 +291,9 @@ if __name__ == "__main__":
 
 			
 	for b in pdfs_by_b.values():
-		entropy = computeEntropy(res, b)
+		entropy = getEntropy(res, b)
 		plot(M, "entropy_" + str(b), "M", "Entropy", "Entropy values by M", entropy)
-		collisions = computeCollisions(res, b)
+		collisions = getCollisions(res, b)
 		plot(M, "collisions_" + str(b), "M", "Collisions", "Collision values by M", collisions)
 
 
