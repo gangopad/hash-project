@@ -44,7 +44,7 @@ def read_in_x_b(filepath, b):
 
 #computes the entropy given the list Z
 def computeEntropy(Z, base):
-	value,counts = np.unique(labels, return_counts=True)
+	value,counts = np.unique(Z, return_counts=True)
   	return entropy(counts, base=base)
 
 def theorem_1_routine(e, X):
