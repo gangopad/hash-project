@@ -19,25 +19,28 @@ def read_in_x(filepath, start, end):
 
 	offset = 0
 	states = []
+	input_block = None
+	print "Reading in X..."
 	with open(filepath) as infile:
-    for line in infile:
-        if line[0:5] == 'block':
-        	X[input_block] = states
+    		for line in infile:
+        		if line[0:5] == 'block':
+        			if input_block is not None:	
+					X[input_block] = states
 
-        	states = []
-        	input_block = line[7:]
-        	offset = 0
-        else if offset >= start and offset <= end: 
-        	states.append(line)
+        			states = []
+        			input_block = line[7:]
+        			offset = 0
+       	 		elif offset >= start and offset <= end: 
+        			states.append(line)
         
-        offset = offset + 1
+        		offset = offset + 1
 
 	return X
 
 def read_in_x_b(filepath, b):
 	b_start = b[0]
 	b_end = b[1]
-	return read_in_x(b_start, b_end)
+	return read_in_x(filepath, b_start, b_end)
 
 #computes the entropy given the list Z
 def computeEntropy(Z, base):
@@ -84,6 +87,7 @@ def computeDataset(ds_path, b, epsilon):
 	epsilon_res = []
 
 	for e in epsilon: 
+		print "Tuple: " + str(b) + " epsilon: " + str(e)
 		X = read_in_x_b(ds_path, b)
 		m = theorem_1_routine(e, X)
 		epsilon_res.append(m)
