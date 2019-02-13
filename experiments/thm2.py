@@ -63,22 +63,23 @@ def read_in_x(filepath, state_ranges, n):
 			else: 
 				z_i = line
 				rnd = index_of_range(offset, state_ranges)
+				if rnd is not None:
 
-				# Add to state_counts list 
-				if z_i in state_counts:
-					state_counts[z_i] = state_counts[z_i] + 1
-				else:
-					state_counts[z_i] = 1
+					# Add to state_counts list 
+					if z_i in state_counts:
+						state_counts[z_i] = state_counts[z_i] + 1
+					else:
+						state_counts[z_i] = 1
 
-				# If this is in x_init, add states 
-				if cur_in_range:
-					x_init[input_block] = x_init[input_block].append(z_i)
+					# If this is in x_init, add states 
+					if cur_in_range:
+						x_init[input_block] = x_init[input_block].append(z_i)
 
-				# Add to pdf of states given inputs 
-				if (z_i, input_block) in pdfx_by_b[rnd][1]:
-					pdfx_by_b[rnd][1][(z_i, input_block)] = pdfx_by_b[rnd][1][(z_i, input_block)] + 1
-				else:
-					pdfx_by_b[rnd][1][(z_i, input_block)] = 1
+					# Add to pdf of states given inputs 
+					if (z_i, input_block) in pdfs_by_b[rnd][1]:
+						pdfs_by_b[rnd][1][(z_i, input_block)] = pdfs_by_b[rnd][1][(z_i, input_block)] + 1
+					else:
+						pdfs_by_b[rnd][1][(z_i, input_block)] = 1
 
 			offset = offset + 1
 
@@ -151,7 +152,8 @@ def getNewX(states_pdf, conditional_states_pdf, input_space, states):
 
 if __name__ == "__main__":
 
-	dataset_paths = ['data0.txt', 'data1.txt', 'data2.txt']
+#	dataset_paths = ['data0.txt', 'data1.txt', 'data2.txt']
+	dataset_paths = ['data0_short.txt']
 	state_ranges = [[0, 15], [16,31], [32,47], [48,63]]
 	n = 20000
 
