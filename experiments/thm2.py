@@ -191,7 +191,7 @@ def getNewX(states_pdf, conditional_states_pdf, input_space, states):
 				prob = prob + ((conditional_states_pdf[(z, x)] * (1.0/len(input_space))) / states_pdf[z])
 
 		X_new[x] = prob
-		#print "For " + str(x) + " the probability is " + str(prob)
+#		print "For " + str(x) + " the probability is " + str(prob)
 	return X_new
 
 
@@ -206,7 +206,6 @@ def getEntropy(res, b):
 			b_res = data_res[ds]
 			top_states = b_res[b]
 			ent = computeEntropy(top_states, 2)
-			
 			if ds in entropy:
 				l = entropy[ds]
 				l.append(ent)
@@ -227,6 +226,7 @@ def getCollisions(res, b):
 		for ds in data_res:
 			b_res = data_res[ds]
 			top_states = b_res[b]
+			#print(top_states)
 			col = computeCollisions(top_states)
 			
 			if ds in collisions:
@@ -241,17 +241,17 @@ def getCollisions(res, b):
 
 #generates a line plot over values of epsilon 
 def plot(M, fname, xlabel, ylabel, title, res):
-	print(m)
-	print(res['data0_short.txt'])
-	df=pd.DataFrame({'x': M, 'y1': res['data0_short.txt'], 'y2': res['data0_short.txt'], 'y3': res['data0_short.txt'] })
+	df=pd.DataFrame({'x': M, 'y1': res['seeded_0.txt'], 'y2': res['seeded_1.txt'], 'y3': res['seeded_2.txt'], 'y4': res['random_0.txt'], 'y5': res['random_1.txt'], 'y6': res['random_2.txt'] })
 	fout = open(fname + ".pickle", "wb")
 	pickle.dump(df, fout)
 
-
 	# multiple line plot
-	plt.plot( 'x', 'y1', data=df, marker='o', color='blue', linewidth=2, label="data0.txt")
-	plt.plot( 'x', 'y2', data=df, marker='x', color='red',  linewidth=2, label="data1.txt")
-	plt.plot( 'x', 'y3', data=df, marker='d', color='black', linewidth=2, linestyle='dashed', label="data2.txt")
+	plt.plot( 'x', 'y1', data=df, marker='o', color='blue', linewidth=2, label="seeded 0")
+	plt.plot( 'x', 'y2', data=df, marker='x', color='red', linewidth=2, linestyle='dotted', label="seeded 1")
+	plt.plot( 'x', 'y3', data=df, marker='d', color='black', linewidth=2, linestyle='dashed', label="seeded 2")
+	plt.plot( 'x', 'y4', data=df, marker='<', color='blue', linewidth=2,  label="random 0")
+	plt.plot( 'x', 'y5', data=df, marker='>', color='red', linewidth=2,  linestyle='dotted', label="random 1")
+	plt.plot( 'x', 'y6', data=df, marker='_', color='black', linewidth=2, linestyle='dashed', label="random 2")
 	plt.legend()
 	plt.xlabel(xlabel)
 	plt.ylabel(ylabel)
@@ -261,16 +261,18 @@ def plot(M, fname, xlabel, ylabel, title, res):
 
 if __name__ == "__main__":
 
-#	dataset_paths = ['data0.txt', 'data1.txt', 'data2.txt']
-	dataset_paths = ['data0_short.txt']
+	dataset_paths = ['seeded_0.txt', 'seeded_1.txt', 'seeded_2.txt', 'random_0.txt', 'random_1.txt', 'random_2.txt']
+
+	#dataset_paths = ['data0_short.txt']
 	state_ranges = [[0, 15], [16,31], [32,47], [48,63]]
 	n = 3
 	res = dict()
 	data_res = dict()
-	M = [1]
+	M = [0,1,2,3,4,5,6,7]
 	#M = np.arange(100, 10000, step=1000) #Alter later
 
-	for m in [1]:
+	for m in M:
+		data_res = dict()
 		for ds_path in dataset_paths:
 			b_res = dict()
 			pdfs_by_b, state_counts, X, X_init, X_all = read_in_x(ds_path, state_ranges, n)
@@ -278,7 +280,6 @@ if __name__ == "__main__":
 				z_given_x = post_process_pdfs(b, state_counts[i], X)
 				p_z = compute_p_z(state_counts[i])
 				x_new = advAlg(M, p_z, z_given_x, X, X_init)
-				print "X new is " + str(x_new)
 				top_x = getTopM(x_new, m)
 				top_states = []
 
@@ -288,17 +289,15 @@ if __name__ == "__main__":
 				b_res[i] = top_states
 
 			data_res[ds_path] = b_res
-
 		res[m] = data_res
 
-
-
+	
 			
 	for b in range(0, len(state_ranges)):
 		entropy = getEntropy(res, b)
 		plot(M, "entropy_" + str(b), "M", "Entropy", "Entropy values by M", entropy)
 		collisions = getCollisions(res, b)
 		plot(M, "collisions_" + str(b), "M", "Collisions", "Collision values by M", collisions)
-
+	
 
 

@@ -57,7 +57,7 @@ def computeEntropy(Z, base):
   	return entropy(counts, base=base)
 
 def theorem_1_routine(e, X):
-	print "Epsilon value: " + str(e)
+	#print "Epsilon value: " + str(e)
 	entropy = 0
 	prev_entropy = 0
 	N = len(X)
@@ -68,7 +68,6 @@ def theorem_1_routine(e, X):
 	for k in X:
 		z_actual.extend(X[k])
 	kappa = computeEntropy(z_actual, 2)
-	print("Kappa: " + str(kappa))
 
 	while m < N:
 		prev_entropy = entropy
@@ -80,7 +79,7 @@ def theorem_1_routine(e, X):
 		Z.extend(z)
 		entropy = computeEntropy(Z, 2)
 
-		print "Entropy: " + str(entropy)
+		#print "Entropy: " + str(entropy)
 
 		if entropy < e * kappa and entropy < prev_entropy:
 			return m
@@ -105,12 +104,12 @@ def computeDataset(ds_path, b, epsilon, X):
 	epsilon_res = []
 
 	for e in epsilon: 
-		print "Tuple: " + str(b) + " epsilon: " + str(e)
+		#print "Tuple: " + str(b) + " epsilon: " + str(e)
 		#X = read_in_x_b(ds_path, b)
 		m = theorem_1_routine(e, X)
 		epsilon_res.append(m)
 
-		print "For dataset " + str(ds_path) + " we have for epsilon value " + str(e) + " a value of m of " + str(m) + " such that H(Z) < e"
+		#print "For dataset " + str(ds_path) + " we have for epsilon value " + str(e) + " a value of m of " + str(m) + " such that H(Z) < e"
 
 	res[ds_path] = epsilon_res
 
@@ -118,15 +117,17 @@ def computeDataset(ds_path, b, epsilon, X):
 
 #generates a line plot over values of epsilon 
 def plot(res, epsilon, i):
-	df=pd.DataFrame({'x': epsilon, 'y1': res['data0_short.txt'], 'y2': res['data0_short.txt'], 'y3': res['data0_short.txt'] })
+	df=pd.DataFrame({'x': epsilon, 'y1': res['seeded_0.txt'], 'y2': res['seeded_1.txt'], 'y3': res['seeded_2.txt'], 'y4': res['random_0.txt'], 'y5': res['random_1.txt'], 'y6': res['random_2.txt'] })
 	fout = open("thm1.pdf", "wb")
 	pickle.dump(df, fout)
 
-
 	# multiple line plot
-	plt.plot( 'x', 'y1', data=df, marker='o', color='blue', linewidth=2, label="data0.txt")
-	plt.plot( 'x', 'y2', data=df, marker='x', color='red', linewidth=2, label="data1.txt")
-	plt.plot( 'x', 'y3', data=df, marker='d', color='black', linewidth=2, linestyle='dashed', label="data2.txt")
+	plt.plot( 'x', 'y1', data=df, marker='o', color='blue', linewidth=2, label="seeded 0")
+	plt.plot( 'x', 'y2', data=df, marker='x', color='red', linewidth=2, linestyle='dotted', label="seeded 1")
+	plt.plot( 'x', 'y3', data=df, marker='d', color='black', linewidth=2, linestyle='dashed', label="seeded 2")
+	plt.plot( 'x', 'y4', data=df, marker='<', color='blue', linewidth=2,  label="random 0")
+	plt.plot( 'x', 'y5', data=df, marker='>', color='red', linewidth=2,  linestyle='dotted', label="random 1")
+	plt.plot( 'x', 'y6', data=df, marker='_', color='black', linewidth=2, linestyle='dashed', label="random 2")
 	plt.legend()
 	plt.xlabel("Epsilon")
 	plt.ylabel("M")
@@ -138,7 +139,7 @@ if __name__ == "__main__":
 	epsilon = np.arange(0, 1, step=.05)
 	blocks = [[0, 15], [16,31], [32,47], [48,63]]
 
-	dataset_paths = ['data0_short.txt']
+	dataset_paths = ['seeded_0.txt', 'seeded_1.txt', 'seeded_2.txt', 'random_0.txt', 'random_1.txt', 'random_2.txt']
 	for ds_path in dataset_paths:
 		X_all = read_in_x(ds_path, blocks)
 
