@@ -26,7 +26,7 @@ def read_in_x(filepath, start, end):
     		for line in infile:
         		if line[0:5] == 'block':
         			if input_block is not None:	
-					X[input_block] = states
+						X[input_block] = states
 
         			states = []
         			input_block = line[7:]
