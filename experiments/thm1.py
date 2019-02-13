@@ -11,6 +11,7 @@ from random import randint
 import matplotlib.pyplot as plt
 import pandas as pd
 import pickle
+from decimal import * 
 
 # Routine to read in DS from data.txt file 
 # @params filepath of structured data
@@ -79,6 +80,21 @@ def computeBlock(b, epsilon):
 		res = computeDataset(ds_path, b, epsilon)
 		plot(res)
 
+def computeEntropy(X):
+	states_dict = {} 
+	states_list = []
+	for s in X:
+		states_list.extend(X[s])
+
+	for s in states_list:
+		states_dict[s] = states_list.count(s)
+
+	for k, v in hex_strings.items():
+  		if v > 1:
+    		print(str(hash(k)) + "      " + str(v))
+  		p_x = getcontext().divide(Decimal(v), Decimal(num_uniq_strs))
+  		return getcontext().add(entropy, getcontext().multiply(p_x, p_x.ln()))
+
 """
 Given a dataset, computes the number of examples 
 needed to get H(Z) < epsilon
@@ -90,6 +106,7 @@ def computeDataset(ds_path, b, epsilon):
 	for e in epsilon: 
 		print "Tuple: " + str(b) + " epsilon: " + str(e)
 		X = read_in_x_b(ds_path, b)
+		print("Real Entropy: " + str(computeEntropy(X)))
 		m = theorem_1_routine(e, X)
 		epsilon_res.append(m)
 
