@@ -111,8 +111,11 @@ def plot(res, epsilon):
 	plt.plot( 'x', 'y2', data=df, marker='', color='olive', linewidth=2, label="data1.txt")
 	plt.plot( 'x', 'y3', data=df, marker='', color='olive', linewidth=2, linestyle='dashed', label="data2.txt")
 	plt.legend()
+	plt.xlabel("Epsilon")
+	plt.ylabel("M")
+	plt.title("Number of examples until H(Z) < epsilon")
 	f = plt.figure()
-	f.savefig("t1_plot.pdf")
+	f.savefig("t1_plot.png")
 
 if __name__ == "__main__":
 	epsilon = np.arange(0, 1, step=.05)

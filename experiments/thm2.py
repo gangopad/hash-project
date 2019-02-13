@@ -163,20 +163,72 @@ def getNewX(states_pdf, conditional_states_pdf, input_space, states):
 	return X_new
 
 
+#returns a list of entropy values per n
+def computeEntropy(res, b):
+	M = res.keys()
+	entropy = dict()
+
+	for m in res:
+		data_res = res[m]
+		for ds in data_res:
+			b_res = data_res[ds]
+			top_x = b_res[b]
+
+
+#generates a line plot over values of epsilon 
+def plot(M, fname, xlabel, ylabel, title, res):
+	df=pd.DataFrame({'x': epsilon, 'y1': res['data0.txt'], 'y2': res['data1.txt'], 'y3': res['data2.txt'] })
+	fout = open(fname + ".pickle", "wb")
+	pickle.dump(df, fout)
+
+
+	# multiple line plot
+	plt.plot( 'x', 'y1', data=df, marker='o', markerfacecolor='blue', markersize=12, color='skyblue', linewidth=4, label="data0.txt")
+	plt.plot( 'x', 'y2', data=df, marker='', color='olive', linewidth=2, label="data1.txt")
+	plt.plot( 'x', 'y3', data=df, marker='', color='olive', linewidth=2, linestyle='dashed', label="data2.txt")
+	plt.legend()
+	plt.xlabel(xlabel)
+	plt.ylabel(ylabel)
+	plt.title(title)
+	f = plt.figure()
+	f.savefig(fname + ".png")
+
+
 if __name__ == "__main__":
 
 #	dataset_paths = ['data0.txt', 'data1.txt', 'data2.txt']
 	dataset_paths = ['data0_short.txt']
 	state_ranges = [[0, 15], [16,31], [32,47], [48,63]]
 	n = 3
+	res = dict()
+	data_res = dict()
+	M = [1]
+	#M = np.arange(100, 10000, step=1000) #Alter later
 
-	#for M in np.arange(100, 10000, step=1000): #Alter later
-	for M in [1]:
+	for m in [1]:
 		for ds_path in dataset_paths:
+			b_res = dict()
 			pdfs_by_b, state_counts, X, X_init = read_in_x(ds_path, state_ranges, n)
 			for i, b in enumerate(pdfs_by_b): 
 				z_given_x = post_process_pdfs(b, state_counts[i], X)
 				p_z = compute_p_z(state_counts[i])
 				x_new = advAlg(M, p_z, z_given_x, X, X_init)
 				print "X new is " + str(x_new)
-				top_x = getTopM(x_new, M)
+				top_x = getTopM(x_new, m)
+				b_res[b] = top_x
+
+			data_res[ds_path] = b_res
+
+		res[m] = data_res
+
+
+
+			
+	for b in pdfs_by_b.values():
+		entropy = computeEntropy(res, b)
+		plot(M, "entropy_" + str(b), "M", "Entropy", "Entropy values by M", entropy)
+		collisions = computeCollisions(res, b)
+		plot(M, "collisions_" + str(b), "M", "Collisions", "Collision values by M", collisions)
+
+
+
