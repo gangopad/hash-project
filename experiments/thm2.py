@@ -129,6 +129,25 @@ def compute_p_z(state_counts):
 	return dic
 
 
+#computes the entropy given the list Z
+def computeEntropy(Z, base):
+	value,counts = np.unique(Z, return_counts=True)
+  	return entropy(counts, base=base)
+
+
+#computes the number of collisions given Z
+def computeCollisions(Z):
+	seen = set()
+	col = 0
+
+	for z in Z:
+		if z in seen:
+			col = col + 1
+		seen.add(z)
+
+	return col
+
+
 """
 Returns a set of adversarial x's of size M. Takes in as input
 the pdfs for p(z) and p(z_i | x_j) respectively, a set
@@ -173,20 +192,109 @@ def getNewX(states_pdf, conditional_states_pdf, input_space, states):
 	return X_new
 
 
+#returns a list of entropy values per b
+def getEntropy(res, b):
+	M = res.keys()
+	entropy = dict()
+
+	for m in res:
+		data_res = res[m]
+		for ds in data_res:
+			b_res = data_res[ds]
+			top_states = b_res[b]
+			ent = computeEntropy(top_states, 2)
+			
+			if data_res in entropy:
+				l = entropy[data_res]
+				l.append(ent)
+				entropy[data_res] = l
+			else:
+				entropy[data_res] = [ent]
+
+	return entropy
+
+
+#returns a list of collisions per b
+def getCollisions(res, b):
+	M = res.keys()
+	collisions = dict()
+
+	for m in res:
+		data_res = res[m]
+		for ds in data_res:
+			b_res = data_res[ds]
+			top_states = b_res[b]
+			col = computeCollisions(top_states)
+			
+			if data_res in collisions:
+				l = collisions[data_res]
+				l.append(col)
+				collisions[data_res] = l
+			else:
+				collisions[data_res] = [col]
+
+	return collisions
+
+
+#generates a line plot over values of epsilon 
+def plot(M, fname, xlabel, ylabel, title, res):
+	df=pd.DataFrame({'x': epsilon, 'y1': res['data0.txt'], 'y2': res['data1.txt'], 'y3': res['data2.txt'] })
+	fout = open(fname + ".pickle", "wb")
+	pickle.dump(df, fout)
+
+
+	# multiple line plot
+	plt.plot( 'x', 'y1', data=df, marker='o', markerfacecolor='blue', markersize=12, color='skyblue', linewidth=4, label="data0.txt")
+	plt.plot( 'x', 'y2', data=df, marker='', color='olive', linewidth=2, label="data1.txt")
+	plt.plot( 'x', 'y3', data=df, marker='', color='olive', linewidth=2, linestyle='dashed', label="data2.txt")
+	plt.legend()
+	plt.xlabel(xlabel)
+	plt.ylabel(ylabel)
+	plt.title(title)
+	f = plt.figure()
+	f.savefig(fname + ".png")
+
+
 if __name__ == "__main__":
 
 #	dataset_paths = ['data0.txt', 'data1.txt', 'data2.txt']
 	dataset_paths = ['data0_short.txt']
 	state_ranges = [[0, 15], [16,31], [32,47], [48,63]]
 	n = 3
+	res = dict()
+	data_res = dict()
+	M = [1]
+	#M = np.arange(100, 10000, step=1000) #Alter later
 
-	#for M in np.arange(100, 10000, step=1000): #Alter later
-	for M in [1]:
+	for m in [1]:
 		for ds_path in dataset_paths:
+			b_res = dict()
 			pdfs_by_b, state_counts, X, X_init, X_all = read_in_x(ds_path, state_ranges, n)
 			for i, b in enumerate(pdfs_by_b): 
 				z_given_x = post_process_pdfs(b, state_counts[i], X)
 				p_z = compute_p_z(state_counts[i])
 				x_new = advAlg(M, p_z, z_given_x, X, X_init)
 				print "X new is " + str(x_new)
-				top_x = getTopM(x_new, M)
+				top_x = getTopM(x_new, m)
+				top_states = []
+
+				for x in top_x:
+					top_states.extend(X_all[x])
+
+				b_res[b] = top_states
+
+			data_res[ds_path] = b_res
+
+		res[m] = data_res
+
+
+
+			
+	for b in pdfs_by_b.values():
+		entropy = getEntropy(res, b)
+		plot(M, "entropy_" + str(b), "M", "Entropy", "Entropy values by M", entropy)
+		collisions = getCollisions(res, b)
+		plot(M, "collisions_" + str(b), "M", "Collisions", "Collision values by M", collisions)
+
+
+
