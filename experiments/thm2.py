@@ -76,7 +76,10 @@ def read_in_x(filepath, state_ranges, n):
 					# If this is in x_init, add states 
 					if cur_in_range:
 						if input_block in x_init:
-							x_init[input_block] = x_init[input_block].append(z_i)
+							z_list = x_init[input_block]
+							z_list.append(z_i)
+							x_init[input_block] = z_list
+
 						else:					
 							x_init[input_block] = [z_i]
 
@@ -100,7 +103,11 @@ def post_process_pdfs(pdf, state_counts, X):
 	dic = {}
 	for key in pdf[1]:
 		value = pdf[1][key]
+		print("VALUE " + str(value))
+		print("DENOM " + str(X.count(key[1])))
 		dic[key] = value / float(X.count(key[1])) #x
+		#print(dic[key])
+
 	return dic
 
 def compute_p_z(state_counts):
@@ -123,11 +130,9 @@ of seeded bad inputs which contains a mapping from an input to a list of states
 def advAlg(M, states_pdf, conditional_states_pdf, input_space, X_init):
 	X_adv = []
 	states = set()
-	print(len(X_init))
 
 	for x in X_init:
 		z = X_init[x]
-		print(len(z))
 		for z_cur in z:
 			states.add(z_cur)
 
@@ -151,22 +156,19 @@ def getTopM(x_new, M):
 def getNewX(states_pdf, conditional_states_pdf, input_space, states):
 	X_new = dict()
 
-
-	#for (z, x) in conditional_states_pdf:
-		#print "the input tuple is " + str((z,x))
-
 	for x in input_space:
 		prob = 0.0
-		#print "X in getNewX: " + x
 		for z in states:
-			#print "z in getNewX: " + z
-			#print(len(states))
 			if (z, x) in conditional_states_pdf: 
-				print("IT IS TRUE")
-				prob = prob + (conditional_states_pdf[(z, x)] * (1.0/len(input_space)))/states_pdf[z]
+				# print(prob)
+				print((1.0/len(input_space)))
+				print(conditional_states_pdf[(z, x)])
+				print(states_pdf[z])
+				prob = prob + ((conditional_states_pdf[(z, x)] * (1.0/len(input_space))) / states_pdf[z])
 
 		X_new[x] = prob
 		print "For " + str(x) + " the probability is " + str(prob)
+		return X_new
 
 
 if __name__ == "__main__":
@@ -179,11 +181,8 @@ if __name__ == "__main__":
 	for M in np.arange(100, 10000, step=1000): #Alter later
 		for ds_path in dataset_paths:
 			pdfs_by_b, state_counts, X, X_init = read_in_x(ds_path, state_ranges, n)
-
 			for b in pdfs_by_b: 
 				z_given_x = post_process_pdfs(b, state_counts, X)
-				for k in X_init:
-					print(len(X_init[k]))
 				p_z = compute_p_z(state_counts)
 				x_new = advAlg(M, p_z, z_given_x, X, X_init)
 				print "X new is " + str(x_new)
