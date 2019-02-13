@@ -11,8 +11,6 @@ from random import randint
 import matplotlib.pyplot as plt
 import pandas as pd
 
-
-
 # Routine to read in DS from data.txt file 
 # @params filepath of structured data
 # @return X. X is a dictoinary key'd by x valued by a list of states 
@@ -36,18 +34,15 @@ def read_in_x(filepath, start, end):
 
 	return X
 
-
 def read_in_x_b(filepath, b):
 	b_start = b[0]
 	b_end = b[1]
 	return read_in_x(b_start, b_end)
 
-
 #computes the entropy given the list Z
 def computeEntropy(Z, base):
 	value,counts = np.unique(labels, return_counts=True)
   	return entropy(counts, base=base)
-
 
 def theorem_1_routine(e, X):
 	print "Epsilon value: " + e
@@ -67,11 +62,7 @@ def theorem_1_routine(e, X):
 
 		print "Entropy: " + entropy
 
-
 	return m
-
-
-
 
 """
 Given a block, computes the number of examples 
@@ -92,7 +83,6 @@ def computeDataset(ds_path, b, epsilon):
 	res = dict()
 	epsilon_res = []
 
-
 	for e in epsilon: 
 		X = read_in_x_b(ds_path, b)
 		m = theorem_1_routine(e, X)
@@ -104,7 +94,6 @@ def computeDataset(ds_path, b, epsilon):
 
 	return res
 
-
 #generates a line plot over values of epsilon 
 def plot(res, epsilon):
 	df=pd.DataFrame({'x': epsilon, 'y1': res['data0.txt'], 'y2': res['data1.txt'], 'y3': res['data2.txt'] })
@@ -115,24 +104,9 @@ def plot(res, epsilon):
 	plt.plot( 'x', 'y3', data=df, marker='', color='olive', linewidth=2, linestyle='dashed', label="data2.txt")
 	plt.legend()
 
-
-
-
 if __name__ == "__main__":
 	epsilon = np.arange(0, 1, step=.05)
 	blocks = [[0, 15], [16,31], [32,47], [48,63]]
 
 	for b in blocks:
 		computeBlock(b, epsilon)
-
-	
-
-
-
-
-
-
-
-
-
-
