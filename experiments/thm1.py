@@ -44,7 +44,7 @@ def read_in_x_b(filepath, b):
 
 #computes the entropy given the list Z
 def computeEntropy(Z, base):
-	value,counts = np.unique(labels, return_counts=True)
+	value,counts = np.unique(Z, return_counts=True)
   	return entropy(counts, base=base)
 
 def theorem_1_routine(e, X):
@@ -63,7 +63,7 @@ def theorem_1_routine(e, X):
 		Z.extend(z)
 		entropy = computeEntropy(Z, 2)
 
-		print "Entropy: " + entropy
+		print "Entropy: " + str(entropy)
 
 	return m
 
@@ -107,6 +107,8 @@ def plot(res, epsilon):
 	plt.plot( 'x', 'y2', data=df, marker='', color='olive', linewidth=2, label="data1.txt")
 	plt.plot( 'x', 'y3', data=df, marker='', color='olive', linewidth=2, linestyle='dashed', label="data2.txt")
 	plt.legend()
+	f = plt.figure()
+	f.savefig("t1_plot.pdf")
 
 if __name__ == "__main__":
 	epsilon = np.arange(0, 1, step=.05)
