@@ -34,6 +34,7 @@ def read_in_x(filepath, state_ranges, n):
 
 	# Build data structure
 	pdfs_by_b = []
+
 	for pair in state_ranges:
 		pdfs_by_b.append([{}, {}])
 
@@ -131,6 +132,7 @@ def advAlg(M, states_pdf, conditional_states_pdf, input_space, X_init):
 def getTopM(x_new, M):
 	count = 0
 	top_x = set()
+
 	for key, value in sorted(x_new.iteritems(), key=lambda (k,v): (v,k)):
 		count = count + 1
 		top_x.add(key)
@@ -148,6 +150,7 @@ def getNewX(states_pdf, conditional_states_pdf, input_space, states):
 			prob = prob + (conditional_states_pdf[(z, x)] * (1.0/len(input_space)))/states_pdf[z]
 
 		X_new[x] = prob
+		print "For " + str(x) + " the probability is " + str(prob)
 
 
 if __name__ == "__main__":
@@ -165,4 +168,5 @@ if __name__ == "__main__":
 				z_given_x = post_process_pdfs(b, state_counts, X)
 				p_z = compute_p_z(state_counts)
 				x_new = advAlg(M, p_z, z_given_x, X, X_init)
+				print "X new is " + str(x_new)
 				top_x = getTopM(x_new, M)
