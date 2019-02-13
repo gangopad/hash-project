@@ -50,11 +50,14 @@ def computeEntropy(Z, base):
 
 
 def theorem_1_routine(e, X):
+	print "Epsilon value: " + e
 	entropy = sys.maxsize
 	N = len(X)
 	Z = []
+	m = 0
 
 	while entropy > e:
+		m = m + 1
 		rand_index = randint(0, N)
 		inputs = X.keys()
 		x = inputs[rand_index]
@@ -62,8 +65,10 @@ def theorem_1_routine(e, X):
 		Z.extend(z)
 		entropy = computeEntropy(Z, 2)
 
+		print "Entropy: " + entropy
 
-	return entropy #filler 
+
+	return m
 
 
 
@@ -92,6 +97,8 @@ def computeDataset(ds_path, b, epsilon):
 		X = read_in_x_b(ds_path, b)
 		m = theorem_1_routine(e, X)
 		epsilon_res.append(m)
+
+		print "For dataset " + str(ds_path) + " we have for epsilon value " + str(e) + " a value of m of " + str(m) + " such that H(Z) < e"
 
 	res[ds_path] = epsilon_res
 
