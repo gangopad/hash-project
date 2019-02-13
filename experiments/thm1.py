@@ -48,7 +48,7 @@ def computeEntropy(Z, base):
   	return entropy(counts, base=base)
 
 def theorem_1_routine(e, X):
-	print "Epsilon value: " + e
+	print "Epsilon value: " + str(e)
 	entropy = sys.maxsize
 	N = len(X)
 	Z = []
