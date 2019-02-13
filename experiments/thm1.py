@@ -90,8 +90,6 @@ def computeEntropy(X):
 		states_dict[s] = states_list.count(s)
 
 	for k, v in hex_strings.items():
-  		if v > 1:
-    		print(str(hash(k)) + "      " + str(v))
   		p_x = getcontext().divide(Decimal(v), Decimal(num_uniq_strs))
   		return getcontext().add(entropy, getcontext().multiply(p_x, p_x.ln()))
 
