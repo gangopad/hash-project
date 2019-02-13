@@ -31,6 +31,7 @@ MAX_INDEX = 15
 def read_in_x(filepath, state_ranges, n): 
 
 	X = []
+	X_all = {}
 
 	# Build data structure
 	pdfs_by_b = []
@@ -64,7 +65,16 @@ def read_in_x(filepath, state_ranges, n):
 				offset = 0
 			else: 
 				X.append(input_block)
+
 				z_i = line
+
+				if input_block in X_all:
+					z_list = X_all[input_block]
+					z_list.append(z_i)
+					X_all[input_block] = z_list
+				else:					
+					X_all[input_block] = [z_i]
+
 				rnd = index_of_range(offset, state_ranges)
 				if rnd is not None:
 					# Add to state_counts list 
@@ -91,7 +101,7 @@ def read_in_x(filepath, state_ranges, n):
 
 			offset = offset + 1
 
-	return pdfs_by_b, state_counts_by_b, X, x_init
+	return pdfs_by_b, state_counts_by_b, X, x_init, X_all
 
 def index_of_range(i, state_ranges):
 	for n, sr in enumerate(state_ranges):
@@ -208,7 +218,7 @@ if __name__ == "__main__":
 	for m in [1]:
 		for ds_path in dataset_paths:
 			b_res = dict()
-			pdfs_by_b, state_counts, X, X_init = read_in_x(ds_path, state_ranges, n)
+			pdfs_by_b, state_counts, X, X_init, X_all = read_in_x(ds_path, state_ranges, n)
 			for i, b in enumerate(pdfs_by_b): 
 				z_given_x = post_process_pdfs(b, state_counts[i], X)
 				p_z = compute_p_z(state_counts[i])
