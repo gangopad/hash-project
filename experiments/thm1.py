@@ -11,38 +11,45 @@ from random import randint
 import matplotlib.pyplot as plt
 import pandas as pd
 import pickle
-from decimal import * 
+import decimal
 
 # Routine to read in DS from data.txt file 
 # @params filepath of structured data
 # @return X. X is a dictoinary key'd by x valued by a list of states 
-def read_in_x(filepath, start, end): 
-	X = {}
+def read_in_x(filepath, blocks): 
+	X_all = []
+	for b in blocks:
+		X_all.append({})
 
 	offset = 0
 	states = []
 	input_block = None
 	print "Reading in X..."
-	with open(filepath) as infile:
-    		for line in infile:
-        		if line[0:5] == 'block':
-        			if input_block is not None:	
-						X[input_block] = states
+	with open(filepath, 'r') as infile:
+		for line in infile:
+			if line[0:5] == 'block':
+				if input_block is not None:	
+					X[input_block] = states
 
-        			states = []
-        			input_block = line[6:]
-        			offset = 0
-       	 		elif offset >= start and offset <= end: 
-        			states.append(line)
+				states = []
+				input_block = line[6:]
+				offset = 0
+			else:
+				rnd = index_of_range(offset, state_ranges)
+				if rnd is not None:
+					new_list = X_all[rnd]
+					new_list.append(line)
+					X_all[rnd] = new_list
         
-        		offset = offset + 1
+			offset = offset + 1
+    
+	return X_all
 
-	return X
+def index_of_range(i, state_ranges):
+	for n, sr in enumerate(state_ranges):
+		if i >= sr[0] and i<= sr[1]:
+			return n
 
-def read_in_x_b(filepath, b):
-	b_start = b[0]
-	b_end = b[1]
-	return read_in_x(filepath, b_start, b_end)
 
 #computes the entropy given the list Z
 def computeEntropy(Z, base):
@@ -97,13 +104,13 @@ def computeEntropy(X):
 Given a dataset, computes the number of examples 
 needed to get H(Z) < epsilon
 """
-def computeDataset(ds_path, b, epsilon):
+def computeDataset(ds_path, b, epsilon, X):
 	res = dict()
 	epsilon_res = []
 
 	for e in epsilon: 
 		print "Tuple: " + str(b) + " epsilon: " + str(e)
-		X = read_in_x_b(ds_path, b)
+		#X = read_in_x_b(ds_path, b)
 		print("Real Entropy: " + str(computeEntropy(X)))
 		m = theorem_1_routine(e, X)
 		epsilon_res.append(m)
@@ -133,5 +140,7 @@ if __name__ == "__main__":
 	epsilon = np.arange(0, 1, step=.05)
 	blocks = [[0, 15], [16,31], [32,47], [48,63]]
 
-	for b in blocks:
-		computeBlock(b, epsilon)
+	X_all = read_in_x(filepath, blocks)
+
+	for i, b in enumerate(blocks):
+		computeBlock(b, epsilon, X_all[i])
