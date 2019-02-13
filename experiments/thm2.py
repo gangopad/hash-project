@@ -249,17 +249,15 @@ def plot(M, fname, xlabel, ylabel, title, res):
 
 
 	# multiple line plot
-	plt.plot( 'x', 'y1', data=df, marker='o', markerfacecolor='blue', markersize=12, color='skyblue', linewidth=4, label="data0.txt")
-	plt.plot( 'x', 'y2', data=df, marker='', color='olive', linewidth=2, label="data1.txt")
-	plt.plot( 'x', 'y3', data=df, marker='', color='olive', linewidth=2, linestyle='dashed', label="data2.txt")
+	plt.plot( 'x', 'y1', data=df, marker='o', color='blue', linewidth=2, label="data0.txt")
+	plt.plot( 'x', 'y2', data=df, marker='x', color='red',  linewidth=2, label="data1.txt")
+	plt.plot( 'x', 'y3', data=df, marker='d', color='black', linewidth=2, linestyle='dashed', label="data2.txt")
 	plt.legend()
 	plt.xlabel(xlabel)
 	plt.ylabel(ylabel)
 	plt.title(title)
-	plt.show()
-	f = plt.figure()
-	f.savefig(fname + ".png")
-
+	plt.savefig(fname + ".png")
+	plt.clf()
 
 if __name__ == "__main__":
 
