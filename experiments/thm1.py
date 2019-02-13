@@ -1,9 +1,19 @@
-# Routine to read in DS from data.txt file 
+"""
+In this file we generate our set of states until H(Z) drops below 
+epsilon for varying levels of epsilon. We analyze results over
+various input sets. 
+"""
+
 import numpy as np 
 from scipy.stats import entropy
 import sys
 from random import randint
+import matplotlib.pyplot as plt
+import pandas as pd
 
+
+
+# Routine to read in DS from data.txt file 
 # @params filepath of structured data
 # @return X. X is a dictoinary key'd by x valued by a list of states 
 def read_in_x(filepath, start, end): 
@@ -75,21 +85,29 @@ needed to get H(Z) < epsilon
 """
 def computeDataset(ds_path, b, epsilon):
 	res = dict()
-	epsilon_res = dict()
+	epsilon_res = []
+
 
 	for e in epsilon: 
 		X = read_in_x_b(ds_path, b)
 		m = theorem_1_routine(e, X)
-		epsilon_res[e] = m
+		epsilon_res.append(m)
 
 	res[ds_path] = epsilon_res
 
 	return res
 
 
-#generates a line plot over values of 
-def plot(res):
+#generates a line plot over values of epsilon 
+def plot(res, epsilon):
+	df=pd.DataFrame({'x': epsilon, 'y1': res['data0.txt'], 'y2': res['data1.txt'], 'y3': res['data2.txt'] })
 	
+	# multiple line plot
+	plt.plot( 'x', 'y1', data=df, marker='o', markerfacecolor='blue', markersize=12, color='skyblue', linewidth=4, label="data0.txt")
+	plt.plot( 'x', 'y2', data=df, marker='', color='olive', linewidth=2, label="data1.txt")
+	plt.plot( 'x', 'y3', data=df, marker='', color='olive', linewidth=2, linestyle='dashed', label="data2.txt")
+	plt.legend()
+
 
 
 
