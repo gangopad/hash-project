@@ -25,7 +25,7 @@ Get n Xs
 @return dicts (key is block) of dicts, each inner dict contains pdfs, x_init, state_counts
 '''
 
-MAX_INDEX = 2000000
+MAX_INDEX = 15
 
 # For md5, state_ranges is [[0, 15], [16,31], [32,47], [48,63]]
 def read_in_x(filepath, state_ranges, n): 
@@ -41,7 +41,7 @@ def read_in_x(filepath, state_ranges, n):
 	state_counts = {}
 
 	# Select which N to keep for x init 
-	x_init_indices = random.sample(range(0, 2000000), n)
+	x_init_indices = random.sample(range(0, MAX_INDEX), n)
 	x_init = {} 
 
 	input_block = None
@@ -50,22 +50,23 @@ def read_in_x(filepath, state_ranges, n):
 	cur_in_range = False
 	with open(filepath) as infile:
 		for line in infile:
+			line = line.strip('\n')
 			if line[0:5] == 'block':
 				# Check if we should include this in x_init 
-				if x_num in x_init:
+				if x_num in x_init_indices:
 					cur_in_range = True
 				else:
 					cur_in_range = False
 				x_num = x_num + 1
 
 				# Set x 
-				input_block = line[7:]
+				input_block = line[6:]
 				X.append(input_block)
+				offset = 0
 			else: 
 				z_i = line
 				rnd = index_of_range(offset, state_ranges)
 				if rnd is not None:
-
 					# Add to state_counts list 
 					if z_i in state_counts:
 						state_counts[z_i] = state_counts[z_i] + 1
@@ -74,7 +75,10 @@ def read_in_x(filepath, state_ranges, n):
 
 					# If this is in x_init, add states 
 					if cur_in_range:
-						x_init[input_block] = x_init[input_block].append(z_i)
+						if input_block in x_init:
+							x_init[input_block] = x_init[input_block].append(z_i)
+						else:					
+							x_init[input_block] = [z_i]
 
 					# Add to pdf of states given inputs 
 					if (z_i, input_block) in pdfs_by_b[rnd][1]:
@@ -88,7 +92,7 @@ def read_in_x(filepath, state_ranges, n):
 
 def index_of_range(i, state_ranges):
 	for n, sr in enumerate(state_ranges):
-		if i >= state_ranges[0] and i<= state_ranges[1]:
+		if i >= sr[0] and i<= sr[1]:
 			return n
 
 def post_process_pdfs(pdf, state_counts, X):
@@ -119,10 +123,13 @@ of seeded bad inputs which contains a mapping from an input to a list of states
 def advAlg(M, states_pdf, conditional_states_pdf, input_space, X_init):
 	X_adv = []
 	states = set()
+	print(len(X_init))
 
 	for x in X_init:
 		z = X_init[x]
-		states.add(z)
+		print(len(z))
+		for z_cur in z:
+			states.add(z_cur)
 
 	x_new = getNewX(states_pdf, conditional_states_pdf, input_space, states)
 
@@ -144,10 +151,19 @@ def getTopM(x_new, M):
 def getNewX(states_pdf, conditional_states_pdf, input_space, states):
 	X_new = dict()
 
+
+	#for (z, x) in conditional_states_pdf:
+		#print "the input tuple is " + str((z,x))
+
 	for x in input_space:
 		prob = 0.0
+		#print "X in getNewX: " + x
 		for z in states:
-			prob = prob + (conditional_states_pdf[(z, x)] * (1.0/len(input_space)))/states_pdf[z]
+			#print "z in getNewX: " + z
+			#print(len(states))
+			if (z, x) in conditional_states_pdf: 
+				print("IT IS TRUE")
+				prob = prob + (conditional_states_pdf[(z, x)] * (1.0/len(input_space)))/states_pdf[z]
 
 		X_new[x] = prob
 		print "For " + str(x) + " the probability is " + str(prob)
@@ -158,7 +174,7 @@ if __name__ == "__main__":
 #	dataset_paths = ['data0.txt', 'data1.txt', 'data2.txt']
 	dataset_paths = ['data0_short.txt']
 	state_ranges = [[0, 15], [16,31], [32,47], [48,63]]
-	n = 20000
+	n = 10
 
 	for M in np.arange(100, 10000, step=1000): #Alter later
 		for ds_path in dataset_paths:
@@ -166,6 +182,8 @@ if __name__ == "__main__":
 
 			for b in pdfs_by_b: 
 				z_given_x = post_process_pdfs(b, state_counts, X)
+				for k in X_init:
+					print(len(X_init[k]))
 				p_z = compute_p_z(state_counts)
 				x_new = advAlg(M, p_z, z_given_x, X, X_init)
 				print "X new is " + str(x_new)

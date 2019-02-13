@@ -29,7 +29,7 @@ def read_in_x(filepath, start, end):
 						X[input_block] = states
 
         			states = []
-        			input_block = line[7:]
+        			input_block = line[6:]
         			offset = 0
        	 		elif offset >= start and offset <= end: 
         			states.append(line)
