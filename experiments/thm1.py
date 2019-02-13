@@ -35,7 +35,7 @@ def read_in_x(filepath, blocks):
 				input_block = line[6:]
 				offset = 0
 			else:
-				rnd = index_of_range(offset, state_ranges)
+				rnd = index_of_range(offset, blocks)
 				if rnd is not None:
 					new_list = X_all[rnd]
 					new_list.append(line)
@@ -80,12 +80,9 @@ def theorem_1_routine(e, X):
 Given a block, computes the number of examples 
 needed to get H(Z) < epsilon over datasets
 """
-def computeBlock(b, epsilon):
-	dataset_paths = ['data1.txt']
-
-	for ds_path in dataset_paths:
-		res = computeDataset(ds_path, b, epsilon)
-		plot(res)
+def computeBlock(b, epsilon, ds_path):
+	res = computeDataset(ds_path, b, epsilon)
+	plot(res)
 
 def computeEntropy(X):
 	states_dict = {} 
@@ -140,7 +137,9 @@ if __name__ == "__main__":
 	epsilon = np.arange(0, 1, step=.05)
 	blocks = [[0, 15], [16,31], [32,47], [48,63]]
 
-	X_all = read_in_x(filepath, blocks)
+	dataset_paths = ['data0_short.txt']
+	for ds_path in dataset_paths:
+		X_all = read_in_x(ds_path, blocks)
 
-	for i, b in enumerate(blocks):
-		computeBlock(b, epsilon, X_all[i])
+		for i, b in enumerate(blocks):
+			computeBlock(b, epsilon, X_all[i], ds_path)
