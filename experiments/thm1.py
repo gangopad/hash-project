@@ -10,6 +10,7 @@ import sys
 from random import randint
 import matplotlib.pyplot as plt
 import pandas as pd
+import pickle
 
 # Routine to read in DS from data.txt file 
 # @params filepath of structured data
@@ -101,7 +102,10 @@ def computeDataset(ds_path, b, epsilon):
 #generates a line plot over values of epsilon 
 def plot(res, epsilon):
 	df=pd.DataFrame({'x': epsilon, 'y1': res['data0.txt'], 'y2': res['data1.txt'], 'y3': res['data2.txt'] })
-	
+	fout = open("thm1.pdf", "wb")
+	pickle.dump(df, fout)
+
+
 	# multiple line plot
 	plt.plot( 'x', 'y1', data=df, marker='o', markerfacecolor='blue', markersize=12, color='skyblue', linewidth=4, label="data0.txt")
 	plt.plot( 'x', 'y2', data=df, marker='', color='olive', linewidth=2, label="data1.txt")
