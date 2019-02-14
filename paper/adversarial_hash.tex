@@ -370,9 +370,8 @@ We present our algorithm below:
 \State Assume we have pdfs that give $p(z_{i} | z_{j})$, $p(z_{i} | x_{j})$ $\forall i,j$
 \State Assume as input we have $X_{init} = \{x_{1}, ..., x_{n}\}$
 \State We return \textbf{M} new adversarial examples denoted in our set $X_{adv}$
-\State For each $x_{i} \in X_{init}$:
-\State Derive the set of states $Z$ by processing $x_{i}$ through $B(\cdot)$
-\State Initial $X_{adv}$, $X_{seen}$ as the empty state
+\State Initialize $X_{adv}$, $X_{seen}$ as the empty state
+\State Derive the set of states $Z$ by processing each $x_{i} \in X_{init}$ through $B(\cdot)$
 \State While $|X_{adv} | < M$
 \begin{itemize}
 \item Derive $x_{new} =$ argmax $_{x} \sum_{i=1}^{|Z|} p(x | z_{i})$
