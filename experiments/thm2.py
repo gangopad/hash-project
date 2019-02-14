@@ -3,6 +3,8 @@ In this file, take in as input a set of {xs} and we train a pdf,
 pull an x_init and output a set x_adv that represent adversarial
 examples
 """
+import matplotlib
+matplotlib.use('Agg')
 
 import numpy as np 
 import scipy.stats
@@ -241,17 +243,21 @@ def getCollisions(res, b):
 
 #generates a line plot over values of epsilon 
 def plot(M, fname, xlabel, ylabel, title, res):
-	df=pd.DataFrame({'x': M, 'y1': res['seeded_0.txt'], 'y2': res['seeded_1.txt'], 'y3': res['seeded_2.txt'], 'y4': res['random_0.txt'], 'y5': res['random_1.txt'], 'y6': res['random_2.txt'] })
+	df=pd.DataFrame({'x': M, 'y1': res['seeded_0.txt'], 
+		#'y2': res['seeded_1.txt'], 'y3': res['seeded_2.txt'], 
+		'y4': res['random_0.txt']
+		#,'y5': res['random_1.txt'], 'y6': res['random_2.txt'] 
+		})
 	fout = open(fname + ".pickle", "wb")
 	pickle.dump(df, fout)
 
 	# multiple line plot
 	plt.plot( 'x', 'y1', data=df, marker='o', color='blue', linewidth=2, label="seeded 0")
-	plt.plot( 'x', 'y2', data=df, marker='x', color='red', linewidth=2, linestyle='dotted', label="seeded 1")
-	plt.plot( 'x', 'y3', data=df, marker='d', color='black', linewidth=2, linestyle='dashed', label="seeded 2")
+	#plt.plot( 'x', 'y2', data=df, marker='x', color='red', linewidth=2, linestyle='dotted', label="seeded 1")
+	#plt.plot( 'x', 'y3', data=df, marker='d', color='black', linewidth=2, linestyle='dashed', label="seeded 2")
 	plt.plot( 'x', 'y4', data=df, marker='<', color='blue', linewidth=2,  label="random 0")
-	plt.plot( 'x', 'y5', data=df, marker='>', color='red', linewidth=2,  linestyle='dotted', label="random 1")
-	plt.plot( 'x', 'y6', data=df, marker='_', color='black', linewidth=2, linestyle='dashed', label="random 2")
+	#plt.plot( 'x', 'y5', data=df, marker='>', color='red', linewidth=2,  linestyle='dotted', label="random 1")
+	#plt.plot( 'x', 'y6', data=df, marker='_', color='black', linewidth=2, linestyle='dashed', label="random 2")
 	plt.legend()
 	plt.xlabel(xlabel)
 	plt.ylabel(ylabel)
@@ -261,14 +267,15 @@ def plot(M, fname, xlabel, ylabel, title, res):
 
 if __name__ == "__main__":
 
-	dataset_paths = ['seeded_0.txt', 'seeded_1.txt', 'seeded_2.txt', 'random_0.txt', 'random_1.txt', 'random_2.txt']
+	dataset_paths = ['seeded_0.txt', 'random_0.txt']
 
 	#dataset_paths = ['data0_short.txt']
 	state_ranges = [[0, 15], [16,31], [32,47], [48,63]]
 	n = 3
 	res = dict()
 	data_res = dict()
-	M = [20, 200, 2000, 20000, 200000, 1999999]
+	#M = [20, 200]#, 2000], 20000, 200000, 1999999]
+	M = [1, 2, 3, 10]
 	#M = np.arange(100, 10000, step=1000) #Alter later
 
 	for m in M:
