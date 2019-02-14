@@ -188,11 +188,16 @@ We present a novel machine learning framework which we apply here to uncover wea
 %-------------------------------------------------------------------------------
 \section{Introduction}
 %-------------------------------------------------------------------------------
-
-Talk about the purpose of the paper. Emphasize how our work is novel. 
+There have been many deterministic efforts that have attempted to find vulnerabilities in hash functions and cryptographic systems in general. \textcolor{red}{CITE} seminally uncovered vulnerabilities in MD5 and there has been much follow on work in applying novel methods to uncover weaknesses in hash functions, public key generators and the like \textcolor{red}{CITE}. Much of the work in this domain has either been of a cryptographic nature \textcolor{red}{CITE}, exploiting mathematical weaknesses in the algorithms - or of an information security nature, exploiting weaknesses in the protocol design and implementation \textcolor{red}{CITE}. Although these methods have the benefit of solid mathematical grounding and ease of reproducibility, due to the domain specific nature of such work, it has been very difficult to generalize such approaches to structurally finding weaknesses in cryptographic systems. 
 \\
 \\
-\textbf{Note:} Traditional adversarial learning is defined as a technique employed in the field of machine learning which attempts to fool models through malicious input. Our definition is slightly different so we need to be deliberate in explaining how our new definition still ties to this concept
+We draw inspiration from the field of adversarial learning in machine learning and present a framework that can be used to assess the weaknesses of a cryptographic systems and potentially uncover new vulnerabilities. Much work has been done in the study of finding adversarial examples against blackbox machine learning systems. \textcolor{red}{Cite} Goodfellow seminally presented work in this domain and defined an adversarial example to be malicious input $x$ that fools a model into outputting a miclassified label $y'$ (where the true label was $y$). 
+\\
+\\
+We expand the definition of adversarial learning to apply to the cryptographic context. This includes rigorously defining adversarial for a given set of examples, and justifying how the adversarial set can lead to uncovering weaknesses. We then construct the notion of a blackbox for Merkle{\textendash}Damg\r{a}rd structured hash functions and present a framework that finds and validates adversarial examples. Lastly, we tie our framework back to the notion of weak properties as they apply to a hash function. Namely, we show how our results lead to the uncovering of collisions, \textcolor{red}{correlations} and \textcolor{red}{preimage attacks}. 
+\\
+\\
+Our framework has the benefit of modularizing the process of defining, uncovering and validating adversariality. Hence, although we present an end to end pipeline specifically for Merkle{\textendash}Damg\r{a}rd structured hash functions, our framework can be applied to any cryptographic system that fits within our blackbox paradigm. We specifically present results in the context of the MD5 algorithm due to ease of comparison but we discuss how our methods can be applied similarly to the class of Merkle{\textendash}Damg\r{a}rd structured hash functions including the class of SHA1 and SHA2 algorithms. 
 
 %-------------------------------------------------------------------------------
 \subsection{Related Work}
@@ -206,10 +211,11 @@ May or may not want this as a subsection. Including for now.
 In this section we outline our contributions. 
 
 \begin{itemize}
-\item \textbf{Expanded definition of adversarial learning to a broader class of problems} 
-\item Leverage this definition of adversarial learning to introduce a black box attack on hash functions of the Merkle construction 
-\item Uncover vulnerabilities in MD5 with this methodology (TBD based on results how we'll frame this) 
-\item Epsilon, Delta framing 
+\item \textbf{Expanded definition of adversarial learning to a broader class of problems} We consider the notion of adversarial learning against machine learning systems and expand this to cryptographic systems. The novelty of our expansion is multifold. Not only do we apply this concept to a new domain, but we robustly define a notion of adversarial in an unsupervised context (without $(x,y)$ labels) 
+\item \textbf{Leverage this definition of adversarial learning to introduce a black box attack on hash functions of the Merkle construction} We define a blackbox construction for the class of Merkle{\textendash}Damg\r{a}rd structured hash functions that abstracts differences within MD functions but codifies features that apply to the class. This sets us up to construct a machine learning framework that explores properties across the MD class. 
+\item \textbf{Construct a Machine Learning Framework to Find Adversarial Examples against Merkle Hash Functions} We present a novel machine learning framework that optimizes towards finding adversarial examples. We then tie the application of our framework to uncovering collisions and \textcolor{red}{correlations}. 
+\item \textbf{Theoretical Bounds Around Performance} We introduce theoretical bounds around how many examples we expect to generate before finding an adversarial set.
+\item \textbf{Uncover vulnerabilities in MD5 with this methodology}\textcolor{red}{Discuss post results}.
 
 \textcolor{red}{(1) Did we learn something new about MD5? (2) Have we lowered the theoretical bounds on Sha-1 Sha-2?}
 \end{itemize}
@@ -219,6 +225,7 @@ In this section we outline our contributions.
 %-------------------------------------------------------------------------------
 In order for this paper to be self contained, we include this section with background information required by our methodology. 
 \subsection{Background on Machine Learning and Adversarial Attacks} 
+
 
 \subsection{Background on Hash Function Construction and Weaknesses} 
 There are three elements of hash functions that are important to our approach. These include (1) the properties of cryptogaphic hash functions, (2) the Merkle{\textendash}Damg\r{a}rd construction of secure hash functions, and (3) known structural attacks against hash functions of this construction. 
