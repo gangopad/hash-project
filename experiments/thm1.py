@@ -120,7 +120,7 @@ def computeDataset(ds_path, b, epsilon, X):
 
 #generates a line plot over values of epsilon 
 def plot(res, epsilon, i):
-	df=pd.DataFrame({'x': M, 'y1': res['seeded_0.txt'], 
+	df=pd.DataFrame({'x': epsilon, 'y1': res['seeded_0.txt'], 
 		'y2': res['seeded_1.txt'], 'y3': res['seeded_2.txt'], 
 		'y4': res['random_0.txt']
 		,'y5': res['random_1.txt'], 'y6': res['random_2.txt'] 
@@ -129,12 +129,12 @@ def plot(res, epsilon, i):
 	pickle.dump(df, fout)
 
 	# multiple line plot
-	plt.plot( 'x', 'y1', data=df, marker='o', '''color='blue',''' linewidth=1, linestyle='dotted', label="seeded 0")
-	plt.plot( 'x', 'y2', data=df, marker='x', '''color='red''', linewidth=1, linestyle='dotted', label="seeded 1")
-	plt.plot( 'x', 'y3', data=df, marker='d', '''color='black''', linewidth=1, linestyle='dotted', label="seeded 2")
-	plt.plot( 'x', 'y4', data=df, marker='<', '''color='blue''', linewidth=1, linestyle='dashed', label="random 0")
-	plt.plot( 'x', 'y5', data=df, marker='>', '''color='red''', linewidth=1,  linestyle='dashed', label="random 1")
-	plt.plot( 'x', 'y6', data=df, marker='_', '''color='black''', linewidth=1, linestyle='dashed', label="random 2")
+	plt.plot( 'x', 'y1', data=df, marker='o', linewidth=1, linestyle='dotted', label="seeded 0")
+	plt.plot( 'x', 'y2', data=df, marker='x', linewidth=1, linestyle='dotted', label="seeded 1")
+	plt.plot( 'x', 'y3', data=df, marker='d', linewidth=1, linestyle='dotted', label="seeded 2")
+	plt.plot( 'x', 'y4', data=df, marker='<', linewidth=1, linestyle='dashed', label="random 0")
+	plt.plot( 'x', 'y5', data=df, marker='>', linewidth=1,  linestyle='dashed', label="random 1")
+	plt.plot( 'x', 'y6', data=df, marker='_', linewidth=1, linestyle='dashed', label="random 2")
 	
 	plt.legend()
 	plt.xlabel("Epsilon")

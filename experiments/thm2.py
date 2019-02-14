@@ -252,12 +252,13 @@ def plot(M, fname, xlabel, ylabel, title, res):
 	pickle.dump(df, fout)
 
 	# multiple line plot
-	plt.plot( 'x', 'y1', data=df, marker='o', '''color='blue',''' linewidth=1, linestyle='dotted', label="seeded 0")
-	plt.plot( 'x', 'y2', data=df, marker='x', '''color='red''', linewidth=1, linestyle='dotted', label="seeded 1")
-	plt.plot( 'x', 'y3', data=df, marker='d', '''color='black''', linewidth=1, linestyle='dotted', label="seeded 2")
-	plt.plot( 'x', 'y4', data=df, marker='<', '''color='blue''', linewidth=1, linestyle='dashed', label="random 0")
-	plt.plot( 'x', 'y5', data=df, marker='>', '''color='red''', linewidth=1,  linestyle='dashed', label="random 1")
-	plt.plot( 'x', 'y6', data=df, marker='_', '''color='black''', linewidth=1, linestyle='dashed', label="random 2")
+	plt.plot( 'x', 'y1', data=df, marker='o', linewidth=1, linestyle='dotted', label="seeded 0")
+	plt.plot( 'x', 'y2', data=df, marker='x', linewidth=1, linestyle='dotted', label="seeded 1")
+	plt.plot( 'x', 'y3', data=df, marker='d', linewidth=1, linestyle='dotted', label="seeded 2")
+	plt.plot( 'x', 'y4', data=df, marker='<', linewidth=1, linestyle='dashed', label="random 0")
+	plt.plot( 'x', 'y5', data=df, marker='>', linewidth=1,  linestyle='dashed', label="random 1")
+	plt.plot( 'x', 'y6', data=df, marker='_', linewidth=1, linestyle='dashed', label="random 2")
+	
 	plt.legend()
 	plt.xlabel(xlabel)
 	plt.ylabel(ylabel)
