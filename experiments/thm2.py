@@ -30,7 +30,7 @@ Get n Xs
 @return dicts (key is block) of dicts, each inner dict contains pdfs, x_init, state_counts
 '''
 
-MAX_INDEX = 15
+MAX_INDEX = 1300
 
 # For md5, state_ranges is [[0, 15], [16,31], [32,47], [48,63]]
 def read_in_x(filepath, state_ranges, n): 
@@ -244,20 +244,20 @@ def getCollisions(res, b):
 #generates a line plot over values of epsilon 
 def plot(M, fname, xlabel, ylabel, title, res):
 	df=pd.DataFrame({'x': M, 'y1': res['seeded_0.txt'], 
-		#'y2': res['seeded_1.txt'], 'y3': res['seeded_2.txt'], 
+		'y2': res['seeded_1.txt'], 'y3': res['seeded_2.txt'], 
 		'y4': res['random_0.txt']
-		#,'y5': res['random_1.txt'], 'y6': res['random_2.txt'] 
+		,'y5': res['random_1.txt'], 'y6': res['random_2.txt'] 
 		})
 	fout = open(fname + ".pickle", "wb")
 	pickle.dump(df, fout)
 
 	# multiple line plot
-	plt.plot( 'x', 'y1', data=df, marker='o', color='blue', linewidth=1, label="seeded 0")
-	#plt.plot( 'x', 'y2', data=df, marker='x', color='red', linewidth=1, linestyle='dotted', label="seeded 1")
-	#plt.plot( 'x', 'y3', data=df, marker='d', color='black', linewidth=1, linestyle='dashed', label="seeded 2")
-	plt.plot( 'x', 'y4', data=df, marker='<', color='blue', linewidth=1,  label="random 0")
-	#plt.plot( 'x', 'y5', data=df, marker='>', color='red', linewidth=1,  linestyle='dotted', label="random 1")
-	#plt.plot( 'x', 'y6', data=df, marker='_', color='black', linewidth=1, linestyle='dashed', label="random 2")
+	plt.plot( 'x', 'y1', data=df, marker='o', '''color='blue',''' linewidth=1, linestyle='dotted', label="seeded 0")
+	plt.plot( 'x', 'y2', data=df, marker='x', '''color='red''', linewidth=1, linestyle='dotted', label="seeded 1")
+	plt.plot( 'x', 'y3', data=df, marker='d', '''color='black''', linewidth=1, linestyle='dotted', label="seeded 2")
+	plt.plot( 'x', 'y4', data=df, marker='<', '''color='blue''', linewidth=1, linestyle='dashed', label="random 0")
+	plt.plot( 'x', 'y5', data=df, marker='>', '''color='red''', linewidth=1,  linestyle='dashed', label="random 1")
+	plt.plot( 'x', 'y6', data=df, marker='_', '''color='black''', linewidth=1, linestyle='dashed', label="random 2")
 	plt.legend()
 	plt.xlabel(xlabel)
 	plt.ylabel(ylabel)
@@ -271,11 +271,11 @@ if __name__ == "__main__":
 	#dataset_paths = ['seeded_0.txt', 'random_0.txt']
 
 	state_ranges = [[0, 15], [16,31], [32,47], [48,63]]
-	n = 3
+	n = 100
 	res = dict()
 	data_res = dict()
 	#M = [20, 200]#, 2000], 20000, 200000, 1999999]
-	M = [1, 2, 3, 10]
+	M = [1, 10, 100, 1000]
 	#M = np.arange(100, 10000, step=1000) #Alter later
 
 	for m in M:
@@ -299,7 +299,6 @@ if __name__ == "__main__":
 		res[m] = data_res
 
 	
-			
 	for b in range(0, len(state_ranges)):
 		entropy = getEntropy(res, b)
 		plot(M, "entropy_" + str(b), "M", "Entropy", "Entropy values by M", entropy)
@@ -307,4 +306,7 @@ if __name__ == "__main__":
 		plot(M, "collisions_" + str(b), "M", "Collisions", "Collision values by M", collisions)
 	
 
+# M 
+# n (size of seed state)
+# MAX_INDEX, apriori len(X_full)
 
