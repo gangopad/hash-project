@@ -120,7 +120,7 @@ def computeDataset(ds_path, b, epsilon, X):
 
 #generates a line plot over values of epsilon 
 def plot(res, epsilon, i):
-	df=pd.DataFrame({'x': M, 'y1': res['seeded_0.txt'], 
+	df=pd.DataFrame({'x': epsilon, 'y1': res['seeded_0.txt'], 
 		#'y2': res['seeded_1.txt'], 'y3': res['seeded_2.txt'], 
 		'y4': res['random_0.txt']
 		#,'y5': res['random_1.txt'], 'y6': res['random_2.txt'] 
