@@ -92,8 +92,9 @@ Given a block, computes the number of examples
 needed to get H(Z) < epsilon over datasets
 """
 def computeBlock(b, i, epsilon, ds_path, X):
-	res = computeDataset(ds_path, b, epsilon, X)
-	plot(res, epsilon, i)
+	return computeDataset(ds_path, b, epsilon, X)[ds_path]
+	#res = computeDataset(ds_path, b, epsilon, X)
+	#plot(res, epsilon, i)
 
 
 """
@@ -119,7 +120,7 @@ def computeDataset(ds_path, b, epsilon, X):
 
 #generates a line plot over values of epsilon 
 def plot(res, epsilon, i):
-	df=pd.DataFrame({'x': epsilon, 'y1': res[res.keys()[0]] })
+	df=pd.DataFrame({'x': epsilon, 'y1': res['seeded_0.txt'], 'y4': res['random_0.txt'] })
 	fout = open("thm1.pdf", "wb")
 	pickle.dump(df, fout)
 
@@ -136,6 +137,9 @@ def plot(res, epsilon, i):
 if __name__ == "__main__":
 	epsilon = np.arange(0, 1, step=.05)
 	blocks = [[0, 15], [16,31], [32,47], [48,63]]
+	res = dict()
+	for i, b in enumerate(blocks):
+		res[i] = dict()
 
 	dataset_paths = ['seeded_0.txt', 'random_0.txt']
 	for ds_path in dataset_paths:
@@ -143,4 +147,8 @@ if __name__ == "__main__":
 		print "Finished reading in x for " + str(ds_path)
 		for i, b in enumerate(blocks):
 			print "Computing block " + str(i)
-			computeBlock(b, i, epsilon, ds_path, X_all[i])
+			res[i][ds_path] = computeBlock(b, i, epsilon, ds_path, X_all[i])
+	for i, b in enumerate(blocks):
+		print(res[i])
+		plot(res[i], epsilon, i)
+
