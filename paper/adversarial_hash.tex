@@ -64,6 +64,7 @@
 \usepackage{algpseudocode}% http://ctan.org/pkg/algorithmicx
 
 
+
 % inlined bib file
 \usepackage{filecontents}
 \newtheorem{theorem}{Theorem}
@@ -71,22 +72,63 @@
 %-------------------------------------------------------------------------------
 \begin{filecontents}{\jobname.bib}
 %-------------------------------------------------------------------------------
-@Book{arpachiDusseau18:osbook,
-  author =       {Arpaci-Dusseau, Remzi H. and Arpaci-Dusseau Andrea C.},
-  title =        {Operating Systems: Three Easy Pieces},
-  publisher =    {Arpaci-Dusseau Books, LLC},
-  year =         2015,
-  edition =      {1.00},
-  note =         {\url{http://pages.cs.wisc.edu/~remzi/OSTEP/}}
+  % Collision Research
+  @article{klima2006tunnels,
+  title={Tunnels in Hash Functions: MD5 Collisions Within a Minute.},
+  author={Klima, Vlastimil},
+  journal={IACR Cryptology ePrint Archive},
+  volume={2006},
+  pages={105},
+  year={2006}
+  note =         {\url{https://pdfs.semanticscholar.org/303a/13faac4a76c2e249fcd9587257f276da1a02.pdf}}
 }
-@InProceedings{waldspurger02,
-  author =       {Waldspurger, Carl A.},
-  title =        {Memory resource management in {VMware ESX} server},
-  booktitle =    {USENIX Symposium on Operating System Design and
-                  Implementation (OSDI)},
-  year =         2002,
-  pages =        {181--194},
-  note =         {\url{https://www.usenix.org/legacy/event/osdi02/tech/waldspurger/waldspurger.pdf}}}
+@inproceedings{wang2005break,
+  title={How to break MD5 and other hash functions},
+  author={Wang, Xiaoyun and Yu, Hongbo},
+  booktitle={Annual international conference on the theory and applications of cryptographic techniques},
+  pages={19--35},
+  year={2005},
+  organization={Springer}
+  note =         {\url{https://link.springer.com/content/pdf/10.1007/11426639_2.pdf}}
+}
+@article{liang2007improved,
+  title={Improved collision attack on hash function MD5},
+  author={Liang, Jie and Lai, Xue-Jia},
+  journal={Journal of Computer Science and Technology},
+  volume={22},
+  number={1},
+  pages={79--87},
+  year={2007},
+  publisher={Springer}
+  note =         {\url{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.81.8251&rep=rep1&type=pdf}}
+}
+@inproceedings{stevens2017first,
+  title={The first collision for full SHA-1},
+  author={Stevens, Marc and Bursztein, Elie and Karpman, Pierre and Albertini, Ange and Markov, Yarik},
+  booktitle={Annual International Cryptology Conference},
+  pages={570--596},
+  year={2017},
+  organization={Springer}
+  note =         {\url{https://eprint.iacr.org/2017/190.pdf}}
+}
+@article{klima2005finding,
+  title={Finding MD5 Collisions on a Notebook PC Using Multi-message Modifications.},
+  author={Klima, Vlastimil},
+  journal={IACR Cryptology ePrint Archive},
+  volume={2005},
+  pages={102},
+  year={2005}
+  note =         {\url{https://eprint.iacr.org/2005/102.pdff}}
+}
+@incollection{sasaki2006construct,
+  title={How to construct sufficient conditions for hash functions},
+  author={Sasaki, Yu and Naito, Yusuke and Yajima, Jun and Shimoyama, Takeshi and Kunihiro, Noboru and Ohta, Kazuo},
+  booktitle={Progress in Cryptology-VIETCRYPT 2006},
+  pages={243--259},
+  year={2006},
+  publisher={Springer}
+  note = {\url{https://www.researchgate.net/profile/Sangjin_Lee6/publication/221462213_Improved_Fast_Correlation_Attack_on_the_Shrinking_and_Self-shrinking_Generators/links/02e7e52b36d7583923000000.pdf#page=252}}
+}
 \end{filecontents}
 
 %-------------------------------------------------------------------------------
@@ -102,10 +144,10 @@
 %for single author (just remove % characters)
 \author{
 {\rm Anirban Gangopadhyay}\\
-Your Institution
+Palantir Technologies
 \and
 {\rm Joshua Zweig}\\
-Second Institution
+Palantir Technologies
 % copy the following lines to add more authors
 % \and
 % {\rm Name}\\
@@ -135,11 +177,15 @@ May or may not want this as a subsection. Including for now.
 %-------------------------------------------------------------------------------
 \section{Contributions}
 %-------------------------------------------------------------------------------
+In this section we outline our contributions. 
+
 \begin{itemize}
-\item Expand definition of adversarial learning to a broader class of problems 
+\item \textbf{Expanded definition of adversarial learning to a broader class of problems} 
 \item Leverage this definition of adversarial learning to introduce a black box attack on hash functions of the Merkle construction 
 \item Uncover vulnerabilities in MD5 with this methodology (TBD based on results how we'll frame this) 
 \item Epsilon, Delta framing 
+
+\textcolor{red}{(1) Did we learn something new about MD5? (2) Have we lowered the theoretical bounds on Sha-1 Sha-2?}
 \end{itemize}
 
 %-------------------------------------------------------------------------------
@@ -188,9 +234,11 @@ What does this look like in the context of PRNGs, public key generators, hash fu
 \textbf{Meta Problem for Hash Functions:} Can we quantify how much a hash function deviates from its ideal state (perfect one way function)?
 
 \subsection{Notion of Blackbox}
-Define w.r.t to threat model. This isn't zero knowledge, an attacker needs to know the construction is Merkle construction
+We present a blackbox attack on the Merkle{\textendash}Damg\r{a}rd class of hash functions. We write \emph{blackbox} to mean that the attack does not depend on the parameters or implementation details of a particular hash function. This allows our methodology to be trivially applied to any hash function of the Merkle{\textendash}Damg\r{a}rd construction. 
 
-- 
+Most research on finding weaknesses in hash functions focuses on finding weaknesses in a particular hash function. For instance, take the years of research focused on finding collisions in MD5 ~\cite{klima2005finding, liang2007improved, wang2005break, klima2006tunnels} and the recent attack which successfully found the first full collision for SHA-1 ~\cite{stevens2017first}. In general, this research focuses on determining a set of necessary conditions that any inputs resulting in a collision must meet. These sufficient conditions reduce the state space of hashs that need to be computed to find a collision. Once the state space is small enough that it can be searched, a collision can be computed ~\cite{sasaki2006construct}. Deriving the sufficient conditions depends on observations that are made about the parameters of a particular function. This prevents such an attack from being applied to any other hash function. 
+
+The paradigm we present here does not depend on the specific implementation of any hash function, only that it is of the Merkle{\textendash}Damg\r{a}rd construction. For this reason, the attack can be applied with ease to MD5, SHA1 or SHA2. By \emph{blackbox} we do not mean that an attacker does not know the particular hash function they are attempting to find weaknesses in, though they may not have this information. We specifically mean that that the attack does not depend on the implementation details of the hash function and that an attacker therefore does not need to know them to leverage this attack. 
 
 \subsection{Blackbox Definition} \label{bbdef}
 \textcolor{red}{Define the blackbox. Explain how it is general enough due to Merkle process to apply to MD5, SHA1, SHA2}
