@@ -138,6 +138,20 @@
   organization={Springer}
   note = {\url{https://eprint.iacr.org/2006/254.pdf}}
 }
+@article{bruce2004,
+  title={Cryptanalysis of MD5 and SHA: Time for a New Standard},
+  author={Schneier, Bruce},
+  year={2004},
+  publisher={Schneier on Security}
+  note =         {\url{https://www.schneier.com/essays/archives/2004/08/cryptanalysis_of_md5.html}}
+}
+@article{merkle1979secrecy,
+  title={Secrecy, authentication, and public key systems},
+  author={Merkle, Ralph},
+  journal={Ph. D. Thesis, Stanford University},
+  year={1979}
+  note =         {\url{http://www.merkle.com/papers/Thesis1979.pdf}}
+}
 \end{filecontents}
 
 %-------------------------------------------------------------------------------
@@ -180,8 +194,11 @@ Talk about the purpose of the paper. Emphasize how our work is novel.
 \\
 \textbf{Note:} Traditional adversarial learning is defined as a technique employed in the field of machine learning which attempts to fool models through malicious input. Our definition is slightly different so we need to be deliberate in explaining how our new definition still ties to this concept
 
+%-------------------------------------------------------------------------------
 \subsection{Related Work}
 May or may not want this as a subsection. Including for now. 
+%-------------------------------------------------------------------------------
+
 
 %-------------------------------------------------------------------------------
 \section{Contributions}
@@ -200,57 +217,17 @@ In this section we outline our contributions.
 %-------------------------------------------------------------------------------
 \section{Background}
 %-------------------------------------------------------------------------------
+In order for this paper to be self contained, we include this section with background information required by our methodology. 
+\subsection{Background on Machine Learning and Adversarial Attacks} 
 
-Do we need this section in order for the paper to be self contained? 
+\subsection{Background on Hash Function Construction and Weaknesses} 
+There are three elements of hash functions that are important to our approach. These include (1) the properties of cryptogaphic hash functions, (2) the Merkle{\textendash}Damg\r{a}rd construction of secure hash functions, and (3) known structural attacks against hash functions of this construction. 
 
-%-------------------------------------------------------------------------------
-\section{Adversarial Learning on Cryptographic Systems}
-%-------------------------------------------------------------------------------
+Cryptographic hash functions are the "workhorses of modern cryptography"~\cite{bruce2004}. These hash functions take an arbitrary length string as input, and deterministically produce a fixed length output. It is the goal of these hash functions to make it very hard to find to inputs $X, X'$ such that $H(X) = H(X')$. However, since the output is fixed length, but the input length is arbitrary, it is necessary that some collisions must exist. For example, if the output of $H(X)$ for some hash function, $H$ is $b$ bits, and an attacker computes $H(X)$ for $2^b + 1$ values of $X$, the attacker will find a collision. Finding two values $X, X'$ such that $H(X) = H(X')$ is known as a second preimage attack or a collision attack. Cryptographic hash functions should also be resistant to preimage attacks, given a hash value $h$ finding an input $X$ such that $H(X) = h)$ should be difficult. Additionally, these functions should be resistant to correlation attacks, that is a set of correlated inputs $X$ should have hash values that appear random and uncorrelated. 
 
-In this section we extend the definition of adversarial learning and explore its relevance in the context of cryptographic systems. We note that all cryptographic systems rely on the notion of randomness and intractability. Hence, by framing an adversarial set of examples as one that yields a reduction in entropy on the outputs, we set ourselves up to empirically discover inputs that violate the properties of cryptographic functions. 
+The most popularly used cryptographic hash functions today all use the same construction, the Merkle{\textendash}Damg\r{a}rd construction~\cite{merkle1979secrecy, bruce2004}. The Merkle{\textendash}Damg\r{a}rd construction is detailed in Figure \ref{fig:merkleconstruction}. In this construction, some padding is applied on the input message to generate $X = X_0X_1X_2\cdots X_n$, where $n$ is the number of chunks the input is broken into. A function, $f$, is applied to each of these chunks, $X_i$ and also to the state information output from the previous step, $S_i$ (we will introduce the index $j$ in \ref{sec:reducmd5}). The state is seeded in some way for any particular function conforming to the Merkle{\textendash}Damg\r{a}rd construction. 
 
-\subsection{Adversarial Learning}
-We start by presenting the notion of adversarial learning in the context of cryptographic systems. In our construction, we treat the system as a blackbox $B(\cdot)$ and consider the following problem of finding adversarial examples:
-\\
-\\
-\textbf{Meta Problem:} Given a blackbox system $B(\cdot)$ that takes in as input $X: \{0,1\}^{M} \rightarrow Y$ (where $Y \in R^{N}$), can we find a subset $X_{adv}$ such that the error function $F_{\epsilon} (Y, Y_{adv} \}$ is large for some error function $F_{\epsilon}(\cdot )$ that measures a difference in entropy over the output sets.
-\\
-\\
-We note that a reduction in entropy on the output set can be measured in different ways. Salient examples include a reduction in Shannon entropy on $\hat{Y}$, higher predictability of the distribution formed by $\hat{Y}$, or a parametrization of $\hat{Y}$ via a set of discriminating features.
-\\
-\\
-The type of entropy reduction we use depends on the construction of our blackbox system $B(\cdot)$, and the specific properties of randomness we would like to exploit.  
-\\
-\\
-We give specific definitions of $F_{\epsilon}(\cdot)$ for the examples discussed above. 
-\begin{itemize}
-\item Reduction in Shannon Entropy: We define $F_{\epsilon} (\cdot) = \frac{E[H(Y_{adv})]}{E[H(Y)]}$ where $H(Y) = -\sum_{i=1}^{n} P(y_{i}) log P(y_{i})$.  
-\item Predictability of Distribution: We define $F_{\epsilon} (\cdot) = KL(Dist (\cdot) | P(Y_{adv}))$ where $KL(\cdot)$ represents KL divergence - a measure of distance between probability distributions, $Dist(\cdot)$ represents the distribution representing $P(Y_{adv})$. We note $P(Y_{adv})$ represents the probability distribution over the adversarial set. We also note $Dist(\cdot)$ must be nonuniform for our examples to be truly adversarial. 
-\item Parametrization - We define $F_{\epsilon} (\cdot) = F_{\Theta}(X_{adv})$ where $\Theta$ represents a parametrization over the inputs, yielding the output set $Y_{adv}$.
-\end{itemize}
-
-
-
-Each definition of $F_{\epsilon}(\cdot)$ lends itself to various attack vectors that allow for the exploitation of $B(\cdot)$. Hence, we consider the class of adversarial examples to be inputs that enable entropy reductions such as the ones specified above. 
-
-\subsection{Cryptographic Systems}
-What does this look like in the context of PRNGs, public key generators, hash functions?
-
-%-------------------------------------------------------------------------------
-\section{Adversarial Learning on Hash Functions}
-%-------------------------------------------------------------------------------
-
-\textbf{Meta Problem for Hash Functions:} Can we quantify how much a hash function deviates from its ideal state (perfect one way function)?
-
-\subsection{Notion of Blackbox}
-We present a blackbox attack on the Merkle{\textendash}Damg\r{a}rd class of hash functions. We write \emph{blackbox} to mean that the attack does not depend on the parameters or implementation details of a particular hash function. This allows our methodology to be trivially applied to any hash function of the Merkle{\textendash}Damg\r{a}rd construction. 
-
-Most research on finding weaknesses in hash functions focuses on finding weaknesses in a particular hash function. For instance, take the years of research focused on finding collisions in MD5 ~\cite{klima2005finding, liang2007improved, wang2005break, klima2006tunnels} and the recent attack which successfully found the first full collision for SHA-1 ~\cite{stevens2017first}. In general, this research focuses on determining a set of necessary conditions that any inputs resulting in a collision must meet. These sufficient conditions reduce the state space of hashs that need to be computed to find a collision. Once the state space is small enough that it can be searched, a collision can be computed ~\cite{sasaki2006construct}. Deriving the sufficient conditions depends on observations that are made about the parameters of a particular function. This prevents such an attack from being applied to any other hash function. 
-
-The paradigm we present here does not depend on the specific implementation of any hash function, only that it is of the Merkle{\textendash}Damg\r{a}rd construction. For this reason, the attack can be applied with ease to MD5, SHA1 or SHA2. By \emph{blackbox} we do not mean that an attacker does not know the particular hash function they are attempting to find weaknesses in, though they may not have this information. We specifically mean that that the attack does not depend on the implementation details of the hash function and that an attacker therefore does not need to know them to leverage this attack. 
-
-\subsection{Blackbox Definition} \label{bbdef}
-\textcolor{red}{Define the blackbox. Explain how it is general enough due to Merkle process to apply to MD5, SHA1, SHA2}
+In addition to the states $S$ in Figure \ref{fig:merkleconstruction}, there are generally additional state transitions within any function application block $f$, as is the case for MD5, SHA1 and SHA2.This will be further explored in section \label{bbdef} and a notion important to our methodology. 
 
 \begin{figure}
 \begin{center} 
@@ -301,6 +278,57 @@ The paradigm we present here does not depend on the specific implementation of a
 \caption{\label{fig:merkleconstruction} The Merkle{\textendash}Damg\r{a}rd construction of secure hash functions.}
 \end{figure} 
 
+Lastly we describe a structural attack that has been applied to multiple Merkle{\textendash}Damg\r{a}rd hash functions. Wang, et. al. ~\cite{wang2005break}. This attack works by changing any two consecutive input blocks such that the state outputs from the first blocks force a near collision and that the state outputs from the second blocks force a collision. This leverages the fact that in the Merkle{\textendash}Damg\r{a}rd construction, only the state information is carried to the next step. This structure has been used successfully in finding many collisions and will be again levered in applying of our methodology to MD5. 
+
+%-------------------------------------------------------------------------------
+\section{Adversarial Learning on Cryptographic Systems}
+%-------------------------------------------------------------------------------
+
+In this section we extend the definition of adversarial learning and explore its relevance in the context of cryptographic systems. We note that all cryptographic systems rely on the notion of randomness and intractability. Hence, by framing an adversarial set of examples as one that yields a reduction in entropy on the outputs, we set ourselves up to empirically discover inputs that violate the properties of cryptographic functions. 
+
+\subsection{Adversarial Learning}
+We start by presenting the notion of adversarial learning in the context of cryptographic systems. In our construction, we treat the system as a blackbox $B(\cdot)$ and consider the following problem of finding adversarial examples:
+\\
+\\
+\textbf{Meta Problem:} Given a blackbox system $B(\cdot)$ that takes in as input $X: \{0,1\}^{M} \rightarrow Y$ (where $Y \in R^{N}$), can we find a subset $X_{adv}$ such that the error function $F_{\epsilon} (Y, Y_{adv} \}$ is large for some error function $F_{\epsilon}(\cdot )$ that measures a difference in entropy over the output sets.
+\\
+\\
+We note that a reduction in entropy on the output set can be measured in different ways. Salient examples include a reduction in Shannon entropy on $\hat{Y}$, higher predictability of the distribution formed by $\hat{Y}$, or a parametrization of $\hat{Y}$ via a set of discriminating features.
+\\
+\\
+The type of entropy reduction we use depends on the construction of our blackbox system $B(\cdot)$, and the specific properties of randomness we would like to exploit.  
+\\
+\\
+We give specific definitions of $F_{\epsilon}(\cdot)$ for the examples discussed above. 
+\begin{itemize}
+\item Reduction in Shannon Entropy: We define $F_{\epsilon} (\cdot) = \frac{E[H(Y_{adv})]}{E[H(Y)]}$ where $H(Y) = -\sum_{i=1}^{n} P(y_{i}) log P(y_{i})$.  
+\item Predictability of Distribution: We define $F_{\epsilon} (\cdot) = KL(Dist (\cdot) | P(Y_{adv}))$ where $KL(\cdot)$ represents KL divergence - a measure of distance between probability distributions, $Dist(\cdot)$ represents the distribution representing $P(Y_{adv})$. We note $P(Y_{adv})$ represents the probability distribution over the adversarial set. We also note $Dist(\cdot)$ must be nonuniform for our examples to be truly adversarial. 
+\item Parametrization - We define $F_{\epsilon} (\cdot) = F_{\Theta}(X_{adv})$ where $\Theta$ represents a parametrization over the inputs, yielding the output set $Y_{adv}$.
+\end{itemize}
+
+
+
+Each definition of $F_{\epsilon}(\cdot)$ lends itself to various attack vectors that allow for the exploitation of $B(\cdot)$. Hence, we consider the class of adversarial examples to be inputs that enable entropy reductions such as the ones specified above. 
+
+\subsection{Cryptographic Systems}
+What does this look like in the context of PRNGs, public key generators, hash functions?
+
+%-------------------------------------------------------------------------------
+\section{Adversarial Learning on Hash Functions}
+%-------------------------------------------------------------------------------
+
+\textbf{Meta Problem for Hash Functions:} Can we quantify how much a hash function deviates from its ideal state (perfect one way function)?
+
+\subsection{Notion of Blackbox}
+We present a blackbox attack on the Merkle{\textendash}Damg\r{a}rd class of hash functions. We write \emph{blackbox} to mean that the attack does not depend on the parameters or implementation details of a particular hash function. This allows our methodology to be trivially applied to any hash function of the Merkle{\textendash}Damg\r{a}rd construction. 
+
+Most research on finding weaknesses in hash functions focuses on finding weaknesses in a particular hash function. For instance, take the years of research focused on finding collisions in MD5 ~\cite{klima2005finding, liang2007improved, wang2005break, klima2006tunnels} and the recent attack which successfully found the first full collision for SHA-1 ~\cite{stevens2017first}. In general, this research focuses on determining a set of necessary conditions that any inputs resulting in a collision must meet. These sufficient conditions reduce the state space of hashs that need to be computed to find a collision. Once the state space is small enough that it can be searched, a collision can be computed ~\cite{sasaki2006construct}. Deriving the sufficient conditions depends on observations that are made about the parameters of a particular function. This prevents such an attack from being applied to any other hash function. 
+
+The paradigm we present here does not depend on the specific implementation of any hash function, only that it is of the Merkle{\textendash}Damg\r{a}rd construction. For this reason, the attack can be applied with ease to MD5, SHA1 or SHA2. By \emph{blackbox} we do not mean that an attacker does not know the particular hash function they are attempting to find weaknesses in, though they may not have this information. We specifically mean that that the attack does not depend on the implementation details of the hash function and that an attacker therefore does not need to know them to leverage this attack. 
+
+\subsection{Blackbox Definition} \label{bbdef}
+\textcolor{red}{Define the blackbox. Explain how it is general enough due to Merkle process to apply to MD5, SHA1, SHA2}
+
 \tikzstyle{block} = [draw, rectangle, minimum height=3em, minimum width=3em]
 \tikzstyle{virtual} = [coordinate]
 \tikzstyle{init} = [pin edge={to-,thin,black}]
@@ -319,10 +347,7 @@ For the Merkle{\textendash}Damg\r{a}rd class of hash functions, we define a sing
 We limit the scope of the empirical portion of our study to the Merkle{\textendash}Damg\r{a}rd class of hash functions, which includes MD5, SHA-1, and SHA-2. We limit the scope in this way to be able to give a definition for a blackbox component $B$ towards validating our framework, noting that our methods remain general and applicable to other contexts and for different definitions of $B$. 
 \\
 \\
-The Merkle{\textendash}Damg\r{a}rd construction is detailed in Figure \ref{fig:merkleconstruction}. In this construction, some padding is applied on the input message to generate $X = X_0X_1X_2\cdots X_n$, where $n$ is the number of chunks the input is broken into. A function, $f$, is applied to each of these chunks, $X_i$ and also to the state information output from the previous step, $S_i$ (we will introduce the index $j$ in \ref{sec:reducmd5}). The state is seeded in some way for any particular function conforming to the Merkle{\textendash}Damg\r{a}rd construction. 
-\\
-\\
-The primary creativity any particular hash function can apply is in the definition of the seed, the padding function and the definition of $f$. Each particular hash function, though, must define some function $f$ which takes as an input a chunk of the input message $X_i$ and state information from the previous state and only the previous state, $S_i$, and output its own state information for consumption by the next application of $f$. In many hash functions of this construction, including MD5, SHA-1, and SHA-2, $f$ is a piecewise function of the step of the hash function.  
+The primary creativity any particular hash function of the Merkle{\textendash}Damg\r{a}rd construction can apply is in the definition of the seed, the padding function and the definition of $f$. Each particular hash function, though, must define some function $f$ which takes as an input a chunk of the input message $X_i$ and state information from the previous state and only the previous state, $S_i$, and output its own state information for consumption by the next application of $f$. In many hash functions of this construction, including MD5, SHA-1, and SHA-2, $f$ is a piecewise function of the step of the hash function.  
 \\
 \\
 We model the blackbox component $B(S_{i-1,j-1}, x_{i-1})$ to assume these properties and only these properties. The model remains agnostic to any particular padding function, seed, and especially definition of $f$ as defined by any conforming hash function, be it MD5, SHA-1, or SHA-2. This implies that this methodology, unchanged, can be freely applied to any of these three hash functions towards analyzing their weaknesses. 
@@ -555,12 +580,6 @@ First, additional algorithms can be developed to leverage the framework presente
 Secondly, this methodology should be applied to other hash functions. One of the key strengths of our framework is that it can easily be applied to any hash function of the Merkle{\textendash}Damg\r{a}rd construction. In this paper we explored applications to MD5, but more computationally expensive applications of the framework should be carried out against SHA1 and SHA2 in pursuit of winding weaknesses of these hash functions. 
 
 Lastly, greater computational resources can be applied to find additional interesting properties of MD5. Due to resource constraints, we could only apply our framework to explore an input space of  $\sim 2^{21}$. Running the experiments run in this paper on larger input spaces would yield additional interesting results about MD5. 
-
-%-------------------------------------------------------------------------------
-\section*{Related Work}
-%-------------------------------------------------------------------------------
-
-Maybe we can work in sufficiently elsewhere 
 
 %-------------------------------------------------------------------------------
 \section*{Acknowledgments}
