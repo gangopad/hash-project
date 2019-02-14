@@ -129,6 +129,15 @@
   publisher={Springer}
   note = {\url{https://www.researchgate.net/profile/Sangjin_Lee6/publication/221462213_Improved_Fast_Correlation_Attack_on_the_Shrinking_and_Self-shrinking_Generators/links/02e7e52b36d7583923000000.pdf#page=252}}
 }
+@inproceedings{mironov2006applications,
+  title={Applications of SAT solvers to cryptanalysis of hash functions},
+  author={Mironov, Ilya and Zhang, Lintao},
+  booktitle={International Conference on Theory and Applications of Satisfiability Testing},
+  pages={102--115},
+  year={2006},
+  organization={Springer}
+  note = {\url{https://eprint.iacr.org/2006/254.pdf}}
+}
 \end{filecontents}
 
 %-------------------------------------------------------------------------------
@@ -515,7 +524,7 @@ Outline how domain based methods have uncovered specific weaknesses in MD5 (and 
 Also describe how our algorithm is novel and can be applied to any hash function to test weakness. We simply validate this with MD5 (and perhaps SHA1)
 
 %-------------------------------------------------------------------------------
-\section{Results \& Applications}
+\section{Results \& Discussion}
 %-------------------------------------------------------------------------------
 
 \begin{enumerate}
@@ -535,7 +544,17 @@ Also describe how our algorithm is novel and can be applied to any hash function
 \item Replicate these for the case where we seed the sampling algorithm with known collisions
 \end{enumerate}
 
+%-------------------------------------------------------------------------------
+\section{Future Work}
+%-------------------------------------------------------------------------------
 
+There are three types of work to be pursued following this paper. These directions are, respectively, (1) exploring other types of weaknesses, (2) applying the methodology to other hash functions, and (3) running the presented algorithms on a larger state space. Each of these directions will be taken up in turn in this section. 
+
+First, additional algorithms can be developed to leverage the framework presented in this paper towards discovering other types of weaknesses in hash functions. In addition to being collision resistant, cryptographic hash functions should be resistant to preimage and correlation attacks. The notion of discovering states that are susceptible to collisions can be used to reduce the work load on a SAT solver attempting a preimage attack by reducing the amount of unknown intermediate states. SAT solvers have been successfully applied to hash functions in similar contexts ~\cite{mironov2006applications}. Additional algorithms could be developed for correlation attacks. 
+
+Secondly, this methodology should be applied to other hash functions. One of the key strengths of our framework is that it can easily be applied to any hash function of the Merkle{\textendash}Damg\r{a}rd construction. In this paper we explored applications to MD5, but more computationally expensive applications of the framework should be carried out against SHA1 and SHA2 in pursuit of winding weaknesses of these hash functions. 
+
+Lastly, greater computational resources can be applied to find additional interesting properties of MD5. Due to resource constraints, we could only apply our framework to explore an input space of  $\sim 2^{21}$. Running the experiments run in this paper on larger input spaces would yield additional interesting results about MD5. 
 
 %-------------------------------------------------------------------------------
 \section*{Related Work}
