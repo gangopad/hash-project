@@ -293,6 +293,7 @@ if __name__ == "__main__":
 
 				for x in top_x:
 					top_states.extend(X_all[x])
+				print "Generating for m, ds, b" + str(m) + " " + str(ds_path) + " " + str(i)
 
 				b_res[i] = top_states
 
