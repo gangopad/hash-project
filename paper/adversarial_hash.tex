@@ -318,8 +318,23 @@ We give specific definitions of $F_{\epsilon}(\cdot)$ for the examples discussed
 Each definition of $F_{\epsilon}(\cdot)$ lends itself to various attack vectors that allow for the exploitation of $B(\cdot)$. Hence, we consider the class of adversarial examples to be inputs that enable entropy reductions such as the ones specified above. 
 
 \subsection{Cryptographic Systems}
-What does this look like in the context of PRNGs, public key generators, hash functions?
+This framework is extensible to multiple types of cryptographic systems. In this section we will state the task of finding vulnerabilities in multiple cryptographic systems with our framework. In this paper we we validate our framework on hash functions, which will therefore be omitted from this section. 
 
+\begin{itemize}
+\item \textbf{PRNGs} Pseudorandom Number Generators must have the property that their output is indistinguishable from a sequence of random numbers. 
+
+\item \textbf{Public Key Generators} 
+
+\item \textbf{Public Key Generators} 
+
+
+
+\end{itemize} 
+
+What does this look like in the context of PRNGs, public key generators, hash functions?
+- How would we define this paradigm in each of these contexts? 
+
+contrast to domain based methods 
 %-------------------------------------------------------------------------------
 \section{Adversarial Learning on Hash Functions}
 %-------------------------------------------------------------------------------
@@ -558,6 +573,13 @@ Also describe how our algorithm is novel and can be applied to any hash function
 %-------------------------------------------------------------------------------
 \section{Results \& Discussion}
 %-------------------------------------------------------------------------------
+
+In this section we outline our experiments, present the results and analyze them. 
+
+\subsection{Experiments} 
+We design experiments to test Theorem 1 and Theorem 2. 
+
+\subsection{Experimental Results and Discussion} 
 
 \begin{enumerate}
 \item Seed sampling algorithm with known collisions and see if other collisions are uncovered. Logic is based on the fact that tunneling properties provide necessary but not sufficient conditions for collisions 
