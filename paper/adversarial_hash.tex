@@ -35,6 +35,14 @@
   year={2006}
   note =         {\url{https://pdfs.semanticscholar.org/303a/13faac4a76c2e249fcd9587257f276da1a02.pdf}}
 }
+@inproceedings{papernot2017practical,
+  title={Practical black-box attacks against machine learning},
+  author={Papernot, Nicolas and McDaniel, Patrick and Goodfellow, Ian and Jha, Somesh and Celik, Z Berkay and Swami, Ananthram},
+  booktitle={Proceedings of the 2017 ACM on Asia Conference on Computer and Communications Security},
+  pages={506--519},
+  year={2017},
+  organization={ACM}
+}
 @inproceedings{wang2005break,
   title={How to break MD5 and other hash functions},
   author={Wang, Xiaoyun and Yu, Hongbo},
@@ -268,6 +276,19 @@
   organization={Springer},
   note = \url{https://link.springer.com/content/pdf/10.1007/978-3-540-77360-3_4.pdf}
 }
+@article{athalye2018obfuscated,
+  title={Obfuscated gradients give a false sense of security: Circumventing defenses to adversarial examples},
+  author={Athalye, Anish and Carlini, Nicholas and Wagner, David},
+  journal={arXiv preprint arXiv:1802.00420},
+  year={2018}
+}
+
+@article{tramer2017ensemble,
+  title={Ensemble adversarial training: Attacks and defenses},
+  author={Tram{\`e}r, Florian and Kurakin, Alexey and Papernot, Nicolas and Goodfellow, Ian and Boneh, Dan and McDaniel, Patrick},
+  journal={arXiv preprint arXiv:1705.07204},
+  year={2017}
+}
 
 @book{stevens2012attacks,
   title={Attacks on hash functions and applications},
@@ -275,6 +296,13 @@
   year={2012},
   publisher={Mathematical Institute, Faculty of Science, Leiden University},
   note = \url{https://openaccess.leidenuniv.nl/bitstream/handle/1887/19093/PhD\%20Thesis\%20Marc\%20Stevens\%20-\%20Attacks\%20on\%20Hash\%20Functions\%20and\%20Applications.pdf?sequence=16&origin=publication_detail}
+}
+@article{su2019one,
+  title={One pixel attack for fooling deep neural networks},
+  author={Su, Jiawei and Vargas, Danilo Vasconcellos and Sakurai, Kouichi},
+  journal={IEEE Transactions on Evolutionary Computation},
+  year={2019},
+  publisher={IEEE}
 }
 
 @article{schneier2012will,
@@ -367,6 +395,15 @@
   year={2011},
   publisher={Springer}
 }
+
+@inproceedings{huang2011adversarial,
+  title={Adversarial machine learning},
+  author={Huang, Ling and Joseph, Anthony D and Nelson, Blaine and Rubinstein, Benjamin IP and Tygar, JD},
+  booktitle={Proceedings of the 4th ACM workshop on Security and artificial intelligence},
+  pages={43--58},
+  year={2011},
+  organization={ACM}
+}
 \end{filecontents}
 
 %-------------------------------------------------------------------------------
@@ -431,24 +468,22 @@ In this section we outline our contributions.
 
 \begin{itemize}
 \item \textbf{Expanded definition of adversarial learning to a broader class of problems} We consider the notion of adversarial learning against machine learning systems and expand this to cryptographic systems. The novelty of our expansion is multifold. Not only do we apply this concept to a new domain, but we robustly define a notion of adversarial in an unsupervised context (without $(x,y)$ labels) 
-\item \textbf{Leverage this definition of adversarial learning to introduce a black box attack on hash functions of the Merkle construction} We define a blackbox construction for the class of Merkle{\textendash}Damg\r{a}rd structured hash functions that abstracts differences within MD functions but codifies features that apply to the class. This sets us up to construct a machine learning framework that explores properties across the MD class. 
-\item \textbf{Construct a Machine Learning Framework to Find Adversarial Examples against Merkle Hash Functions} We present a novel machine learning framework that optimizes towards finding adversarial examples. We then tie the application of our framework to uncovering collisions and \textcolor{red}{correlations}. 
-\item \textbf{Theoretical Bounds Around Performance} We introduce theoretical bounds around how many examples we expect to generate before finding an adversarial set.
-\item \textbf{Uncover vulnerabilities in MD5 with this methodology}\textcolor{red}{Discuss post results}.
-
-\textcolor{red}{(1) Did we learn something new about MD5? (2) Have we lowered the theoretical bounds on Sha-1 Sha-2?}
+\item \textbf{Leverage our definition of adversarial learning to introduce a black box attack on hash functions of the Merkle{\textendash}Damg\r{a}rd construction} We define a blackbox construction for the class of Merkle{\textendash}Damg\r{a}rd structured hash functions that abstracts differences within MD functions but codifies features that apply to the class. This allows us to construct a machine learning approach that explores properties across the Merkle{\textendash}Damg\r{a}rd class. 
+\item \textbf{Construct a Machine Learning Approach to Finding Adversarial Examples against Merkle Hash Functions} We present a novel machine learning framework that optimizes towards finding adversarial examples. We then tie the application of our framework to uncovering collisions. We note this contribution, developing a machine learning approach to uncovering weaknesses, as distinct from the previous contribution of developing a blackbox framework from which to reason about an attack.
+\item \textbf{Theoretical Bounds on Performance} We introduce theoretical bounds on how many examples we expect to generate before finding an adversarial set. These bounds are applicable to applications of our framework beyond hash functions. 
+\item \textbf{Uncover collisions in MD5} We successfully apply our framework to discover collisions in MD5. 
 \end{itemize}
 
 %-------------------------------------------------------------------------------
 \section{Background}
 %-------------------------------------------------------------------------------
-In order for this paper to be self contained, we include this section with background information required by our methodology. 
+In order for this paper to be self contained, we include this section with background information required by our methodology. It additionally serves as a compliment to the previous section on related work.
 
 \subsection{Background on Hash Function Construction and Weaknesses} 
-There are three elements of hash functions that are important to our approach. These include (1) the properties of cryptogaphic hash functions, (2) the Merkle{\textendash}Damg\r{a}rd construction of secure hash functions, and (3) known structural attacks against hash functions of this construction. 
+There are three elements of hash functions that are important to our approach. These include (1) the properties of cryptographic hash functions, (2) the Merkle{\textendash}Damg\r{a}rd construction of secure hash functions, and (3) known structural attacks against hash functions of this construction. 
 \\
 \\
-Cryptographic hash functions are the "workhorses of modern cryptography"~\cite{bruce2004}. These hash functions take an arbitrary length string as input, and deterministically produce a fixed length output. It is the goal of these hash functions to make it very hard to find to inputs $X, X'$ such that $H(X) = H(X')$. However, since the output is fixed length, but the input length is arbitrary, it is necessary that some collisions must exist. For example, if the output of $H(X)$ for some hash function, $H$ is $b$ bits, and an attacker computes $H(X)$ for $2^b + 1$ values of $X$, the attacker will find a collision. Finding two values $X, X'$ such that $H(X) = H(X')$ is known as a second preimage attack or a collision attack. Cryptographic hash functions should also be resistant to preimage attacks, given a hash value $h$ finding an input $X$ such that $H(X) = h)$ should be difficult. Additionally, these functions should be resistant to correlation attacks, that is a set of correlated inputs $X$ should have hash values that appear random and uncorrelated. 
+Cryptographic hash functions are the "workhorses of modern cryptography"~\cite{bruce2004}. These hash functions take an arbitrary length string as input, and deterministically produce a fixed length output. It is the goal of these hash functions to make it very hard to find to inputs $X, X'$ such that $H(X) = H(X')$. However, since the output is fixed length, but the  input length is arbitrary, it is necessary that some collisions must exist. For example, if the output of $H(X)$ for some hash function, $H$ is $b$ bits, and an attacker computes $H(X)$ for $2^b + 1$ values of $X$, the attacker will find a collision. Finding two values $X, X'$ such that $H(X) = H(X')$ is known as a second preimage attack or a collision attack. Cryptographic hash functions should also be resistant to preimage attacks, given a hash value $h$ finding an input $X$ such that $H(X) = h)$ should be difficult. Additionally, these functions should be resistant to correlation attacks, that is a set of correlated inputs $X$ should have hash values that appear random and uncorrelated. 
 \\
 \\
 The most popularly used cryptographic hash functions today all use the same construction, the Merkle{\textendash}Damg\r{a}rd construction~\cite{merkle1979secrecy, bruce2004}. The Merkle{\textendash}Damg\r{a}rd construction is detailed in Figure \ref{fig:merkleconstruction}. In this construction, some padding is applied on the input message to generate $X = X_0X_1X_2\cdots X_n$, where $n$ is the number of chunks the input is broken into. A function, $f$, is applied to each of these chunks, $X_i$ and also to the state information output from the previous step, $S_i$ (we will introduce the index $j$ in \ref{sec:reducmd5}). The state is seeded in some way for any particular function conforming to the Merkle{\textendash}Damg\r{a}rd construction. 
@@ -508,22 +543,22 @@ In addition to the states $S$ in Figure \ref{fig:merkleconstruction}, there are 
 
 Lastly we describe a structural attack that has been applied to multiple Merkle{\textendash}Damg\r{a}rd hash functions. Wang, et. al. ~\cite{wang2005break}. This attack works by changing any two consecutive input blocks such that the state outputs from the first blocks force a near collision and that the state outputs from the second blocks force a collision. This leverages the fact that in the Merkle{\textendash}Damg\r{a}rd construction, only the state information is carried to the next step. This structure has been used successfully in finding many collisions and will be again levered in applying of our methodology to MD5. 
 
+%%%%%%
 \subsection{Background on Machine Learning and Adversarial Attacks} 
-Adversarial learning is a relatively new area of machine learning that was nominally presented in \textcolor{red}{CITE}. Historically, adversarial learning has been applied to machine learning classifiers and aims to find adversarial examples that trick the classifier into mislabeling the output. Specifically, adversarial examples $x^{adv}_{i}$ are slightly perturbed examples from $x_{i}$ such that the label $y^{adv}_{i}$ is significantly different than the label $y_{i}$. 
+%%%%%
+Adversarial learning is a relatively new area of machine learning, but has quickly garnered popularity, for example with the widespread use and impressive results that have been produced by GANs. Historically, adversarial learning has been applied to machine learning classifiers and aims to find adversarial examples that trick the classifier into mislabeling the output. Specifically, adversarial examples $x^{adv}_{i}$ are slightly perturbed examples from $x_{i}$ such that the label $y^{adv}_{i}$ is significantly different than the label $y_{i}$. 
 \\
 \\
-Adversarial examples pose significant security threats within the context of machine learning models due to the property of transferability. Specifically, an adversarial example that is misclassified by a given model is often also misclassified by a similar model. This opens up attack vectors against machine learning blackbox systems. \textcolor{red}{CITE}. As a result there has been a recent flurry of study \textcolor{red}{CITE} around the notion of adversarial learning and how it applies to real world machine learning systems. The focal points of such studies orient around building model robustness against such examples, understanding different whitebox and blackbox attack vectors, and understanding how adversarial examples can disrupt the flow of real world systems. Studies such as \ref{kurakin2016adversarial} have conducted experiments to simulate real world examples of adversarial vulnerabilities as they exist in the real world. 
+Adversarial examples pose significant security threats within the context of machine learning models due to the property of transferability. Specifically, an adversarial example that is misclassified by a given model is often also misclassified by a similar model. This opens up attack vectors against machine learning blackbox systems ~\cite{papernot2017practical}. As a result there has been a recent flurry of study around the notion of adversarial learning and how it applies to real world machine learning systems. The focal points of such studies orient around building model robustness against such examples, understanding different whitebox and blackbox attack vectors, and understanding how adversarial examples can disrupt the flow of real world systems. Studies such as \ref{kurakin2016adversarial} have conducted experiments to simulate real world examples of adversarial vulnerabilities as they exist in the real world. 
 \\
 \\
-Although the advent of adversarial learning has been an exciting one, the field has so far been limited to focusing purely on machine learning systems. Furthermore, the notion of an adversarial example very specifically alludes to an input $x^{adv}_{i}$ that is slightly perturbed from a benign input and yet produces a significantly different label. To that end much of the research (\textcolor{red}{CITE}) has been localized to studying examples of this property and building robustness against adversarially perturbed inputs. This includes injecting adversarial examples into training data and intelligently training models to specifically learn properties of such examples (\textcolor{red}{CITE}).
-\\
-\\
-Not much work has been done in applying other notions of adversarial to machine learning or other systems. Interesting properties of alternative adversarial learning could include discovering examples that uncover a subspace of the inputs that a given model was poorly trained on. This would break the construction of assuming adversarial examples to be roughly independent of each other and would enable a study on sets of adversarial examples and their properties. Similarly adversarial learning has yet to be expanded beyond the realm of supervised machine learning. There is an interesting advent of study that defines weakness or error in a given system (whether an unsupervised machine learning model or an alternative system) and aims to uncover examples that exploit such weakness. 
+Although the advent of adversarial learning has been an exciting one, the field has so far been limited to focusing purely on machine learning systems. Furthermore, the notion of an adversarial example very specifically alludes to an input $x^{adv}_{i}$ that is slightly perturbed from a benign input and yet produces a significantly different label. To that end much of the research ~\cite{su2019one, tramer2017ensemble, athalye2018obfuscated} has been localized to studying examples of this property and building robustness against adversarially perturbed inputs. This includes injecting adversarial examples into training data and intelligently training models to specifically learn properties of such examples~\cite{huang2011adversarial}.
+%\\
+%\\
+%Not much work has been done in applying other notions of adversarial machine learning or other systems. Interesting properties of alternative adversarial learning could include discovering examples that uncover a subspace of the inputs that a given model was poorly trained on. This would break the construction of assuming adversarial examples to be roughly independent of each other and would enable a study on sets of adversarial examples and their properties. Similarly adversarial learning has yet to be expanded beyond the realm of supervised machine learning. There is an interesting advent of study that defines weakness or error in a given system (whether an unsupervised machine learning model or an alternative system) and aims to uncover examples that exploit such weakness. 
 \\
 \\
 In this paper we aim to extend the definition of adversarial learning to uncovering sets of examples that expose vulnerabilities in cryptographic systems. To this end, we define weakness as it applies generally to cryptographic systems, ground our definition in multiple examples of systems. Finally we outline a process for discovering and evaluating adversarial examples as they apply to hash functions. 
-
-
 
 %-------------------------------------------------------------------------------
 \section{Adversarial Learning on Cryptographic Systems} \label{cryptosys}
