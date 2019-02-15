@@ -1,51 +1,6 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
 % Template for USENIX papers.
-%
-% History:
-%
-% - TEMPLATE for Usenix papers, specifically to meet requirements of
-%   USENIX '05. originally a template for producing IEEE-format
-%   articles using LaTeX. written by Matthew Ward, CS Department,
-%   Worcester Polytechnic Institute. adapted by David Beazley for his
-%   excellent SWIG paper in Proceedings, Tcl 96. turned into a
-%   smartass generic template by De Clarke, with thanks to both the
-%   above pioneers. Use at your own risk. Complaints to /dev/null.
-%   Make it two column with no page numbering, default is 10 point.
-%
-% - Munged by Fred Douglis <douglis@research.att.com> 10/97 to
-%   separate the .sty file from the LaTeX source template, so that
-%   people can more easily include the .sty file into an existing
-%   document. Also changed to more closely follow the style guidelines
-%   as represented by the Word sample file.
-%
-% - Note that since 2010, USENIX does not require endnotes. If you
-%   want foot of page notes, don't include the endnotes package in the
-%   usepackage command, below.
-% - This version uses the latex2e styles, not the very ancient 2.09
-%   stuff.
-%
-% - Updated July 2018: Text block size changed from 6.5" to 7"
-%
-% - Updated Dec 2018 for ATC'19:
-%
-%   * Revised text to pass HotCRP's auto-formatting check, with
-%     hotcrp.settings.submission_form.body_font_size=10pt, and
-%     hotcrp.settings.submission_form.line_height=12pt
-%
-%   * Switched from \endnote-s to \footnote-s to match Usenix's policy.
-%
-%   * \section* => \begin{abstract} ... \end{abstract}
-%
-%   * Make template self-contained in terms of bibtex entires, to allow
-%     this file to be compiled. (And changing refs style to 'plain'.)
-%
-%   * Make template self-contained in terms of figures, to
-%     allow this file to be compiled. 
-%
-%   * Added packages for hyperref, embedding fonts, and improving
-%     appearance.
-%   
-%   * Removed outdated text.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -62,8 +17,6 @@
 \usepackage{amsmath}
 \usepackage{algorithm}% http://ctan.org/pkg/algorithms
 \usepackage{algpseudocode}% http://ctan.org/pkg/algorithmicx
-
-
 
 % inlined bib file
 \usepackage{filecontents}
@@ -188,17 +141,17 @@
 \title{\Large \bf Blackbox Adversarial Learning on Hash Functions}
 
 %for single author (just remove % characters)
-\author{
-{\rm Anirban Gangopadhyay}\\
-Palantir Technologies
-\and
-{\rm Joshua Zweig}\\
-Palantir Technologies
+%\author{
+%{\rm Anirban Gangopadhyay}\\
+%Palantir Technologies
+%\and
+%{\rm Joshua Zweig}\\
+%Palantir Technologies
 % copy the following lines to add more authors
 % \and
 % {\rm Name}\\
 %Name Institution
-} % end author
+%} % end author
 
 \maketitle
 
@@ -329,7 +282,7 @@ In this paper we aim to extend the definition of adversarial learning to uncover
 
 
 %-------------------------------------------------------------------------------
-\section{Adversarial Learning on Cryptographic Systems}
+\section{Adversarial Learning on Cryptographic Systems} \label{cryptosys}
 %-------------------------------------------------------------------------------
 
 In this section we extend the definition of adversarial learning and explore its relevance in the context of cryptographic systems. We note that all cryptographic systems rely on the notion of randomness and intractability. Hence, by framing an adversarial set of examples as one that yields a reduction in entropy on the outputs, we set ourselves up to empirically discover inputs that violate the properties of cryptographic functions. 
@@ -528,7 +481,7 @@ We present an algorithm that uses the presented Markovian framework, blackbox de
 \\
 We present our algorithm below:
 
-\begin{algorithm}
+\begin{algorithm} \label{alg:adv}
 \caption{Adversarial Alg}\label{sampling}
 \begin{algorithmic}[1]
 \State Assume we have pdfs that give $p(z_{i} | z_{j})$, $p(z_{i} | x_{j})$ $\forall i,j$
@@ -575,7 +528,7 @@ In the following section we explore how given a low entropy set of states $Z_{ad
 \subsubsection{Collisions}
 We first present our algorithm for finding collisions. We assume we have a set of inputs $X_{adv}$ such that $H(Z_{adv}) < K \cdot \epsilon$ where $K = H(Z_{ideal})$.
 
-\begin{algorithm}
+\begin{algorithm} \label{alg:col}
 \caption{Collisions Alg}\label{sampling}
 \begin{algorithmic}[1]
 \State Assume as input $X_{adv}$, $Z_{adv}$ and the hash function $B(\cdot)$
@@ -661,32 +614,52 @@ There are a number of known attacks against MD5 and other hash functions. Wang, 
 In this section we outline our experiments, present the results and analyze them. 
 
 \subsection{Experiments} 
-We design experiments to test Theorem 1 and Theorem 2. 
+We design experiments to observe parameter values of Theorem 1 and Theorem 2 in practice. We experiment exclusively on MD5 for ease of validation given the scale of its' known weaknesses, noting that our methodology is equally applicable to SHA1 and SHA2. We apply our framework to MD5 given the reduction in Section {refsec:reducmd5}. All of our experiments were run on a box with 16 2.3 GHz Intel Xeon E5-2686 v4 Processors and 122 GiB RAM.
+
+To observe parameters of Theorem 1 for MD5, we compute values of $m$ as a function of $epsilon$ for multiple input spaces $X$. In addition to running this experiment on all states observed during the computation of MD5, we also narrow our focus to states observed by a particular blackbox component, in the case of MD5 being $B^0, B^1, B^2, B^3$, mapping to MD5 rounds $F, G, H, I$, respectively. 
+
+To observe parameters of Theorem 2, we leverage Algorithms \ref{alg:adv} and \ref{alg:col} in order to find collisions in the predefined input spaces $X$, also observing results for all states observed during the MD5 computation as well as for the individual blackbox components. 
+
+We ran each of these experiments on six pre computed input spaces denoted random\_$\{0,1,2\}$ and seeded\_$\{0,1,2\}$, respectively. Each set from random\_$\{0,1,2\}$ was contains 200,000 inputs, $x$ of 1024 randomly generated bits using Java's built in \texttt{randint()} function. In addition to the input blocks, the set contains the states observed during the computation of MD5$(x)$, for each $x$ in the set as well as the states observed, as defined in Section \ref{bbdef} during the computation of the hash value, including the final state which is the output of the hash function. seeded\_$\{0,1,2\}$ was generated the same way, except that the input blocks $x$ had the first 512 bits fixed and the second 512 bits generated randomly. The first 512 bits were fixed using the preface included by Wang in ~\cite{wang2005break}, and noting her observation that given a sufficient 512 bit first block, the next 512 blocks will force a collision with increased likelihood. These sets were used to bring the computational requirements of the problem into the realm of our constrained computational resources, though we note that this has no impact on the theoretical guarantees outlined in the previous sections.  
 
 \subsection{Experimental Results and Discussion} 
+
+\subsubsection{Theorem 1}
+
+In our Theorem 1 experiments we observe how many samples must be taken from each input space before a reduction in the entropy of the observed states is reduced, that is that there is a collision of two observed states. Taking Wang, et. al's claim to be true, we expect that the seeded input spaces will in many cases yield a reduction in entropy at some point, whilst seldom seeing a reduction in entropy in the state spaces generated fully randomly. 
+
+We observe this claim holds in our framework in Figure \ref{fig:thm1}, which observes duplicated states over all blackbox components $B^{0,1,2,3}$. Here we see a reduction in entropy of each of the seeded input sets, demonstrated by the reduced $m$ values that occur in each of these series. As expected, we also observe that the entropy of the random sets is never reduced, even after exhausting the full input space, which is observed in that the random series in Figure \ref{fig:thm1} never show a reduction in entropy even after all $M$ possible input states are observed. 
+
+From Figure \ref{fig:thm1} we can also observe the expected behavior of $m$ decreasing for larger values of $\epsilon$. When the $\epsilon$ tolerance for a sufficient entropy reduction was $\geq .65$, each of the seeded input sets showed a maximum reduction in entropy for small values $m$. The reduced entropies in the seeded sets before this $\epsilon$ value can be attributed to the fact that the $m$th input value $x$ is selected at random from the input space, treated as a uniform distrobution. It is therefore expected that for small values of $\epsilon$ the $m$ value will in some cases be small.
 
 \begin{figure}
 \begin{centering}
 \includegraphics[width=\linewidth]{figs/thm1_allbs.png}
 \end{centering}
 \caption{\label{fig:thm1}}
+\caption{\label{fig:thm1} Number of examples $m$ to drive entropy over all of the blackbox components $B^{0,1,2,3}$ below $\kappa \cdot \epsilon$ for $\epsilon \in \{0, .05, .10, .15...,1\}$}
 
 \begin{centering}
 \includegraphics[width=\linewidth]{figs/seeded_0.png}
 \end{centering}
-\caption{\label{fig:b0}}
+\caption{\label{fig:b0} Number of examples $m$ to drive entropy over all of the blackbox components $B^{0}$ below $\kappa \cdot \epsilon$ for $\epsilon \in \{0, .05, .10, .15...,1\}$ }
 \end{figure}
 
+In Figures \ref{fig:b0}, \ref{fig:b1}, \ref{fig:b2}, \ref{fig:b3} we observe the same, but within the context of each particular blackbox component. In the case of $B^0$, we observe in Figure \ref{fig:b0} the same trend holds wherein each of the seeded sets experience reduced entropy when $\epsilon \geq 0.5$, and additionally that there is never an observed reduced entropy for the randomly generated sets. The same is observed for component $B^2$ in Figure \ref{fig:b2}.
+
+$B^1$ and $B^3$ are the blackbox components that never experiences a reduced entropy. In \ref{fig:b1} and \ref{fig:b3} we observe that there is no reduced entropy caused by any of the input spaces. In each of these cases, the all of the elements from the input space are selected without a reduced entropy every being observed, signifying that there are also no repeated states. These blackbox components map to the $G$ and $I$ rounds in MD5, respectively, suggesting they increase collision resistance over the other rounds. 
+
 \begin{figure}
-\begin{centering}
+\begin{centering}	
 \includegraphics[width=\linewidth]{figs/seeded_1.png}
 \end{centering}
 \caption{\label{fig:b1}}
+\caption{\label{fig:b1} Number of examples $m$ to drive entropy over all of the blackbox components $B^{1}$ below $\kappa \cdot \epsilon$ for $\epsilon \in \{0, .05, .10, .15...,1\}$}
 
 \begin{centering}
 \includegraphics[width=\linewidth]{figs/seeded_2.png}
 \end{centering}
-\caption{\label{fig:b2}}
+\caption{\label{fig:b2} Number of examples $m$ to drive entropy over all of the blackbox components $B^{2}$ below $\kappa \cdot \epsilon$ for $\epsilon \in \{0, .05, .10, .15...,1\}$}
 \end{figure}
 
 \begin{figure}
@@ -694,50 +667,47 @@ We design experiments to test Theorem 1 and Theorem 2.
 \includegraphics[width=\linewidth]{figs/seeded_3.png}
 \end{centering}
 \caption{\label{fig:b3}}
-
 \begin{centering}
 \includegraphics[width=\linewidth]{figs/collisions_0.png}
 \end{centering}
 \caption{\label{fig:col0}}
+\caption{\label{fig:b3} Number of examples $m$ to drive entropy over all of the blackbox components $B^{3}$ below $\kappa \cdot \epsilon$ for $\epsilon \in \{0, .05, .10, .15...,1\}$ }
+\end{figure}
 
+\subsubsection{Theorem 2}
+
+In our experiments for Theorem 2, we maximize the amount of state collisions that occur, and in doing so maximize the reduction in entropy for a given number of samples $m$ from the input state space. 
+
+\begin{figure}
+\begin{centering}
+\includegraphics[width=\linewidth]{figs/collisions_0.png}
+\end{centering}
+\caption{\label{fig:col0} Number of states observed more than once, denoted collisions, over all of the blackbox components $B^{1,2,3,4}$ for a varying number of inputs, $m$, sampled from each input space.}
+\end{figure}
+
+\begin{figure}
 \begin{centering}
 \includegraphics[width=\linewidth]{figs/entropy_0.png}
 \end{centering}
-\caption{\label{fig:ent0}}
+\caption{\label{fig:ent0} Entropy of the set of observed states over all of the blackbox components $B^{1,2,3,4}$ for a varying number of inputs, $m$, sampled from each input space.}
 \end{figure}
-
-\begin{enumerate}
-\item Seed sampling algorithm with known collisions and see if other collisions are uncovered. Logic is based on the fact that tunneling properties provide necessary but not sufficient conditions for collisions 
-\item Can test with SHA1 as well
-\item Run the sampling scheme for different values of $\epsilon, \delta$ and see the collision rates, yields of $\hat{X}$
-\item Derive $m$ for Theorem 1 given different values of $\epsilon, \delta$ and map that to reasonable CPU measures. Then test this empirically and validate our values of $\epsilon, \delta$ measure up empirically (Frame in terms of threat model) 
-\item Run on known good hash functions (ie SHA256) and see what results we get
-\end{enumerate}
-
-\textbf{Figure out:} What charts do we want to show? How do we want to structure the results section in the most effective way possible? Options are: 
-
-\begin{enumerate}
-\item Table of $m, \epsilon, \delta$, CPU measures for naive algorithm, Theorem 2 alg, alg for uncovering each weakness
-\item A chart of CPU/cores vs time it took to run
-\item Can have bar charts that illustrate how many times (over N runs), we found a collision, etc
-\item Replicate these for the case where we seed the sampling algorithm with known collisions
-\end{enumerate}
 
 %-------------------------------------------------------------------------------
 \section{Future Work}
 %-------------------------------------------------------------------------------
 
-There are three types of work to be pursued following this paper. These directions are, respectively, (1) exploring other types of weaknesses, (2) applying the methodology to other hash functions, and (3) running the presented algorithms on a larger state space. Each of these directions will be taken up in turn in this section. 
+The primary purpose of this paper is to present a new paradigm for finding weakness in cryptographic systems. Thus, there is much future work that can be carried out in applying this framework, and better applying this framework to other domains. There are three types of work to be pursued following this paper. These directions are, respectively, (1) exploring other types of weaknesses, (2) applying the methodology to other hash functions and cryptographic systems, and (3) running the presented algorithms on a larger state space. Each of these directions will be taken up in turn in this section. 
 \\
 \\
 First, additional algorithms can be developed to leverage the framework presented in this paper towards discovering other types of weaknesses in hash functions. In addition to being collision resistant, cryptographic hash functions should be resistant to preimage and correlation attacks. The notion of discovering states that are susceptible to collisions can be used to reduce the work load on a SAT solver attempting a preimage attack by reducing the amount of unknown intermediate states. SAT solvers have been successfully applied to hash functions in similar contexts ~\cite{mironov2006applications}. Additional algorithms could be developed for correlation attacks. 
 \\
 \\
-Secondly, this methodology should be applied to other hash functions. One of the key strengths of our framework is that it can easily be applied to any hash function of the Merkle{\textendash}Damg\r{a}rd construction. In this paper we explored applications to MD5, but more computationally expensive applications of the framework should be carried out against SHA1 and SHA2 in pursuit of winding weaknesses of these hash functions. 
+Secondly, this methodology should be applied to other hash functions and cryptographic systems. With respect to hash functions, one of the key strengths of our framework is that it can easily be applied to any hash function of the Merkle{\textendash}Damg\r{a}rd construction. In this paper we explored applications to MD5, but more computationally expensive applications of the framework should be carried out against SHA1 and SHA2 in pursuit of winding weaknesses of these hash functions. With respect to other cryptograhpic systems, see the problems laid out in Section \ref{sec:cryptosys}.
 \\
 \\
 Lastly, greater computational resources can be applied to find additional interesting properties of MD5. Due to resource constraints, we could only apply our framework to explore an input space of  $\sim 2^{21}$. Running the experiments run in this paper on larger input spaces would yield additional interesting results about MD5. 
 
+\textcolor{red}{Anirban to add note about better ML algos and leveraging some metric of similarity between inputs} 
 %-------------------------------------------------------------------------------
 \section*{Acknowledgments}
 %-------------------------------------------------------------------------------
@@ -750,7 +720,11 @@ acknowledging. Sorry.
 \section*{Availability}
 %-------------------------------------------------------------------------------
 
+
 Our code for generating results and experiments can be found at \url{https://github.com/joshuazweig/hash-project}.
+=======
+The code that implements our experiments and the data used are available on Github at \url{https://github.com/<removed-for-anonymity>/hash-project}. 
+>>>>>>> 6be05cdab45153832bf8d6f62e47ce17a9729c52
 
 %-------------------------------------------------------------------------------
 \section*{Appendix}
