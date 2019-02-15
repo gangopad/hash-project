@@ -577,10 +577,10 @@ We are given that $\sum_{j=1}^{|Z|} -p(z_{j}) \cdot log p(z_{j}) < K \cdot \epsi
 We note that $(1 - \sum_{j=1}^{k} p(z_{j})) < \sum_{j=1}^{|Z|} -p(z_{j}) \cdot log p(z_{j})$ \textcolor{red}{PROVE THIS}
 \\
 \\
-$$ \prod_{k=1}^{|Z|} (1 - \sum_{j=1}^{k} p(z_{j})) < \prod_{k=1}^{|Z|} K \cdot \epsilon$$ since $$\prod_{k=1}^{|Z|} K \cdot \epsilon > 0$$
+$ \prod_{k=1}^{|Z|} (1 - \sum_{j=1}^{k} p(z_{j})) < \prod_{k=1}^{|Z|} K \cdot \epsilon$$ since $$\prod_{k=1}^{|Z|} K \cdot \epsilon > 0$
 \\
 \\
-$$ 1 - \prod_{k=1}^{|Z|} (1 - \sum_{j=1}^{k} p(z_{j}) \geq 1 - \prod_{k=1}^{|Z|} K \cdot \epsilon$$
+$ 1 - \prod_{k=1}^{|Z|} (1 - \sum_{j=1}^{k} p(z_{j}) \geq 1 - \prod_{k=1}^{|Z|} K \cdot \epsilon$
 \\
 \\
 $\rightarrow P_{A} \geq 1 - \prod_{k=1}^{|Z|} K \cdot \epsilon$. 
@@ -593,19 +593,11 @@ Hence, we see that the probability of a collision in the final states is $P_{A} 
 
 
 \subsection{Validating Adversarial Examples}
-Outline how domain based methods have uncovered specific weaknesses in MD5 (and if time SHA1), how to characterize the input and output sets of the weakness (show that the statistical properties that a given weakness described in the previous section apply), and how our algorithm ties to the same set of inputs and outputs (but using a completely different methodology)
+There are a number of known attacks against MD5 and other hash functions. Wang, et. al ~\cite{wang2005break} introduced the two block attack against MD5. This attack changes two consecutive 512 bit chunks of the input such that the state output of the first block nearly collides with that of the unmodified message and the second block collides with the same. Wang's technique for breaking MD5 introduces the notion of multi-message modification. \textcolor{red}{One sentance about that}. The multi-message modification technique increases the tractability of discovering input blocks that meet the sufficient conditions for MD5 and leverage weaknesses in the function compositions of MD5. Similarly exploiting weaknesses in the internal state transitions in MD5, Klima ~\cite{klima2005finding} discovered a way to decrease the search space for MD5. These attacks and others which find collisions in hash functions are all premised on uncovering a set of sufficient conditions that any inputs that collide must meet.These collisions are always a function of the implementation of the particular function as outlined in Section \ref{sec:sufcond}.
 \\
 \\
-Also describe how our algorithm is novel and can be applied to any hash function to test weakness. We simply validate this with MD5 (and perhaps SHA1)
+We note that domain based attacks mostly look to exploit weak function compositions in hash functions by finding adversarial examples that uncover such weaknesses. Our adversarial learning framework aims to achieve the same end through empirical means. Our blackbox construction maintains a model of the Merkle-Damgard functions that is specific enough to capture the characteristics of function compositions. Yet we dont assume anything about the function compositions themselves and instead use our trained probability distribution functions to posit relationships between inputs and states. Thus, our adversarial learning framework takes a structured approach to finding relationships between adversarial examples and weak function compositions across the class of Merkle-Damgard functions. Thereby, we converge to the same principles of the domain based approaches while maintaining the abstractness of the framework model. 
 
-
-- Explain domain based attacks against MD5, other hash functions 
-
-There are a number of known attacks against MD5 and other hash functions. Wang, et. al ~\cite{wang2005break} introduced the two block attack against MD5. This attack changes two consecutive 512 bit chunks of the input such that the state output of the first block nearly collides with that of the unmodified message and the second block collides with the same. Wang's technique for breaking MD5 introduces the notion of multi-message modification. \textcolor{red}{One sentance about that}. The multi-message modification technique increases the tractability of discovering input blocks that meet the sufficient conditions for MD5 and leverage weaknesses in the function compositions of MD5. Similarly exploiting weaknesses in the internal state transitions in MD5, Klima ~\cite{klima2005finding} discovered a way to decrease the search space for MD5. These attacks and others which find collisions in hash functions are all premised on uncovering a set of sufficient conditions that any inputs that collide must meet. These collisions are always a function of the implementation of the particular function as outlined in Section \ref{sec:sufcond}.
-
-- Characterize input/output weaknesses based on domain based attacks 
-- Explain how our algorithm discovers same weaknesses (input/outputs) with orthogonal methodology
-- Emphasize novelty and ability to use on other hash functions 
 
 %-------------------------------------------------------------------------------
 \section{Results \& Discussion}
@@ -628,10 +620,6 @@ We ran each of these experiments on six pre computed input spaces denoted random
 
 In our Theorem 1 experiments we observe how many samples must be taken from each input space before a reduction in the entropy of the observed states is reduced, that is that there is a collision of two observed states. Taking Wang, et. al's claim to be true, we expect that the seeded input spaces will in many cases yield a reduction in entropy at some point, whilst seldom seeing a reduction in entropy in the state spaces generated fully randomly. 
 
-We observe this claim holds in our framework in Figure \ref{fig:thm1}, which observes duplicated states over all blackbox components $B^{0,1,2,3}$. Here we see a reduction in entropy of each of the seeded input sets, demonstrated by the reduced $m$ values that occur in each of these series. As expected, we also observe that the entropy of the random sets is never reduced, even after exhausting the full input space, which is observed in that the random series in Figure \ref{fig:thm1} never show a reduction in entropy even after all $M$ possible input states are observed. 
-
-From Figure \ref{fig:thm1} we can also observe the expected behavior of $m$ decreasing for larger values of $\epsilon$. When the $\epsilon$ tolerance for a sufficient entropy reduction was $\geq .65$, each of the seeded input sets showed a maximum reduction in entropy for small values $m$. The reduced entropies in the seeded sets before this $\epsilon$ value can be attributed to the fact that the $m$th input value $x$ is selected at random from the input space, treated as a uniform distrobution. It is therefore expected that for small values of $\epsilon$ the $m$ value will in some cases be small.
-
 \begin{figure}
 \begin{centering}
 \includegraphics[width=\linewidth]{figs/thm1_allbs.png}
@@ -644,10 +632,6 @@ From Figure \ref{fig:thm1} we can also observe the expected behavior of $m$ decr
 \end{centering}
 \caption{\label{fig:b0} Number of examples $m$ to drive entropy over all of the blackbox components $B^{0}$ below $\kappa \cdot \epsilon$ for $\epsilon \in \{0, .05, .10, .15...,1\}$ }
 \end{figure}
-
-In Figures \ref{fig:b0}, \ref{fig:b1}, \ref{fig:b2}, \ref{fig:b3} we observe the same, but within the context of each particular blackbox component. In the case of $B^0$, we observe in Figure \ref{fig:b0} the same trend holds wherein each of the seeded sets experience reduced entropy when $\epsilon \geq 0.5$, and additionally that there is never an observed reduced entropy for the randomly generated sets. The same is observed for component $B^2$ in Figure \ref{fig:b2}.
-
-$B^1$ and $B^3$ are the blackbox components that never experiences a reduced entropy. In \ref{fig:b1} and \ref{fig:b3} we observe that there is no reduced entropy caused by any of the input spaces. In each of these cases, the all of the elements from the input space are selected without a reduced entropy every being observed, signifying that there are also no repeated states. These blackbox components map to the $G$ and $I$ rounds in MD5, respectively, suggesting they increase collision resistance over the other rounds. 
 
 \begin{figure}
 \begin{centering}	
@@ -662,6 +646,15 @@ $B^1$ and $B^3$ are the blackbox components that never experiences a reduced ent
 \caption{\label{fig:b2} Number of examples $m$ to drive entropy over all of the blackbox components $B^{2}$ below $\kappa \cdot \epsilon$ for $\epsilon \in \{0, .05, .10, .15...,1\}$}
 \end{figure}
 
+We observe this claim holds in our framework in Figure \ref{fig:thm1}, which observes duplicated states over all blackbox components $B^{0,1,2,3}$. Here we see a reduction in entropy of each of the seeded input sets, demonstrated by the reduced $m$ values that occur in each of these series. As expected, we also observe that the entropy of the random sets is never reduced, even after exhausting the full input space, which is observed in that the random series in Figure \ref{fig:thm1} never show a reduction in entropy even after all $M$ possible input states are observed. 
+
+From Figure \ref{fig:thm1} we can also observe the expected behavior of $m$ decreasing for larger values of $\epsilon$. When the $\epsilon$ tolerance for a sufficient entropy reduction was $\geq .65$, each of the seeded input sets showed a maximum reduction in entropy for small values $m$. The reduced entropies in the seeded sets before this $\epsilon$ value can be attributed to the fact that the $m$th input value $x$ is selected at random from the input space, treated as a uniform distrobution. It is therefore expected that for small values of $\epsilon$ the $m$ value will in some cases be small.
+
+
+In Figures \ref{fig:b0}, \ref{fig:b1}, \ref{fig:b2}, \ref{fig:b3} we observe the same, but within the context of each particular blackbox component. In the case of $B^0$, we observe in Figure \ref{fig:b0} the same trend holds wherein each of the seeded sets experience reduced entropy when $\epsilon \geq 0.5$, and additionally that there is never an observed reduced entropy for the randomly generated sets. The same is observed for component $B^2$ in Figure \ref{fig:b2}.
+
+$B^1$ and $B^3$ are the blackbox components that never experiences a reduced entropy. In \ref{fig:b1} and \ref{fig:b3} we observe that there is no reduced entropy caused by any of the input spaces. In each of these cases, the all of the elements from the input space are selected without a reduced entropy every being observed, signifying that there are also no repeated states. These blackbox components map to the $G$ and $I$ rounds in MD5, respectively, suggesting they increase collision resistance over the other rounds. 
+
 \begin{figure}
 \begin{centering}
 \includegraphics[width=\linewidth]{figs/seeded_3.png}
@@ -672,25 +665,21 @@ $B^1$ and $B^3$ are the blackbox components that never experiences a reduced ent
 \end{centering}
 \caption{\label{fig:col0}}
 \caption{\label{fig:b3} Number of examples $m$ to drive entropy over all of the blackbox components $B^{3}$ below $\kappa \cdot \epsilon$ for $\epsilon \in \{0, .05, .10, .15...,1\}$ }
-\end{figure}
 
-\subsubsection{Theorem 2}
-
-In our experiments for Theorem 2, we maximize the amount of state collisions that occur, and in doing so maximize the reduction in entropy for a given number of samples $m$ from the input state space. 
-
-\begin{figure}
 \begin{centering}
 \includegraphics[width=\linewidth]{figs/collisions_0.png}
 \end{centering}
 \caption{\label{fig:col0} Number of states observed more than once, denoted collisions, over all of the blackbox components $B^{1,2,3,4}$ for a varying number of inputs, $m$, sampled from each input space.}
-\end{figure}
 
-\begin{figure}
 \begin{centering}
 \includegraphics[width=\linewidth]{figs/entropy_0.png}
 \end{centering}
 \caption{\label{fig:ent0} Entropy of the set of observed states over all of the blackbox components $B^{1,2,3,4}$ for a varying number of inputs, $m$, sampled from each input space.}
 \end{figure}
+
+\subsubsection{Theorem 2}
+
+In our experiments for Theorem 2, we maximize the amount of state collisions that occur, and in doing so maximize the reduction in entropy for a given number of samples $m$ from the input state space. 
 
 %-------------------------------------------------------------------------------
 \section{Future Work}
@@ -721,10 +710,7 @@ acknowledging. Sorry.
 %-------------------------------------------------------------------------------
 
 
-Our code for generating results and experiments can be found at \url{https://github.com/joshuazweig/hash-project}.
-=======
 The code that implements our experiments and the data used are available on Github at \url{https://github.com/<removed-for-anonymity>/hash-project}. 
->>>>>>> 6be05cdab45153832bf8d6f62e47ce17a9729c52
 
 %-------------------------------------------------------------------------------
 \section*{Appendix}
