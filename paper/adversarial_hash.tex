@@ -376,7 +376,7 @@ We present our framework for adversarial learning against hash function. Our app
 \\
 We construct a blackbox model that represents the Merkle{\textendash}Damg\r{a}rd class of hash functions and then outline our machine learning framework which intelligently generates examples and measures how these examples lead to outputs that deviate from entropy values of the ideal state.
 
-\subsection{Notion of Blackbox}
+\subsection{Notion of Blackbox} \label{sec:sufcond}
 We present a blackbox attack on the Merkle{\textendash}Damg\r{a}rd class of hash functions. We write \emph{blackbox} to mean that the attack does not depend on the parameters or implementation details of a particular hash function. This allows our methodology to be trivially applied to any hash function of the Merkle{\textendash}Damg\r{a}rd construction. 
 
 Most research on finding weaknesses in hash functions focuses on finding weaknesses in a particular hash function. For instance, take the years of research focused on finding collisions in MD5 ~\cite{klima2005finding, liang2007improved, wang2005break, klima2006tunnels} and the recent attack which successfully found the first full collision for SHA-1 ~\cite{stevens2017first}. In general, this research focuses on determining a set of necessary conditions that any inputs resulting in a collision must meet. These sufficient conditions reduce the state space of hashs that need to be computed to find a collision. Once the state space is small enough that it can be searched, a collision can be computed ~\cite{sasaki2006construct}. Deriving the sufficient conditions depends on observations that are made about the parameters of a particular function. This prevents such an attack from being applied to any other hash function. 
@@ -474,8 +474,6 @@ We can define $P(Z)$ as the Shannon entropy over the elements of the state trans
 
 \subsubsection{Generative Assumption}
 Our Markov model can be viewed as a generative model that parametrizes the step transitions of the Merkle{\textendash}Damg\r{a}rd construction. In its ideal state, a hash function would have uniform probability across all transitions. So $(P(z_{i} | z_{j})$ would be uniformly probable for all $i,j$ in $|Z|$. The further the transition matrix deviates from uniform, the lower the entropy within the state of inputs. Hence, we can view our matrix as a parameter over the Multinomial distribution that measures entropy of the state space given a set of inputs $\hat{X}$.
-
-
 
 \subsection{Finding Adversarial Examples}
 In this section, we consider the problem of determining if a given hash function represented as $B(\cdot)$ is weak. We first present a theorem that establishes bounds on the expected number of examples $m$ that need to be drawn before we can determine if $P(Z)$ deviates significantly from the ideal state $P_{ideal}(Z)$. We then present our algorithm for uncovering an adversarial set $X_{adv}$, where $X_{adv}$ is a subset of $X$ and $|X_{adv}|  << |X|$. 
@@ -599,10 +597,10 @@ We are given that $\sum_{j=1}^{|Z|} -p(z_{j}) \cdot log p(z_{j}) < K \cdot \epsi
 We note that $(1 - \sum_{j=1}^{k} p(z_{j})) < \sum_{j=1}^{|Z|} -p(z_{j}) \cdot log p(z_{j})$ \textcolor{red}{PROVE THIS}
 \\
 \\
-$\rightarrow \prod_{k=1}^{|Z|} (1 - \sum_{j=1}^{k} p(z_{j})) < \prod_{k=1}^{|Z|} K \cdot \epsilon$ since $\prod_{k=1}^{|Z|} K \cdot \epsilon > 0$. 
+$$ \prod_{k=1}^{|Z|} (1 - \sum_{j=1}^{k} p(z_{j})) < \prod_{k=1}^{|Z|} K \cdot \epsilon$$ since $$\prod_{k=1}^{|Z|} K \cdot \epsilon > 0$$
 \\
 \\
-$\rightarrow 1 - \prod_{k=1}^{|Z|} (1 - \sum_{j=1}^{k} p(z_{j}) \geq 1 - \prod_{k=1}^{|Z|} K \cdot \epsilon$. 
+$$ 1 - \prod_{k=1}^{|Z|} (1 - \sum_{j=1}^{k} p(z_{j}) \geq 1 - \prod_{k=1}^{|Z|} K \cdot \epsilon$$
 \\
 \\
 $\rightarrow P_{A} \geq 1 - \prod_{k=1}^{|Z|} K \cdot \epsilon$. 
@@ -619,6 +617,15 @@ Outline how domain based methods have uncovered specific weaknesses in MD5 (and 
 \\
 \\
 Also describe how our algorithm is novel and can be applied to any hash function to test weakness. We simply validate this with MD5 (and perhaps SHA1)
+
+
+- Explain domain based attacks against MD5, other hash functions 
+
+There are a number of known attacks against MD5 and other hash functions. Wang, et. al ~\cite{wang2005break} introduced the two block attack against MD5. This attack changes two consecutive 512 bit chunks of the input such that the state output of the first block nearly collides with that of the unmodified message and the second block collides with the same. Wang's technique for breaking MD5 introduces the notion of multi-message modification. \textcolor{red}{One sentance about that}. The multi-message modification technique increases the tractability of discovering input blocks that meet the sufficient conditions for MD5 and leverage weaknesses in the function compositions of MD5. Similarly exploiting weaknesses in the internal state transitions in MD5, Klima ~\cite{klima2005finding} discovered a way to decrease the search space for MD5. These attacks and others which find collisions in hash functions are all premised on uncovering a set of sufficient conditions that any inputs that collide must meet. These collisions are always a function of the implementation of the particular function as outlined in Section \ref{sec:sufcond}.
+
+- Characterize input/output weaknesses based on domain based attacks 
+- Explain how our algorithm discovers same weaknesses (input/outputs) with orthogonal methodology
+- Emphasize novelty and ability to use on other hash functions 
 
 %-------------------------------------------------------------------------------
 \section{Results \& Discussion}
