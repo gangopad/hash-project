@@ -128,6 +128,15 @@
   year={2014}
 }
 
+@inproceedings{jovanovic2005logical,
+  title={Logical analysis of hash functions},
+  author={Jovanovi{\'c}, Dejan and Jani{\v{c}}i{\'c}, Predrag},
+  booktitle={International Workshop on Frontiers of Combining Systems},
+  pages={200--215},
+  year={2005},
+  organization={Springer}
+}
+
 \end{filecontents}
 
 %-------------------------------------------------------------------------------
@@ -138,7 +147,7 @@
 \date{}
 
 % make title bold and 14 pt font (Latex default is non-bold, 16 pt)
-\title{\Large \bf Blackbox Adversarial Learning on Hash Functions}
+\title{\Large \bf Adversarial Learning on Blackbox Hash Functions}
 
 %for single author (just remove % characters)
 %\author{
@@ -177,9 +186,8 @@ Our framework has the benefit of modularizing the process of defining, uncoverin
 
 %-------------------------------------------------------------------------------
 \subsection{Related Work}
-May or may not want this as a subsection. Including for now. 
 %-------------------------------------------------------------------------------
-
+We outline related work that has been conducted in the areas of exploiting hash function weaknesses, and using machine learning against cryptographic systems. \ref{jovanovic2005logical} conducted work in analyzing the hardness of hash functions. This paper introduced the notion of hash functions with regards to satisfiable and unsatisfiable problems within the NP hard class. 
 
 %-------------------------------------------------------------------------------
 \section{Contributions}
@@ -261,6 +269,7 @@ In addition to the states $S$ in Figure \ref{fig:merkleconstruction}, there are 
 \end{center}
 \caption{\label{fig:merkleconstruction} The Merkle{\textendash}Damg\r{a}rd construction of secure hash functions.}
 \end{figure} 
+
 
 Lastly we describe a structural attack that has been applied to multiple Merkle{\textendash}Damg\r{a}rd hash functions. Wang, et. al. ~\cite{wang2005break}. This attack works by changing any two consecutive input blocks such that the state outputs from the first blocks force a near collision and that the state outputs from the second blocks force a collision. This leverages the fact that in the Merkle{\textendash}Damg\r{a}rd construction, only the state information is carried to the next step. This structure has been used successfully in finding many collisions and will be again levered in applying of our methodology to MD5. 
 
@@ -358,13 +367,15 @@ We construct a blackbox model that represents the Merkle{\textendash}Damg\r{a}rd
 
 \subsection{Notion of Blackbox} \label{sec:sufcond}
 We present a blackbox attack on the Merkle{\textendash}Damg\r{a}rd class of hash functions. We write \emph{blackbox} to mean that the attack does not depend on the parameters or implementation details of a particular hash function. This allows our methodology to be trivially applied to any hash function of the Merkle{\textendash}Damg\r{a}rd construction. 
-
+\\
+\\
 Most research on finding weaknesses in hash functions focuses on finding weaknesses in a particular hash function. For instance, take the years of research focused on finding collisions in MD5 ~\cite{klima2005finding, liang2007improved, wang2005break, klima2006tunnels} and the recent attack which successfully found the first full collision for SHA-1 ~\cite{stevens2017first}. In general, this research focuses on determining a set of necessary conditions that any inputs resulting in a collision must meet. These sufficient conditions reduce the state space of hashs that need to be computed to find a collision. Once the state space is small enough that it can be searched, a collision can be computed ~\cite{sasaki2006construct}. Deriving the sufficient conditions depends on observations that are made about the parameters of a particular function. This prevents such an attack from being applied to any other hash function. 
-
+\\
+\\
 The paradigm we present here does not depend on the specific implementation of any hash function, only that it is of the Merkle{\textendash}Damg\r{a}rd construction. For this reason, the attack can be applied with ease to MD5, SHA1 or SHA2. By \emph{blackbox} we do not mean that an attacker does not know the particular hash function they are attempting to find weaknesses in, though they may not have this information. We specifically mean that that the attack does not depend on the implementation details of the hash function and that an attacker therefore does not need to know them to leverage this attack. 
 
 \subsection{Blackbox Definition} \label{bbdef}
-\textcolor{red}{Define the blackbox. Explain how it is general enough due to Merkle process to apply to MD5, SHA1, SHA2}
+For the Merkle{\textendash}Damg\r{a}rd class of hash functions, we define a singular blackbox component, $B$, as the function $S_{i,j} =  B^r(S_{i-1,j}, x_{j})$. We will outline how this definition is sufficient to model any Merkle{\textendash}Damg\r{a}rd function later in this section.
 
 \tikzstyle{block} = [draw, rectangle, minimum height=3em, minimum width=3em]
 \tikzstyle{virtual} = [coordinate]
@@ -378,9 +389,7 @@ The paradigm we present here does not depend on the specific implementation of a
 \end{tikzpicture}
 \end{center}
 
-For the Merkle{\textendash}Damg\r{a}rd class of hash functions, we define a singular blackbox component, $B$, as the function $S_{i,j} =  B^r(S_{i-1,j}, x_{j})$. We will outline was this definition is sufficient to model any Merkle{\textendash}Damg\r{a}rd function later in this section. 
-\\
-\\
+ 
 We limit the scope of the empirical portion of our study to the Merkle{\textendash}Damg\r{a}rd class of hash functions, which includes MD5, SHA-1, and SHA-2. We limit the scope in this way to be able to give a definition for a blackbox component $B$ towards validating our framework, noting that our methods remain general and applicable to other contexts and for different definitions of $B$. 
 \\
 \\
@@ -670,7 +679,9 @@ $B^1$ and $B^3$ are the blackbox components that never experiences a reduced ent
 \includegraphics[width=\linewidth]{figs/collisions_0.png}
 \end{centering}
 \caption{\label{fig:col0} Number of states observed more than once, denoted collisions, over all of the blackbox components $B^{1,2,3,4}$ for a varying number of inputs, $m$, sampled from each input space.}
+\end{figure}
 
+\begin{figure}
 \begin{centering}
 \includegraphics[width=\linewidth]{figs/entropy_0.png}
 \end{centering}
