@@ -160,6 +160,21 @@
   year={2016}
 }
 
+@article{kurakin2016adversarial,
+  title={Adversarial examples in the physical world},
+  author={Kurakin, Alexey and Goodfellow, Ian and Bengio, Samy},
+  journal={arXiv preprint arXiv:1607.02533},
+  year={2016}
+}
+
+@inproceedings{goodfellow2014generative,
+  title={Generative adversarial nets},
+  author={Goodfellow, Ian and Pouget-Abadie, Jean and Mirza, Mehdi and Xu, Bing and Warde-Farley, David and Ozair, Sherjil and Courville, Aaron and Bengio, Yoshua},
+  booktitle={Advances in neural information processing systems},
+  pages={2672--2680},
+  year={2014}
+}
+
 \end{filecontents}
 
 %-------------------------------------------------------------------------------
@@ -232,11 +247,6 @@ In this section we outline our contributions.
 \section{Background}
 %-------------------------------------------------------------------------------
 In order for this paper to be self contained, we include this section with background information required by our methodology. 
-\subsection{Background on Machine Learning and Adversarial Attacks} 
-Adversarial learning is a relatively new area of machine learning that was nominally presented in \textcolor{red}{CITE}. Historically, adversarial learning has been applied to machine learning classifiers and aims to find adversarial examples that trick the classifier into mislabeling as output. Specifically, adversarial examples $x^{adv}_{i}$ are slightly perturbed examples from $x_{i}$ such that the label $y^{adv}_{i}$ is significantly different than the label $y_{i}$. 
-\\
-\\
-Adversarial examples pose significant security threats within the context of machine learning models due to the property of transferability. Specifically, an adversarial example that is misclassified by a given model is often also misclassified by a similar model. This opens up attack vectors against machine learning blackbox systems 
 
 \subsection{Background on Hash Function Construction and Weaknesses} 
 There are three elements of hash functions that are important to our approach. These include (1) the properties of cryptogaphic hash functions, (2) the Merkle{\textendash}Damg\r{a}rd construction of secure hash functions, and (3) known structural attacks against hash functions of this construction. 
@@ -300,6 +310,23 @@ In addition to the states $S$ in Figure \ref{fig:merkleconstruction}, there are 
 \end{figure} 
 
 Lastly we describe a structural attack that has been applied to multiple Merkle{\textendash}Damg\r{a}rd hash functions. Wang, et. al. ~\cite{wang2005break}. This attack works by changing any two consecutive input blocks such that the state outputs from the first blocks force a near collision and that the state outputs from the second blocks force a collision. This leverages the fact that in the Merkle{\textendash}Damg\r{a}rd construction, only the state information is carried to the next step. This structure has been used successfully in finding many collisions and will be again levered in applying of our methodology to MD5. 
+
+\subsection{Background on Machine Learning and Adversarial Attacks} 
+Adversarial learning is a relatively new area of machine learning that was nominally presented in \textcolor{red}{CITE}. Historically, adversarial learning has been applied to machine learning classifiers and aims to find adversarial examples that trick the classifier into mislabeling the output. Specifically, adversarial examples $x^{adv}_{i}$ are slightly perturbed examples from $x_{i}$ such that the label $y^{adv}_{i}$ is significantly different than the label $y_{i}$. 
+\\
+\\
+Adversarial examples pose significant security threats within the context of machine learning models due to the property of transferability. Specifically, an adversarial example that is misclassified by a given model is often also misclassified by a similar model. This opens up attack vectors against machine learning blackbox systems. \textcolor{red}{CITE}. As a result there has been a recent flurry of study \textcolor{red}{CITE} around the notion of adversarial learning and how it applies to real world machine learning systems. The focal points of such studies orient around building model robustness against such examples, understanding different whitebox and blackbox attack vectors, and understanding how adversarial examples can disrupt the flow of real world systems. Studies such as \ref{kurakin2016adversarial} have conducted experiments to simulate real world examples of adversarial vulnerabilities as they exist in the real world. 
+\\
+\\
+Although the advent of adversarial learning has been an exciting one, the field has so far been limited to focusing purely on machine learning systems. Furthermore, the notion of an adversarial example very specifically alludes to an input $x^{adv}_{i}$ that is slightly perturbed from a benign input and yet produces a significantly different label. To that end much of the research (\textcolor{red}{CITE}) has been localized to studying examples of this property and building robustness against adversarially perturbed inputs. This includes injecting adversarial examples into training data and intelligently training models to specifically learn properties of such examples (\textcolor{red}{CITE}).
+\\
+\\
+Not much work has been done in applying other notions of adversarial to machine learning or other systems. Interesting properties of alternative adversarial learning could include discovering examples that uncover a subspace of the inputs that a given model was poorly trained on. This would break the construction of assuming adversarial examples to be roughly independent of each other and would enable a study on sets of adversarial examples and their properties. Similarly adversarial learning has yet to be expanded beyond the realm of supervised machine learning. There is an interesting advent of study that defines weakness or error in a given system (whether an unsupervised machine learning model or an alternative system) and aims to uncover examples that exploit such weakness. 
+\\
+\\
+In this paper we aim to extend the definition of adversarial learning to uncovering sets of examples that expose vulnerabilities in cryptographic systems. To this end, we define weakness as it applies generally to cryptographic systems, ground our definition in multiple examples of systems. Finally we outline a process for discovering and evaluating adversarial examples as they apply to hash functions. 
+
+
 
 %-------------------------------------------------------------------------------
 \section{Adversarial Learning on Cryptographic Systems}
@@ -643,9 +670,7 @@ We design experiments to test Theorem 1 and Theorem 2.
 \includegraphics[width=\linewidth]{figs/thm1_allbs.png}
 \end{centering}
 \caption{\label{fig:thm1}}
-\end{figure}
 
-\begin{figure}
 \begin{centering}
 \includegraphics[width=\linewidth]{figs/seeded_0.png}
 \end{centering}
@@ -657,9 +682,7 @@ We design experiments to test Theorem 1 and Theorem 2.
 \includegraphics[width=\linewidth]{figs/seeded_1.png}
 \end{centering}
 \caption{\label{fig:b1}}
-\end{figure}
 
-\begin{figure}
 \begin{centering}
 \includegraphics[width=\linewidth]{figs/seeded_2.png}
 \end{centering}
@@ -671,16 +694,12 @@ We design experiments to test Theorem 1 and Theorem 2.
 \includegraphics[width=\linewidth]{figs/seeded_3.png}
 \end{centering}
 \caption{\label{fig:b3}}
-\end{figure}
 
-\begin{figure}
 \begin{centering}
 \includegraphics[width=\linewidth]{figs/collisions_0.png}
 \end{centering}
 \caption{\label{fig:col0}}
-\end{figure}
 
-\begin{figure}
 \begin{centering}
 \includegraphics[width=\linewidth]{figs/entropy_0.png}
 \end{centering}
@@ -731,10 +750,7 @@ acknowledging. Sorry.
 \section*{Availability}
 %-------------------------------------------------------------------------------
 
-USENIX program committees give extra points to submissions that are
-backed by artifacts that are publicly available. If you made your code
-or data available, it's worth mentioning this fact in a dedicated
-section.
+Our code for generating results and experiments can be found at \url{https://github.com/joshuazweig/hash-project}.
 
 %-------------------------------------------------------------------------------
 \section*{Appendix}
