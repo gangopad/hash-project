@@ -632,65 +632,46 @@ We observe this claim holds in our framework in Figure \ref{fig:thm1}, which obs
 
 From Figure \ref{fig:thm1} we can also observe the expected behavior of $m$ decreasing for larger values of $\epsilon$. When the $\epsilon$ tolerance for a sufficient entropy reduction was $\geq .65$, each of the seeded input sets showed a maximum reduction in entropy for small values $m$. The reduced entropies in the seeded sets before this $\epsilon$ value can be attributed to the fact that the $m$th input value $x$ is selected at random from the input space, treated as a uniform distrobution. It is therefore expected that for small values of $\epsilon$ the $m$ value will in some cases be small.
 
-\begin{figure}
-\begin{centering}
-\includegraphics[width=\linewidth]{figs/thm1_allbs.png}
-\end{centering}
-\caption{\label{fig:thm1}}
-\caption{\label{fig:thm1} Number of examples $m$ to drive entropy over all of the blackbox components $B^{0,1,2,3}$ below $\kappa \cdot \epsilon$ for $\epsilon \in \{0, .05, .10, .15...,1\}$}
-
-\begin{centering}
-\includegraphics[width=\linewidth]{figs/seeded_0.png}
-\end{centering}
-\caption{\label{fig:b0} Number of examples $m$ to drive entropy over all of the blackbox components $B^{0}$ below $\kappa \cdot \epsilon$ for $\epsilon \in \{0, .05, .10, .15...,1\}$ }
-\end{figure}
-
 In Figures \ref{fig:b0}, \ref{fig:b1}, \ref{fig:b2}, \ref{fig:b3} we observe the same, but within the context of each particular blackbox component. In the case of $B^0$, we observe in Figure \ref{fig:b0} the same trend holds wherein each of the seeded sets experience reduced entropy when $\epsilon \geq 0.5$, and additionally that there is never an observed reduced entropy for the randomly generated sets. The same is observed for component $B^2$ in Figure \ref{fig:b2}.
 
 $B^1$ and $B^3$ are the blackbox components that never experiences a reduced entropy. In \ref{fig:b1} and \ref{fig:b3} we observe that there is no reduced entropy caused by any of the input spaces. In each of these cases, the all of the elements from the input space are selected without a reduced entropy every being observed, signifying that there are also no repeated states. These blackbox components map to the $G$ and $I$ rounds in MD5, respectively, suggesting they increase collision resistance over the other rounds. 
 
 \begin{figure}
-\begin{centering}	
+\includegraphics[width=\linewidth]{figs/thm1_allbs.png}
+\caption{\label{fig:thm1} Number of examples $m$ to drive entropy over all of the blackbox components $B^{0,1,2,3}$ below $\kappa \cdot \epsilon$ for $\epsilon \in \{0, .05, .10, .15...,1\}$}
+
+\includegraphics[width=\linewidth]{figs/seeded_0.png}
+\caption{\label{fig:b0} Number of examples $m$ to drive entropy over all of the blackbox components $B^{0}$ below $\kappa \cdot \epsilon$ for $\epsilon \in \{0, .05, .10, .15...,1\}$ }
+
 \includegraphics[width=\linewidth]{figs/seeded_1.png}
-\end{centering}
-\caption{\label{fig:b1}}
 \caption{\label{fig:b1} Number of examples $m$ to drive entropy over all of the blackbox components $B^{1}$ below $\kappa \cdot \epsilon$ for $\epsilon \in \{0, .05, .10, .15...,1\}$}
+\end{figure} 
 
-\begin{centering}
+\begin{figure} 
 \includegraphics[width=\linewidth]{figs/seeded_2.png}
-\end{centering}
 \caption{\label{fig:b2} Number of examples $m$ to drive entropy over all of the blackbox components $B^{2}$ below $\kappa \cdot \epsilon$ for $\epsilon \in \{0, .05, .10, .15...,1\}$}
-\end{figure}
 
-\begin{figure}
-\begin{centering}
 \includegraphics[width=\linewidth]{figs/seeded_3.png}
-\end{centering}
-\caption{\label{fig:b3}}
-\begin{centering}
-\includegraphics[width=\linewidth]{figs/collisions_0.png}
-\end{centering}
-\caption{\label{fig:col0}}
 \caption{\label{fig:b3} Number of examples $m$ to drive entropy over all of the blackbox components $B^{3}$ below $\kappa \cdot \epsilon$ for $\epsilon \in \{0, .05, .10, .15...,1\}$ }
 \end{figure}
 
+
 \subsubsection{Theorem 2}
 
-In our experiments for Theorem 2, we maximize the amount of state collisions that occur, and in doing so maximize the reduction in entropy for a given number of samples $m$ from the input state space. 
+In our experiments for Theorem 2, we maximize the amount of state collisions that occur, and in doing so maximize the reduction in entropy for a given number of samples $m$ from the input space. 
 
-\begin{figure}
-\begin{centering}
+In Figure \ref{fig:col0} we observe the number of state collisions observed as the number of samples $m$ taken from the input space increases. There are no collisions found from and of the random spaces. This is the expected behavior over a small random sample. It would be a very weak hash function that experienced state collisions over a small random space. However, our algorithm was able to find collisions in the seeded input spaces even for small values of $m$. We observe that with values as small as $m = 5$, our adversarial algorithm uncovers state collisions in the seeded input spaces. 
+
+Figure \ref{fig:ent0} shows the entropy as a function of $m$ for each input space. The expected relationship between entropy and sample size is that the entropy increases as the number of obsereved states in the sample increases. This is the relationship that is observed in \ref{fig:ent0}. We would additionally expect to see, in the general case, that the entropy of the seeded sets would be $\epsilon$ less than that of the random sets. This is the result for seeded\_0 and seeded\_1, however this is not the case for seeded\_2. This is so for the same reason it was in the Theorem 1 results in that with randomly selected inputs from a fixed input space there is a non\-negligable probability that the same element from the random input space is read more than once.  
+
+\begin{figure} 
 \includegraphics[width=\linewidth]{figs/collisions_0.png}
-\end{centering}
 \caption{\label{fig:col0} Number of states observed more than once, denoted collisions, over all of the blackbox components $B^{1,2,3,4}$ for a varying number of inputs, $m$, sampled from each input space.}
-\end{figure}
 
-\begin{figure}
-\begin{centering}
 \includegraphics[width=\linewidth]{figs/entropy_0.png}
-\end{centering}
 \caption{\label{fig:ent0} Entropy of the set of observed states over all of the blackbox components $B^{1,2,3,4}$ for a varying number of inputs, $m$, sampled from each input space.}
 \end{figure}
+
 
 %-------------------------------------------------------------------------------
 \section{Future Work}
@@ -720,11 +701,7 @@ acknowledging. Sorry.
 \section*{Availability}
 %-------------------------------------------------------------------------------
 
-
-Our code for generating results and experiments can be found at \url{https://github.com/joshuazweig/hash-project}.
-=======
 The code that implements our experiments and the data used are available on Github at \url{https://github.com/<removed-for-anonymity>/hash-project}. 
->>>>>>> 6be05cdab45153832bf8d6f62e47ce17a9729c52
 
 %-------------------------------------------------------------------------------
 \section*{Appendix}
