@@ -128,6 +128,15 @@
   year={2014}
 }
 
+@inproceedings{jovanovic2005logical,
+  title={Logical analysis of hash functions},
+  author={Jovanovi{\'c}, Dejan and Jani{\v{c}}i{\'c}, Predrag},
+  booktitle={International Workshop on Frontiers of Combining Systems},
+  pages={200--215},
+  year={2005},
+  organization={Springer}
+}
+
 \end{filecontents}
 
 %-------------------------------------------------------------------------------
@@ -138,7 +147,7 @@
 \date{}
 
 % make title bold and 14 pt font (Latex default is non-bold, 16 pt)
-\title{\Large \bf Blackbox Adversarial Learning on Hash Functions}
+\title{\Large \bf Adversarial Learning on Blackbox Hash Functions}
 
 %for single author (just remove % characters)
 %\author{
@@ -177,9 +186,8 @@ Our framework has the benefit of modularizing the process of defining, uncoverin
 
 %-------------------------------------------------------------------------------
 \subsection{Related Work}
-May or may not want this as a subsection. Including for now. 
 %-------------------------------------------------------------------------------
-
+We outline related work that has been conducted in the areas of exploiting hash function weaknesses, and using machine learning against cryptographic systems. \ref{jovanovic2005logical} conducted work in analyzing the hardness of hash functions. This paper introduced the notion of hash functions with regards to satisfiable and unsatisfiable problems within the NP hard class. 
 
 %-------------------------------------------------------------------------------
 \section{Contributions}
@@ -261,6 +269,7 @@ In addition to the states $S$ in Figure \ref{fig:merkleconstruction}, there are 
 \end{center}
 \caption{\label{fig:merkleconstruction} The Merkle{\textendash}Damg\r{a}rd construction of secure hash functions.}
 \end{figure} 
+
 
 Lastly we describe a structural attack that has been applied to multiple Merkle{\textendash}Damg\r{a}rd hash functions. Wang, et. al. ~\cite{wang2005break}. This attack works by changing any two consecutive input blocks such that the state outputs from the first blocks force a near collision and that the state outputs from the second blocks force a collision. This leverages the fact that in the Merkle{\textendash}Damg\r{a}rd construction, only the state information is carried to the next step. This structure has been used successfully in finding many collisions and will be again levered in applying of our methodology to MD5. 
 
@@ -358,13 +367,15 @@ We construct a blackbox model that represents the Merkle{\textendash}Damg\r{a}rd
 
 \subsection{Notion of Blackbox} \label{sec:sufcond}
 We present a blackbox attack on the Merkle{\textendash}Damg\r{a}rd class of hash functions. We write \emph{blackbox} to mean that the attack does not depend on the parameters or implementation details of a particular hash function. This allows our methodology to be trivially applied to any hash function of the Merkle{\textendash}Damg\r{a}rd construction. 
-
+\\
+\\
 Most research on finding weaknesses in hash functions focuses on finding weaknesses in a particular hash function. For instance, take the years of research focused on finding collisions in MD5 ~\cite{klima2005finding, liang2007improved, wang2005break, klima2006tunnels} and the recent attack which successfully found the first full collision for SHA-1 ~\cite{stevens2017first}. In general, this research focuses on determining a set of necessary conditions that any inputs resulting in a collision must meet. These sufficient conditions reduce the state space of hashs that need to be computed to find a collision. Once the state space is small enough that it can be searched, a collision can be computed ~\cite{sasaki2006construct}. Deriving the sufficient conditions depends on observations that are made about the parameters of a particular function. This prevents such an attack from being applied to any other hash function. 
-
+\\
+\\
 The paradigm we present here does not depend on the specific implementation of any hash function, only that it is of the Merkle{\textendash}Damg\r{a}rd construction. For this reason, the attack can be applied with ease to MD5, SHA1 or SHA2. By \emph{blackbox} we do not mean that an attacker does not know the particular hash function they are attempting to find weaknesses in, though they may not have this information. We specifically mean that that the attack does not depend on the implementation details of the hash function and that an attacker therefore does not need to know them to leverage this attack. 
 
 \subsection{Blackbox Definition} \label{bbdef}
-\textcolor{red}{Define the blackbox. Explain how it is general enough due to Merkle process to apply to MD5, SHA1, SHA2}
+For the Merkle{\textendash}Damg\r{a}rd class of hash functions, we define a singular blackbox component, $B$, as the function $S_{i,j} =  B^r(S_{i-1,j}, x_{j})$. We will outline how this definition is sufficient to model any Merkle{\textendash}Damg\r{a}rd function later in this section.
 
 \tikzstyle{block} = [draw, rectangle, minimum height=3em, minimum width=3em]
 \tikzstyle{virtual} = [coordinate]
@@ -378,9 +389,7 @@ The paradigm we present here does not depend on the specific implementation of a
 \end{tikzpicture}
 \end{center}
 
-For the Merkle{\textendash}Damg\r{a}rd class of hash functions, we define a singular blackbox component, $B$, as the function $S_{i,j} =  B^r(S_{i-1,j}, x_{j})$. We will outline was this definition is sufficient to model any Merkle{\textendash}Damg\r{a}rd function later in this section. 
-\\
-\\
+ 
 We limit the scope of the empirical portion of our study to the Merkle{\textendash}Damg\r{a}rd class of hash functions, which includes MD5, SHA-1, and SHA-2. We limit the scope in this way to be able to give a definition for a blackbox component $B$ towards validating our framework, noting that our methods remain general and applicable to other contexts and for different definitions of $B$. 
 \\
 \\
@@ -577,10 +586,10 @@ We are given that $\sum_{j=1}^{|Z|} -p(z_{j}) \cdot log p(z_{j}) < K \cdot \epsi
 We note that $(1 - \sum_{j=1}^{k} p(z_{j})) < \sum_{j=1}^{|Z|} -p(z_{j}) \cdot log p(z_{j})$ \textcolor{red}{PROVE THIS}
 \\
 \\
-$$ \prod_{k=1}^{|Z|} (1 - \sum_{j=1}^{k} p(z_{j})) < \prod_{k=1}^{|Z|} K \cdot \epsilon$$ since $$\prod_{k=1}^{|Z|} K \cdot \epsilon > 0$$
+$ \prod_{k=1}^{|Z|} (1 - \sum_{j=1}^{k} p(z_{j})) < \prod_{k=1}^{|Z|} K \cdot \epsilon$$ since $$\prod_{k=1}^{|Z|} K \cdot \epsilon > 0$
 \\
 \\
-$$ 1 - \prod_{k=1}^{|Z|} (1 - \sum_{j=1}^{k} p(z_{j}) \geq 1 - \prod_{k=1}^{|Z|} K \cdot \epsilon$$
+$ 1 - \prod_{k=1}^{|Z|} (1 - \sum_{j=1}^{k} p(z_{j}) \geq 1 - \prod_{k=1}^{|Z|} K \cdot \epsilon$
 \\
 \\
 $\rightarrow P_{A} \geq 1 - \prod_{k=1}^{|Z|} K \cdot \epsilon$. 
@@ -593,19 +602,11 @@ Hence, we see that the probability of a collision in the final states is $P_{A} 
 
 
 \subsection{Validating Adversarial Examples}
-Outline how domain based methods have uncovered specific weaknesses in MD5 (and if time SHA1), how to characterize the input and output sets of the weakness (show that the statistical properties that a given weakness described in the previous section apply), and how our algorithm ties to the same set of inputs and outputs (but using a completely different methodology)
+There are a number of known attacks against MD5 and other hash functions. Wang, et. al ~\cite{wang2005break} introduced the two block attack against MD5. This attack changes two consecutive 512 bit chunks of the input such that the state output of the first block nearly collides with that of the unmodified message and the second block collides with the same. Wang's technique for breaking MD5 introduces the notion of multi-message modification. \textcolor{red}{One sentance about that}. The multi-message modification technique increases the tractability of discovering input blocks that meet the sufficient conditions for MD5 and leverage weaknesses in the function compositions of MD5. Similarly exploiting weaknesses in the internal state transitions in MD5, Klima ~\cite{klima2005finding} discovered a way to decrease the search space for MD5. These attacks and others which find collisions in hash functions are all premised on uncovering a set of sufficient conditions that any inputs that collide must meet.These collisions are always a function of the implementation of the particular function as outlined in Section \ref{sec:sufcond}.
 \\
 \\
-Also describe how our algorithm is novel and can be applied to any hash function to test weakness. We simply validate this with MD5 (and perhaps SHA1)
+We note that domain based attacks mostly look to exploit weak function compositions in hash functions by finding adversarial examples that uncover such weaknesses. Our adversarial learning framework aims to achieve the same end through empirical means. Our blackbox construction maintains a model of the Merkle-Damgard functions that is specific enough to capture the characteristics of function compositions. Yet we dont assume anything about the function compositions themselves and instead use our trained probability distribution functions to posit relationships between inputs and states. Thus, our adversarial learning framework takes a structured approach to finding relationships between adversarial examples and weak function compositions across the class of Merkle-Damgard functions. Thereby, we converge to the same principles of the domain based approaches while maintaining the abstractness of the framework model. 
 
-
-- Explain domain based attacks against MD5, other hash functions 
-
-There are a number of known attacks against MD5 and other hash functions. Wang, et. al ~\cite{wang2005break} introduced the two block attack against MD5. This attack changes two consecutive 512 bit chunks of the input such that the state output of the first block nearly collides with that of the unmodified message and the second block collides with the same. Wang's technique for breaking MD5 introduces the notion of multi-message modification. \textcolor{red}{One sentance about that}. The multi-message modification technique increases the tractability of discovering input blocks that meet the sufficient conditions for MD5 and leverage weaknesses in the function compositions of MD5. Similarly exploiting weaknesses in the internal state transitions in MD5, Klima ~\cite{klima2005finding} discovered a way to decrease the search space for MD5. These attacks and others which find collisions in hash functions are all premised on uncovering a set of sufficient conditions that any inputs that collide must meet. These collisions are always a function of the implementation of the particular function as outlined in Section \ref{sec:sufcond}.
-
-- Characterize input/output weaknesses based on domain based attacks 
-- Explain how our algorithm discovers same weaknesses (input/outputs) with orthogonal methodology
-- Emphasize novelty and ability to use on other hash functions 
 
 %-------------------------------------------------------------------------------
 \section{Results \& Discussion}
@@ -642,15 +643,26 @@ $B^1$ and $B^3$ are the blackbox components that never experiences a reduced ent
 
 \includegraphics[width=\linewidth]{figs/seeded_0.png}
 \caption{\label{fig:b0} Number of examples $m$ to drive entropy over all of the blackbox components $B^{0}$ below $\kappa \cdot \epsilon$ for $\epsilon \in \{0, .05, .10, .15...,1\}$ }
-
-\includegraphics[width=\linewidth]{figs/seeded_1.png}
-\caption{\label{fig:b1} Number of examples $m$ to drive entropy over all of the blackbox components $B^{1}$ below $\kappa \cdot \epsilon$ for $\epsilon \in \{0, .05, .10, .15...,1\}$}
 \end{figure} 
 
-\begin{figure} 
+\begin{figure}
+\includegraphics[width=\linewidth]{figs/seeded_1.png}
+\caption{\label{fig:b1} Number of examples $m$ to drive entropy over all of the blackbox components $B^{1}$ below $\kappa \cdot \epsilon$ for $\epsilon \in \{0, .05, .10, .15...,1\}$}
+
 \includegraphics[width=\linewidth]{figs/seeded_2.png}
 \caption{\label{fig:b2} Number of examples $m$ to drive entropy over all of the blackbox components $B^{2}$ below $\kappa \cdot \epsilon$ for $\epsilon \in \{0, .05, .10, .15...,1\}$}
+\end{figure} 
 
+We observe this claim holds in our framework in Figure \ref{fig:thm1}, which observes duplicated states over all blackbox components $B^{0,1,2,3}$. Here we see a reduction in entropy of each of the seeded input sets, demonstrated by the reduced $m$ values that occur in each of these series. As expected, we also observe that the entropy of the random sets is never reduced, even after exhausting the full input space, which is observed in that the random series in Figure \ref{fig:thm1} never show a reduction in entropy even after all $M$ possible input states are observed. 
+
+From Figure \ref{fig:thm1} we can also observe the expected behavior of $m$ decreasing for larger values of $\epsilon$. When the $\epsilon$ tolerance for a sufficient entropy reduction was $\geq .65$, each of the seeded input sets showed a maximum reduction in entropy for small values $m$. The reduced entropies in the seeded sets before this $\epsilon$ value can be attributed to the fact that the $m$th input value $x$ is selected at random from the input space, treated as a uniform distrobution. It is therefore expected that for small values of $\epsilon$ the $m$ value will in some cases be small.
+
+
+In Figures \ref{fig:b0}, \ref{fig:b1}, \ref{fig:b2}, \ref{fig:b3} we observe the same, but within the context of each particular blackbox component. In the case of $B^0$, we observe in Figure \ref{fig:b0} the same trend holds wherein each of the seeded sets experience reduced entropy when $\epsilon \geq 0.5$, and additionally that there is never an observed reduced entropy for the randomly generated sets. The same is observed for component $B^2$ in Figure \ref{fig:b2}.
+
+$B^1$ and $B^3$ are the blackbox components that never experiences a reduced entropy. In \ref{fig:b1} and \ref{fig:b3} we observe that there is no reduced entropy caused by any of the input spaces. In each of these cases, the all of the elements from the input space are selected without a reduced entropy every being observed, signifying that there are also no repeated states. These blackbox components map to the $G$ and $I$ rounds in MD5, respectively, suggesting they increase collision resistance over the other rounds. 
+
+\begin{figure}
 \includegraphics[width=\linewidth]{figs/seeded_3.png}
 \caption{\label{fig:b3} Number of examples $m$ to drive entropy over all of the blackbox components $B^{3}$ below $\kappa \cdot \epsilon$ for $\epsilon \in \{0, .05, .10, .15...,1\}$ }
 \end{figure}
@@ -671,7 +683,6 @@ Figure \ref{fig:ent0} shows the entropy as a function of $m$ for each input spac
 \includegraphics[width=\linewidth]{figs/entropy_0.png}
 \caption{\label{fig:ent0} Entropy of the set of observed states over all of the blackbox components $B^{1,2,3,4}$ for a varying number of inputs, $m$, sampled from each input space.}
 \end{figure}
-
 
 %-------------------------------------------------------------------------------
 \section{Future Work}
