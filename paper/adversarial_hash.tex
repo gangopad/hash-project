@@ -754,22 +754,52 @@ Consider the following theorem that, given the ability to query a subset $\hat{X
 
 \begin{theorem}
 \label{mainThm}
-For a given $\epsilon, \delta$  the expected number of examples $m$ needed such that $P(\frac{P(Z)}{P_{ideal}(Z)}< \epsilon) > 1 - \delta$  is $m = F(\epsilon, \delta)$ for the state space $Z$ where the set of states are defined in our Markov model. 
+For a given $\epsilon, \delta$  the expected number of examples $m$ needed such that $P(\frac{H(Z)}{H_{ideal}(Z)}) < \epsilon$  is $m = F(\epsilon)$ for the state space $Z$ where the set of states are defined in our Markov model. 
 \end{theorem}
 
-We present the proof below. Our proof follows an inductive structure. We note that $H(Z) = -\sum_{k} p(z_{k}) log p(z_{k})$. We also note after a certain number of examples $m_{0}$, there is a high probability that the entropy goes down as we observe a new example. We derive how much the entropy is expected to go down with each example. 
+We derive $m = F(\epsilon)$ and present the proof below. Our proof follows an inductive structure. We note that $H(Z) = -\sum_{k} p(z_{k}) log p(z_{k})$. We also note after a certain number of examples $m_{0}$, there is a high probability that the entropy goes down as we observe a new example. We derive how much the entropy is expected to go down with each example. 
 \\
 \\
-We wish to derive $E[H(Z_{new}) - H(Z_{old})]$ 
+We wish to derive $E[H(Z_{new}) - H(Z_{old})]$. Let us denote the size of $Z_{old} = m$ and $|Z| = M$.  
 \\
 \\
 This is equivalent to $E[-\sum_{k*} p(z_{k}^{*})log p(z_{k}^{*}) + \sum_{k} p(z_{k}) log p(z_{k})]$. 
 \\
 \\
-We note the presented paradigm represents the naive approach of sampling the hash function $m$ times and measure the change in entropy of the states. 
+We note the presented paradigm represents the naive approach of sampling the hash function $m$ times and measuring the change in entropy of the states. 
 \\
 \\
-Given the nature of the state space $|X|$, we note that $m$ is intractable over reasonable values of $\epsilon, \delta$. Hence, we present an algorithm that uses our machine learning framework to derive adversarial examples given a set of seeded known adversarial examples $X_{init}$. 
+We note that if a new state is added to the set then the entropy goes up (this happens with $p = \frac{(M-m)}{m})$. Otherwise the entropy goes down.
+\\
+\\
+Specifically, $E[H(Z_{new}) - H(Z_{old})]$ is:
+\\
+\\
+$\Delta E_{new} = E[-\sum_{k}^{z_{new}} p(z_{k} log(p(z_{k}))]$ with $p = \frac{(M-m)}{m}$
+\\
+\\
+and $E[H(Z_{new}) - H(Z_{old})]$ is
+\\
+\\
+$\Delta E_{coll} = E[-\sum_{k}^{z_{coll}} p(z_{k} log(p(z_{k}))]$ with $p = \frac{(m)}{M}$
+\\
+\\
+We note that $z_{new}$ denotes new states derived from the input and $z_{coll}$ denotes the new states along with duplicate states as a result of the input being introduced. 
+\\
+\\
+Thus the expected change in entropy from one round to another can be modeled as: $p \cdot \Delta E_{new} + (1-p) \cdot  \Delta E_{coll}$
+\\
+\\
+After $m$ rounds the expected change in entropy is $m \cdot (p \cdot \Delta E_{new} + (1-p) \cdot  \Delta E_{coll})$. 
+\\
+\\
+Hence, the expected number of examples $m$ needed such that $H(Z) < \epsilon$ is $\frac{p \cdot \Delta E_{new} + (1-p) \cdot  \Delta E_{coll})}{\epsilon} \cdot H_{ideal}(Z)$. 
+\\
+\\
+Thus we can derive the expected value of $m$ such that the final state $H(Z) < \epsilon$. 
+\\
+\\
+Given the nature of the state space $|X|$, we note that $m$ is intractable over reasonable values of $\epsilon$. Hence, we present an algorithm that uses our machine learning framework to derive adversarial examples given a set of seeded known adversarial examples $X_{init}$. 
 
 
 \subsubsection{Uncovering Adversarial Examples}
@@ -1008,39 +1038,6 @@ In this paper we have presented a novel paradigm that considers the notion of ad
 
 The code that implements our experiments and the data used are available on Github at \url{https://github.com/gangopad/hash-project}. 
 
-%-------------------------------------------------------------------------------
-\section*{Appendix}
-%-------------------------------------------------------------------------------
-\subsection{Proof of Theorem 1}
-We restate Theorem 1 and prove it below:
-
-\begin{theorem}
-\label{mainThm}
-For a given $\epsilon, \delta$ how many samples $m$, where $m = F(\epsilon, \delta)$ are needed such that $P(\frac{P(Z)}{P_{ideal}(Z)}< \epsilon) > 1 - \delta$ for the state space $Z$ where the set of states are defined in our Markov model. 
-\end{theorem}
-
-The proof is as follows:
-\\
-\\
-Chernoff bounds state that if $X$ is a random variable, then for any $a \in R$, $P(X \geq a) = P(e^{sx} \geq e^{sa})$ for $s > 0$. 
-\\
-\\
-By Markov's inequality, we can write $P(X \geq a)  = P(e^{sx} \geq e^{sa}) \leq \frac{E[e^{sx}]}{e^{sa}}$. 
-\\
-\\
-Note that $E[e^{sx}]$ is the moment generating function $M_{x}(s)$. 
-\\
-\\
-$\rightarrow P(X \geq a) \leq e^{-sa} M_{x}(s) \forall s > 0$
-\\
-\\
-$\rightarrow P(X \geq a) \leq $min$_{s >0}$ $e^{-sa} M_{x}(s)$.
-\\
-\\
-$\rightarrow P(H(Z) > C \cdot \epsilon) \leq $min$_{s >0}$ $e^{-sa} M_{x}(s)$.
-\\
-\\
-\textcolor{red}{Write the moment generating function as a function of $m$ and $\delta$}
 
 %-------------------------------------------------------------------------------
 \bibliographystyle{plain}
