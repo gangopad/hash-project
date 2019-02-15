@@ -32,7 +32,7 @@
   journal={IACR Cryptology ePrint Archive},
   volume={2006},
   pages={105},
-  year={2006},
+  year={2006}
   note =         {\url{https://pdfs.semanticscholar.org/303a/13faac4a76c2e249fcd9587257f276da1a02.pdf}}
 }
 @inproceedings{wang2005break,
@@ -41,7 +41,7 @@
   booktitle={Annual international conference on the theory and applications of cryptographic techniques},
   pages={19--35},
   year={2005},
-  organization={Springer},
+  organization={Springer}
   note =         {\url{https://link.springer.com/content/pdf/10.1007/11426639_2.pdf}}
 }
 @article{liang2007improved,
@@ -52,7 +52,7 @@
   number={1},
   pages={79--87},
   year={2007},
-  publisher={Springer},
+  publisher={Springer}
   note =         {\url{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.81.8251&rep=rep1&type=pdf}}
 }
 @inproceedings{stevens2017first,
@@ -61,7 +61,7 @@
   booktitle={Annual International Cryptology Conference},
   pages={570--596},
   year={2017},
-  organization={Springer},
+  organization={Springer}
   note =         {\url{https://eprint.iacr.org/2017/190.pdf}}
 }
 @article{klima2005finding,
@@ -70,7 +70,7 @@
   journal={IACR Cryptology ePrint Archive},
   volume={2005},
   pages={102},
-  year={2005},
+  year={2005}
   note =         {\url{https://eprint.iacr.org/2005/102.pdff}}
 }
 @incollection{sasaki2006construct,
@@ -79,7 +79,7 @@
   booktitle={Progress in Cryptology-VIETCRYPT 2006},
   pages={243--259},
   year={2006},
-  publisher={Springer},
+  publisher={Springer}
   note = {\url{https://www.researchgate.net/profile/Sangjin_Lee6/publication/221462213_Improved_Fast_Correlation_Attack_on_the_Shrinking_and_Self-shrinking_Generators/links/02e7e52b36d7583923000000.pdf#page=252}}
 }
 @inproceedings{mironov2006applications,
@@ -88,21 +88,21 @@
   booktitle={International Conference on Theory and Applications of Satisfiability Testing},
   pages={102--115},
   year={2006},
-  organization={Springer},
+  organization={Springer}
   note = {\url{https://eprint.iacr.org/2006/254.pdf}}
 }
 @article{bruce2004,
   title={Cryptanalysis of MD5 and SHA: Time for a New Standard},
   author={Schneier, Bruce},
   year={2004},
-  publisher={Schneier on Security},
-  note =         \url{https://www.schneier.com/essays/archives/2004/08/cryptanalysis_of_md5.html}
+  publisher={Schneier on Security}
+  note =         {\url{https://www.schneier.com/essays/archives/2004/08/cryptanalysis_of_md5.html}}
 }
 @article{merkle1979secrecy,
   title={Secrecy, authentication, and public key systems},
   author={Merkle, Ralph},
   journal={Ph. D. Thesis, Stanford University},
-  year={1979},
+  year={1979}
   note =         {\url{http://www.merkle.com/papers/Thesis1979.pdf}}
 }
 
@@ -927,23 +927,14 @@ Lastly, more deliberate algorithms can be applied to efficiently traverse the in
 %-------------------------------------------------------------------------------
 \section*{Conclusion}
 %-------------------------------------------------------------------------------
+In this paper we have presented a novel paradigm that considers the notion of adversarial learning in the context of cryptographic systems. We started by expanding the definition of adversarial learning beyond supervised machine learning systems. We then constructed a machine learning framework for the class of Merkle-Damgard hash functions that aims to uncover adversarial examples. We derived theoretical bounds on the expected number of examples needed before seeing a reduction in the entropy of the states. We then presented a Markov based algorithm that constructed distribution functions that related states to previous states and inputs. Finally we tied the notion of adversarial examples and entropy reduction to collisions, thus linking the number of examples to the probability of collision. We ran experiments on entropy reduction and the number of collisions using randomly seeded and deliberately seeded data for the MD5 algorithm. Thus, we showed our algorithm was able to infer new adversarial examples given a seeded set by exploiting the relationship between states and input. There is much future work that can be done in expanding the presented framework to other cryptographic systems, refining the current framework to exploit other weak properties of hash functions, and coming up with further novel algorithms for efficiently searching the state and input spaces. 
 
-
-
-
-%-------------------------------------------------------------------------------
-\section*{Acknowledgments}
-%-------------------------------------------------------------------------------
-
-The USENIX latex style is old and very tired, which is why
-there's no \textbackslash{}acks command for you to use when
-acknowledging. Sorry.
 
 %-------------------------------------------------------------------------------
 \section*{Availability}
 %-------------------------------------------------------------------------------
 
-The code that implements our experiments and the data used are available on Github at \url{https://github.com/<removed-for-anonymity>/hash-project}. 
+The code that implements our experiments and the data used are available on Github at \url{https://github.com/gangopad/hash-project}. 
 
 %-------------------------------------------------------------------------------
 \section*{Appendix}
