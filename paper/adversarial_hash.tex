@@ -348,6 +348,25 @@
   organization={Springer}
 }
 
+@inproceedings{graepel2012ml,
+  title={ML confidential: Machine learning on encrypted data},
+  author={Graepel, Thore and Lauter, Kristin and Naehrig, Michael},
+  booktitle={International Conference on Information Security and Cryptology},
+  pages={1--21},
+  year={2012},
+  organization={Springer}
+}
+
+@article{hospodar2011machine,
+  title={Machine learning in side-channel analysis: a first study},
+  author={Hospodar, Gabriel and Gierlichs, Benedikt and De Mulder, Elke and Verbauwhede, Ingrid and Vandewalle, Joos},
+  journal={Journal of Cryptographic Engineering},
+  volume={1},
+  number={4},
+  pages={293},
+  year={2011},
+  publisher={Springer}
+}
 \end{filecontents}
 
 %-------------------------------------------------------------------------------
@@ -397,13 +416,13 @@ Our framework has the benefit of modularizing the process of defining, uncoverin
 %-------------------------------------------------------------------------------
 \subsection{Related Work}
 %-------------------------------------------------------------------------------
-We outline related work that has been conducted in the areas of exploiting hash function weaknesses, and using machine learning against cryptographic systems. ~\cite{jovanovic2005logical} conducted work in analyzing the hardness of hash functions. This paper introduced the notion of hash functions with regards to satisfiable and unsatisfiable problems within the NP hard class, establishing a framework to evaluate the class of hash functions. There is a class of work (\textcolor{red}{CITE WANG, SHA1 attacks, etc}) that focuses on domain based attack mechanisms against hash functions. This work focuses on precise and deterministic attacks against specific hash functions and aims to bring down the intractable nature of the problem. Although these attacks are easily reproducible and clearly uncover vulnerabilities, they are not generalizable and seldom can be used to infer weaknesses outside of what was uncovered.
+We outline related work that has been conducted in the areas of exploiting hash function weaknesses, and using machine learning against cryptographic systems. ~\cite{jovanovic2005logical, rivest1991cryptography} conducted work in analyzing the hardness of hash functions. This paper introduced the notion of hash functions with regards to satisfiable and unsatisfiable problems within the NP hard class, establishing a framework to evaluate the class of hash functions. There is a class of work ~\cite{liang2007improved, stevens2017speeding, stevens2012attacks, de2007collisions, de2006finding,  den1993collisions} that focuses on domain based attack mechanisms against hash functions. This work focuses on precise and deterministic attacks against specific hash functions and aims to bring down the intractable nature of the problem. Although these attacks are easily reproducible and clearly uncover vulnerabilities, they are not generalizable and seldom can be used to infer weaknesses outside of what was uncovered.
 \\
 \\
-Much work has been done in relating machine learning methods to cryptography and cryptographic systems. Rivest's seminal paper on the topic (~\cite{rivest1991cryptography}) outlines the mathematical and semantic relationships between the two fields. There have been many studies that attempt to use machine learning to find mathematical or implementation vulnerabilities in cryptographic systems \textcolor{red}{CITE}. 
+Much work has been done in relating machine learning methods to cryptography and cryptographic systems. Rivest's seminal paper on the topic ~\cite{rivest1991cryptography} outlines the mathematical and semantic relationships between the two fields. There have been many studies that attempt to use machine learning to find mathematical or implementation vulnerabilities in cryptographic systems ~\cite{hospodar2011machine, graepel2012ml}. 
 \\
 \\
-Due to the intractable nature of primality, there has not been much successful work in applying machine learning methods to uncover vulnerabilities in cryptographic systems. A further drawback of machine learning methods is the lack of reproducibility due to the empirical nature of the field. Thus requiring replication of data and parameters to uncover interesting results. Nonetheless, we present a machine learning framework that allows us to systematically uncover vulnerabilities in hash functions by exploiting relations between construction and input. Our framework based approach allows us to overcome the traditional issues in applying machine learning to find vulnerabilities and throughout the paper we emphasize the framing of our solution with respects to reproducibility and explainability.  
+Due to the intractable nature of primality, there has not been much successful work in applying machine learning methods to uncover vulnerabilities in cryptographic systems. A further drawback of machine learning methods is the lack of reproducibility due to the empirical nature of the field, thus requiring replication of data and parameters to uncover interesting results. The framework we posit in here gives a structure within which future research in the field can innovate.  Additionally, the hashing problem we explore is particularly well suited for machine learning based approaches. We further note that this is particularly the case with reference to our frameworks ability to address the reproducibility and explainability problems. 
 
 %-------------------------------------------------------------------------------
 \section{Contributions}
