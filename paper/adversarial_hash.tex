@@ -640,11 +640,14 @@ In this section we outline our experiments, present the results and analyze them
 
 \subsection{Experiments} 
 We design experiments to observe parameter values of Theorem 1 and Theorem 2 in practice. We experiment exclusively on MD5 for ease of validation given the scale of its' known weaknesses, noting that our methodology is equally applicable to SHA1 and SHA2. We apply our framework to MD5 given the reduction in Section {refsec:reducmd5}. All of our experiments were run on a box with 16 2.3 GHz Intel Xeon E5-2686 v4 Processors and 122 GiB RAM.
-
+\\
+\\
 To observe parameters of Theorem 1 for MD5, we compute values of $m$ as a function of $epsilon$ for multiple input spaces $X$. In addition to running this experiment on all states observed during the computation of MD5, we also narrow our focus to states observed by a particular blackbox component, in the case of MD5 being $B^0, B^1, B^2, B^3$, mapping to MD5 rounds $F, G, H, I$, respectively. 
-
+\\
+\\
 To observe parameters of Theorem 2, we leverage Algorithms \ref{alg:adv} and \ref{alg:col} in order to find collisions in the predefined input spaces $X$, also observing results for all states observed during the MD5 computation as well as for the individual blackbox components. 
-
+\\
+\\
 We ran each of these experiments on six pre computed input spaces denoted random\_$\{0,1,2\}$ and seeded\_$\{0,1,2\}$, respectively. Each set from random\_$\{0,1,2\}$ was contains 200,000 inputs, $x$ of 1024 randomly generated bits using Java's built in \texttt{randint()} function. In addition to the input blocks, the set contains the states observed during the computation of MD5$(x)$, for each $x$ in the set as well as the states observed, as defined in Section \ref{bbdef} during the computation of the hash value, including the final state which is the output of the hash function. seeded\_$\{0,1,2\}$ was generated the same way, except that the input blocks $x$ had the first 512 bits fixed and the second 512 bits generated randomly. The first 512 bits were fixed using the preface included by Wang in ~\cite{wang2005break}, and noting her observation that given a sufficient 512 bit first block, the next 512 blocks will force a collision with increased likelihood. These sets were used to bring the computational requirements of the problem into the realm of our constrained computational resources, though we note that this has no impact on the theoretical guarantees outlined in the previous sections.  
 
 \subsection{Experimental Results and Discussion} 
@@ -652,13 +655,17 @@ We ran each of these experiments on six pre computed input spaces denoted random
 \subsubsection{Theorem 1}
 
 In our Theorem 1 experiments we observe how many samples must be taken from each input space before a reduction in the entropy of the observed states is reduced, that is that there is a collision of two observed states. Taking Wang, et. al's claim to be true, we expect that the seeded input spaces will in many cases yield a reduction in entropy at some point, whilst seldom seeing a reduction in entropy in the state spaces generated fully randomly. 
-
+\\
+\\
 We observe this claim holds in our framework in Figure \ref{fig:thm1}, which observes duplicated states over all blackbox components $B^{0,1,2,3}$. Here we see a reduction in entropy of each of the seeded input sets, demonstrated by the reduced $m$ values that occur in each of these series. As expected, we also observe that the entropy of the random sets is never reduced, even after exhausting the full input space, which is observed in that the random series in Figure \ref{fig:thm1} never show a reduction in entropy even after all $M$ possible input states are observed. 
-
+\\
+\\
 From Figure \ref{fig:thm1} we can also observe the expected behavior of $m$ decreasing for larger values of $\epsilon$. When the $\epsilon$ tolerance for a sufficient entropy reduction was $\geq .65$, each of the seeded input sets showed a maximum reduction in entropy for small values $m$. The reduced entropies in the seeded sets before this $\epsilon$ value can be attributed to the fact that the $m$th input value $x$ is selected at random from the input space, treated as a uniform distrobution. It is therefore expected that for small values of $\epsilon$ the $m$ value will in some cases be small.
-
+\\
+\\
 In Figures \ref{fig:b0}, \ref{fig:b1}, \ref{fig:b2}, \ref{fig:b3} we observe the same, but within the context of each particular blackbox component. In the case of $B^0$, we observe in Figure \ref{fig:b0} the same trend holds wherein each of the seeded sets experience reduced entropy when $\epsilon \geq 0.5$, and additionally that there is never an observed reduced entropy for the randomly generated sets. The same is observed for component $B^2$ in Figure \ref{fig:b2}.
-
+\\
+\\
 $B^1$ and $B^3$ are the blackbox components that never experiences a reduced entropy. In \ref{fig:b1} and \ref{fig:b3} we observe that there is no reduced entropy caused by any of the input spaces. In each of these cases, the all of the elements from the input space are selected without a reduced entropy every being observed, signifying that there are also no repeated states. These blackbox components map to the $G$ and $I$ rounds in MD5, respectively, suggesting they increase collision resistance over the other rounds. 
 
 \begin{figure}
@@ -721,9 +728,17 @@ First, additional algorithms can be developed to leverage the framework presente
 Secondly, this methodology should be applied to other hash functions and cryptographic systems. With respect to hash functions, one of the key strengths of our framework is that it can easily be applied to any hash function of the Merkle{\textendash}Damg\r{a}rd construction. In this paper we explored applications to MD5, but more computationally expensive applications of the framework should be carried out against SHA1 and SHA2 in pursuit of winding weaknesses of these hash functions. With respect to other cryptograhpic systems, see the problems laid out in Section \ref{sec:cryptosys}.
 \\
 \\
-Lastly, greater computational resources can be applied to find additional interesting properties of MD5. Due to resource constraints, we could only apply our framework to explore an input space of  $\sim 2^{21}$. Running the experiments run in this paper on larger input spaces would yield additional interesting results about MD5. 
+Lastly, more deliberate algorithms can be applied to efficiently traverse the input and state space iteratively. We presented a Markov model that finds similar states and inputs in a greedy and localized way. More work can be done in exploring a greater class of algorithms that performs intelligent sampling across the input space to uncover sets of adversarial examples. Furthermore, interesting seeding techniques can be explored that attempt to search in various localized spaces beyond random or deliberate seeding. Finally greater computational resources can be applied to find additional interesting properties of MD5. Due to resource constraints, we could only apply our framework to explore an input space of  $\sim 2^{21}$. Running the experiments run in this paper on larger input spaces would yield additional interesting results about MD5. 
 
-\textcolor{red}{Anirban to add note about better ML algos and leveraging some metric of similarity between inputs} 
+
+
+%-------------------------------------------------------------------------------
+\section*{Conclusion}
+%-------------------------------------------------------------------------------
+
+
+
+
 %-------------------------------------------------------------------------------
 \section*{Acknowledgments}
 %-------------------------------------------------------------------------------
