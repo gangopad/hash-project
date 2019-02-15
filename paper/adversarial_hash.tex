@@ -152,6 +152,14 @@
   year={1979}
   note =         {\url{http://www.merkle.com/papers/Thesis1979.pdf}}
 }
+
+@article{kurakin2016adversarial,
+  title={Adversarial machine learning at scale},
+  author={Kurakin, Alexey and Goodfellow, Ian and Bengio, Samy},
+  journal={arXiv preprint arXiv:1611.01236},
+  year={2016}
+}
+
 \end{filecontents}
 
 %-------------------------------------------------------------------------------
@@ -225,15 +233,21 @@ In this section we outline our contributions.
 %-------------------------------------------------------------------------------
 In order for this paper to be self contained, we include this section with background information required by our methodology. 
 \subsection{Background on Machine Learning and Adversarial Attacks} 
-
+Adversarial learning is a relatively new area of machine learning that was nominally presented in \textcolor{red}{CITE}. Historically, adversarial learning has been applied to machine learning classifiers and aims to find adversarial examples that trick the classifier into mislabeling as output. Specifically, adversarial examples $x^{adv}_{i}$ are slightly perturbed examples from $x_{i}$ such that the label $y^{adv}_{i}$ is significantly different than the label $y_{i}$. 
+\\
+\\
+Adversarial examples pose significant security threats within the context of machine learning models due to the property of transferability. Specifically, an adversarial example that is misclassified by a given model is often also misclassified by a similar model. This opens up attack vectors against machine learning blackbox systems 
 
 \subsection{Background on Hash Function Construction and Weaknesses} 
 There are three elements of hash functions that are important to our approach. These include (1) the properties of cryptogaphic hash functions, (2) the Merkle{\textendash}Damg\r{a}rd construction of secure hash functions, and (3) known structural attacks against hash functions of this construction. 
-
+\\
+\\
 Cryptographic hash functions are the "workhorses of modern cryptography"~\cite{bruce2004}. These hash functions take an arbitrary length string as input, and deterministically produce a fixed length output. It is the goal of these hash functions to make it very hard to find to inputs $X, X'$ such that $H(X) = H(X')$. However, since the output is fixed length, but the input length is arbitrary, it is necessary that some collisions must exist. For example, if the output of $H(X)$ for some hash function, $H$ is $b$ bits, and an attacker computes $H(X)$ for $2^b + 1$ values of $X$, the attacker will find a collision. Finding two values $X, X'$ such that $H(X) = H(X')$ is known as a second preimage attack or a collision attack. Cryptographic hash functions should also be resistant to preimage attacks, given a hash value $h$ finding an input $X$ such that $H(X) = h)$ should be difficult. Additionally, these functions should be resistant to correlation attacks, that is a set of correlated inputs $X$ should have hash values that appear random and uncorrelated. 
-
+\\
+\\
 The most popularly used cryptographic hash functions today all use the same construction, the Merkle{\textendash}Damg\r{a}rd construction~\cite{merkle1979secrecy, bruce2004}. The Merkle{\textendash}Damg\r{a}rd construction is detailed in Figure \ref{fig:merkleconstruction}. In this construction, some padding is applied on the input message to generate $X = X_0X_1X_2\cdots X_n$, where $n$ is the number of chunks the input is broken into. A function, $f$, is applied to each of these chunks, $X_i$ and also to the state information output from the previous step, $S_i$ (we will introduce the index $j$ in \ref{sec:reducmd5}). The state is seeded in some way for any particular function conforming to the Merkle{\textendash}Damg\r{a}rd construction. 
-
+\\
+\\
 In addition to the states $S$ in Figure \ref{fig:merkleconstruction}, there are generally additional state transitions within any function application block $f$, as is the case for MD5, SHA1 and SHA2.This will be further explored in section \label{bbdef} and a notion important to our methodology. 
 
 \begin{figure}
@@ -308,7 +322,7 @@ The type of entropy reduction we use depends on the construction of our blackbox
 \\
 We give specific definitions of $F_{\epsilon}(\cdot)$ for the examples discussed above. 
 \begin{itemize}
-\item Reduction in Shannon Entropy: We define $F_{\epsilon} (\cdot) = \frac{E[H(Y_{adv})]}{E[H(Y)]}$ where $H(Y) = -\sum_{i=1}^{n} P(y_{i}) log P(y_{i})$.  
+\item Reduction in Shannon Entropy: We define $F_{\epsilon} (\cdot) = \frac{H(Y_{adv})}{E[H(Y)]}$ where $H(Y) = -\sum_{i=1}^{n} P(y_{i}) log P(y_{i})$.  
 \item Predictability of Distribution: We define $F_{\epsilon} (\cdot) = KL(Dist (\cdot) | P(Y_{adv}))$ where $KL(\cdot)$ represents KL divergence - a measure of distance between probability distributions, $Dist(\cdot)$ represents the distribution representing $P(Y_{adv})$. We note $P(Y_{adv})$ represents the probability distribution over the adversarial set. We also note $Dist(\cdot)$ must be nonuniform for our examples to be truly adversarial. 
 \item Parametrization - We define $F_{\epsilon} (\cdot) = F_{\Theta}(X_{adv})$ where $\Theta$ represents a parametrization over the inputs, yielding the output set $Y_{adv}$.
 \end{itemize}
@@ -318,13 +332,48 @@ We give specific definitions of $F_{\epsilon}(\cdot)$ for the examples discussed
 Each definition of $F_{\epsilon}(\cdot)$ lends itself to various attack vectors that allow for the exploitation of $B(\cdot)$. Hence, we consider the class of adversarial examples to be inputs that enable entropy reductions such as the ones specified above. 
 
 \subsection{Cryptographic Systems}
-What does this look like in the context of PRNGs, public key generators, hash functions?
+We discuss our notion of adversarial learning in the context of general cryptographic systems. Specifically we consider pseudo random number generators, public key generators and hash functions. We present our adversarial framework for PRNGs and public key generators. The remaining parts of the paper outlines in detail the notion of adversarial learning specifically within the context of hash functions. 
+\\
+\\
+\textbf{PRNGs:} We first consider the class of pseudorandom number generators and define the notion of an adversarial set in this context. We note a given PRNG $F(\cdot)$ is a function that takes in a seed $s$ and outputs a sequence of numbers whose properties approximate the properties of sequences of random numbers.
+\\
+\\
+Assuming we define our blackbox to be $F(\cdot)$, our definition of an adversarial examples very naturally maps to the class of PRNGs. Specifically, if we assume $E[H(Y)]$ to be the expected entropy over a randomly generated sequence of numbers $Y$ of size $M$, we can define an adversarial seed $s$ to be one that produces a sequence of numbers $Y_{adv}$ such that $H(Y_{adv}) < K \cdot H(Y)$. 
+\\
+\\
+\textbf{Public Key Generators:} We consider the blackbox system $B(\cdot)$ to be the generation of the public key and private key pair. This is used for public key encryption algorithms including RSA. The algorithm works as follows:
+
+\begin{enumerate}
+\item Choose two distinct prime numbers $p$ and $q$
+\item Compute $n = p \cdot q$. The length of $n$ (in bits) is going to be the key length.
+\item Compute $ \phi = (p-1) \cdot (q-1)$.
+\item Choose the exponent $e$ (usually $65537$)
+\item Compute $d = e^{-1} \mod \phi$
+\item Public key is the pair $(n, e)$
+\item Private key is the pair $(n, d)$
+\end{enumerate}
+
+Note in this blackbox system, we do not feed in an input $X_{i}$ to $B(\cdot)$ and get $Y_{i}$ but rather $B(\cdot)$ spits out $(X_{i}, Y_{i})$ pairs. 
+\\
+\\
+We define $X$, $Y$, entropy $H(Y)$ for this blackbox system $B(\cdot)$.
+\begin{itemize}
+\item $X$ is defined to be the public key pair $(n, e)$ denoted $p_{b}$
+\item $Y$ is defined to be the private key pair $(n, d)$ denoted $p_{k}$.
+\item The \textbf{vulnerability} can be defined as recovering $p_{k}$ given $p_{b}$
+\item $H(\hat{Y})$ for the set $\hat{Y}$ is defined to be some function of how easy it is to GCD pairs of public keys and retrieve private keys (ie measure the entropy of GCD pairs)
+\end{itemize}
 
 %-------------------------------------------------------------------------------
 \section{Adversarial Learning on Hash Functions}
 %-------------------------------------------------------------------------------
-
+We present our framework for adversarial learning against hash function. Our approach pivots around the following meta problem:
+\\
+\\
 \textbf{Meta Problem for Hash Functions:} Can we quantify how much a hash function deviates from its ideal state (perfect one way function)?
+\\
+\\
+We construct a blackbox model that represents the Merkle{\textendash}Damg\r{a}rd class of hash functions and then outline our machine learning framework which intelligently generates examples and measures how these examples lead to outputs that deviate from entropy values of the ideal state.
 
 \subsection{Notion of Blackbox}
 We present a blackbox attack on the Merkle{\textendash}Damg\r{a}rd class of hash functions. We write \emph{blackbox} to mean that the attack does not depend on the parameters or implementation details of a particular hash function. This allows our methodology to be trivially applied to any hash function of the Merkle{\textendash}Damg\r{a}rd construction. 
@@ -486,28 +535,43 @@ This allows us to implicitly characterize a notion of similarity around the prop
 
 
 \subsection{Finding Weak Hash Functions}
-In this section we show how our sampling mechanism can lead us to exploit the following weaknesses in a hash function if $B(\cdot)$ is weak.
+We show how finding adversarial examples can lead us to exploit certain properties in a hash function if $B(\cdot)$ is weak. Specifically, we tie the notion of low entropic states $Z$ to weak properties of hash functions. Interesting weaknesses of hash functions are as follows.
 
 \begin{itemize}
-\item Collisions - define
-\item Correlations - define
-\item Preimage - define
+\item Collisions - It should be computationally hard to find two inputs $x_{i}$ and $x_{j}$, such that the output of the hash function yields the same result.
+\item Correlations - A property of cryptographic hash functions such that for small changes in inputs, the outputs should appear uncorrelated. A non-uniform distribution of the outputs that is correlated in some way with the distribution of the inputs, yields correlated inputs. 
+\item Preimage - Preimage resistance is the property of a hash function that it is hard to invert, that is, given an element in the range of a hash function, it should be computationally infeasible to find an input that maps to that element.
 \end{itemize}
 
+In the following section we explore how given a low entropy set of states $Z_{adv}$ and the corresponding input $X_{adv}$, we can uncover collisions. We present the algorithm and provide theoretical bounds on the expected number of examples we need in $X_{adv}$ to uncover a collision. Our theoretical bounds are derived as a direct function of the entropy of the states in $Z_{adv}$.  
 
-The presentation of the algorithm should follow the following structure:
-\begin{enumerate}
-\item Provide a mathematical definition of the weakness
-\item Outline the algorithm (using the one from previous section) for uncovering the weak property
-\item Expected number of examples to uncover the weak property in a vulnerable hash function
-\begin{itemize}
-\item Consider the generative process or statistical properties that a given weakness enables
-\end{itemize}
-\end{enumerate}
 
 \subsubsection{Collisions}
+We first present our algorithm for finding collisions. We assume we have a set of inputs $X_{adv}$ such that $H(Z_{adv}) < K \cdot \epsilon$ where $K = H(Z_{ideal})$.
+
+\begin{algorithm}
+\caption{Collisions Alg}\label{sampling}
+\begin{algorithmic}[1]
+\State Assume as input $X_{adv}$, $Z_{adv}$ and the hash function $B(\cdot)$
+\State Initialize $Z_{seen} = \{\}$, num-col = 0
+\State \textbf{for} each $x_{i}$ in $X_{adv}$
+\begin{itemize}
+\item compute the corresponding hash $B(x_{i}) = z_{i}$
+\item If $z_{j} \in Z_{seen}$:
+\item  num-col$=$num-col$ + 1$
+\end{itemize}
+\item return num-col
+\end{algorithmic}
+\end{algorithm}
+
+Our algorithm presented above simply loops through the final states of each $x_{i}$ and computes the number of collisions. A key part of our algorithmic pipeline is we can directly link the entropy of our output states $H(Z_{adv})$ to the notion of collisions. This allows us to tie the expected bounds of our algorithms for finding adversarial examples directly to the probability of finding a collision.  
+\\
+\\
+We present Theorem 2 below which outlines the probability of finding a collision as a function of the entropy of the states in  $Z_{adv}$.
+
+
 \begin{theorem}
-Given an $\epsilon$-reduction in the entropy of states (where we define the $\epsilon$-reduction to be such that $\frac{H(z_{adv})}{H(Z_{ideal})} < \epsilon$), the probability of a collision in the final states is \textcolor{red}{ANSWER}
+Given an $\epsilon$-reduction in the entropy of states (where we define the $\epsilon$-reduction to be such that $\frac{H(Z_{adv})}{H(Z_{ideal})} < \epsilon$), the probability of a collision in the final states is \textcolor{red}{ANSWER}
 \end{theorem}
 
 More rigorously, given $X_{adv}$, assume we have $\{x_{i}^{n}, z_{ij}^{n}\}$ pairs such that $H(Z) < K \cdot \epsilon$ where $K = H(Z_{ideal})$, $Z$ is the set of states indexed over $i, j, n$. (note $i$ indexes over the chunks of size $I$, $j$ indexes over the set of states for a given chunk of size $J$, $n$ indexes over the set of inputs in $X_{adv}$ of size $N$). We derive the probability that two elements in $Z_{Final}$ collide where $Z_{Final}$ denotes a subset of $Z$ that contains the final states (more specifically a given element in $Z_{final}$ is the output of the hash function given an input $x^{n}$). Note that the size of our set $Z_{final}$ is $N$ 
@@ -522,7 +586,7 @@ We first derive P(two states in Z collide | $H(Z) < K \cdot \epsilon$) $= P_{A}$
 We derive a lower bound on $P_{A}$ as follows.
 \\
 \\
-Let us denote P(atleast two states collide) as $P(A)$. We want to derive $P(A)$ as a function of $\kappa \cdot \epsilon$. 
+Let us denote P(atleast two states collide) as $P(A)$. We want to derive $P(A)$ as a function of $K \cdot \epsilon$. 
 \\
 \\
 $P(A) = 1 - \prod_{k=1}^{Z} (1- \sum_{j=1}^{k} p(z_{j}))$ where $\prod_{k=1}^{Z} (1- \sum_{j=1}^{k} p(z_{j}))$ represents the probability that no states collide. 
@@ -581,11 +645,14 @@ Also describe how our algorithm is novel and can be applied to any hash function
 %-------------------------------------------------------------------------------
 
 There are three types of work to be pursued following this paper. These directions are, respectively, (1) exploring other types of weaknesses, (2) applying the methodology to other hash functions, and (3) running the presented algorithms on a larger state space. Each of these directions will be taken up in turn in this section. 
-
+\\
+\\
 First, additional algorithms can be developed to leverage the framework presented in this paper towards discovering other types of weaknesses in hash functions. In addition to being collision resistant, cryptographic hash functions should be resistant to preimage and correlation attacks. The notion of discovering states that are susceptible to collisions can be used to reduce the work load on a SAT solver attempting a preimage attack by reducing the amount of unknown intermediate states. SAT solvers have been successfully applied to hash functions in similar contexts ~\cite{mironov2006applications}. Additional algorithms could be developed for correlation attacks. 
-
+\\
+\\
 Secondly, this methodology should be applied to other hash functions. One of the key strengths of our framework is that it can easily be applied to any hash function of the Merkle{\textendash}Damg\r{a}rd construction. In this paper we explored applications to MD5, but more computationally expensive applications of the framework should be carried out against SHA1 and SHA2 in pursuit of winding weaknesses of these hash functions. 
-
+\\
+\\
 Lastly, greater computational resources can be applied to find additional interesting properties of MD5. Due to resource constraints, we could only apply our framework to explore an input space of  $\sim 2^{21}$. Running the experiments run in this paper on larger input spaces would yield additional interesting results about MD5. 
 
 %-------------------------------------------------------------------------------
