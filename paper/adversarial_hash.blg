@@ -1,0 +1,173 @@
+This is BibTeX, Version 0.99d (TeX Live 2013)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: adversarial_hash.aux
+The style file: plain.bst
+Database file #1: adversarial_hash.bib
+I was expecting a `,' or a `}'---line 14 of file adversarial_hash.bib
+ :   
+ :   note =         {\url{https://pdfs.semanticscholar.org/303a/13faac4a76c2e249fcd9587257f276da1a02.pdf}}
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 23 of file adversarial_hash.bib
+ :   
+ :   note =         {\url{https://link.springer.com/content/pdf/10.1007/11426639_2.pdf}}
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 34 of file adversarial_hash.bib
+ :   
+ :   note =         {\url{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.81.8251&rep=rep1&type=pdf}}
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 43 of file adversarial_hash.bib
+ :   
+ :   note =         {\url{https://eprint.iacr.org/2017/190.pdf}}
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 52 of file adversarial_hash.bib
+ :   
+ :   note =         {\url{https://eprint.iacr.org/2005/102.pdff}}
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 61 of file adversarial_hash.bib
+ :   
+ :   note = {\url{https://www.researchgate.net/profile/Sangjin_Lee6/publication/221462213_Improved_Fast_Correlation_Attack_on_the_Shrinking_and_Self-shrinking_Generators/links/02e7e52b36d7583923000000.pdf#page=252}}
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 70 of file adversarial_hash.bib
+ :   
+ :   note = {\url{https://eprint.iacr.org/2006/254.pdf}}
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 77 of file adversarial_hash.bib
+ :   
+ :   note =         {\url{https://www.schneier.com/essays/archives/2004/08/cryptanalysis_of_md5.html}}
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 84 of file adversarial_hash.bib
+ :   
+ :   note =         {\url{http://www.merkle.com/papers/Thesis1979.pdf}}
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+Repeated entry---line 94 of file adversarial_hash.bib
+ : @article{kurakin2016adversarial
+ :                                ,
+I'm skipping whatever remains of this entry
+"{" immediately follows a field part---line 125 of file adversarial_hash.bib
+ :   note = \url
+ :              {https://link.springer.com/content/pdf/10.1007/978-3-642-03356-8_1.pdf}
+I'm skipping whatever remains of this entry
+"{" immediately follows a field part---line 135 of file adversarial_hash.bib
+ :   note = \url
+ :              {https://link.springer.com/content/pdf/10.1007/3-540-69710-1_12.pdf}
+I'm skipping whatever remains of this entry
+"{" immediately follows a field part---line 145 of file adversarial_hash.bib
+ :   note = \url
+ :              {http://www.pinkas.net/PAPERS/gpr06.pdf}
+I'm skipping whatever remains of this entry
+"{" immediately follows a field part---line 156 of file adversarial_hash.bib
+ :   note = \url
+ :              {https://hal.inria.fr/hal-01094296/document}
+I'm skipping whatever remains of this entry
+"{" immediately follows a field part---line 166 of file adversarial_hash.bib
+ :   note = \url
+ :              {http://www.cs.umd.edu/class/fall2018/cmsc818O/papers/private-keys-public.pdf}
+I'm skipping whatever remains of this entry
+"{" immediately follows a field part---line 176 of file adversarial_hash.bib
+ :   note = \url
+ :              {https://link.springer.com/content/pdf/10.1007/11426639_1.pdf}
+I'm skipping whatever remains of this entry
+"{" immediately follows a field part---line 186 of file adversarial_hash.bib
+ :   note = \url
+ :              {https://link.springer.com/content/pdf/10.1007/11535218_1.pdf}
+I'm skipping whatever remains of this entry
+"{" immediately follows a field part---line 197 of file adversarial_hash.bib
+ :   note = \url
+ :              {https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.95.7274&rep=rep1&type=pdf}
+I'm skipping whatever remains of this entry
+"{" immediately follows a field part---line 207 of file adversarial_hash.bib
+ :   note = \url
+ :              {https://pdfs.semanticscholar.org/5063/a36e4909735a768b01574e6ae584f022bd8a.pdf?_ga=2.219821849.1259709094.1550265294-1864154480.1550265294}
+I'm skipping whatever remains of this entry
+"{" immediately follows a field part---line 217 of file adversarial_hash.bib
+ :   note = \url
+ :              {https://link.springer.com/content/pdf/10.1007/3-540-48285-7_26.pdf}
+I'm skipping whatever remains of this entry
+"{" immediately follows a field part---line 227 of file adversarial_hash.bib
+ :   note = \url
+ :              {https://link.springer.com/content/pdf/10.1007/3-540-46766-1_14.pdf}
+I'm skipping whatever remains of this entry
+"{" immediately follows a field part---line 237 of file adversarial_hash.bib
+ :   note = \url
+ :              {https://link.springer.com/content/pdf/10.1007/11935230_1.pdf}
+I'm skipping whatever remains of this entry
+"{" immediately follows a field part---line 247 of file adversarial_hash.bib
+ :   note = \url
+ :              {https://link.springer.com/content/pdf/10.1007/978-3-540-77360-3_4.pdf}
+I'm skipping whatever remains of this entry
+"{" immediately follows a field part---line 255 of file adversarial_hash.bib
+ :   note = \url
+ :              {https://openaccess.leidenuniv.nl/bitstream/handle/1887/19093/PhD\%20Thesis\%20Marc\%20Stevens\%20-\%20Attacks\%20on\%20Hash\%20Functions\%20and\%20Applications.pdf?sequence=16&origin=publication_detail}
+I'm skipping whatever remains of this entry
+"{" immediately follows a field part---line 269 of file adversarial_hash.bib
+ :   note = \url
+ :              {http://www.rfc-editor.org/rfc/pdfrfc/rfc1321.txt.pdf}
+I'm skipping whatever remains of this entry
+"{" immediately follows a field part---line 278 of file adversarial_hash.bib
+ :   note = \url
+ :              {https://cyber-peace.org/wp-content/uploads/2013/06/U.S.pdf}
+I'm skipping whatever remains of this entry
+"{" immediately follows a field part---line 286 of file adversarial_hash.bib
+ :   note = \url
+ :              {https://apps.dtic.mil/dtic/tr/fulltext/u2/a406543.pdf}
+I'm skipping whatever remains of this entry
+"{" immediately follows a field part---line 298 of file adversarial_hash.bib
+ :   note = \url
+ :              {https://www.rocq.inria.fr/secret/PUBLICATIONS/RESUMES/Man09.pdf}
+I'm skipping whatever remains of this entry
+"{" immediately follows a field part---line 308 of file adversarial_hash.bib
+ :   note = \url
+ :              {https://link.springer.com/content/pdf/10.1007/978-3-540-72540-4_1.pdf}
+I'm skipping whatever remains of this entry
+Warning--empty journal in bruce2004
+You've used 22 entries,
+            2118 wiz_defined-function locations,
+            614 strings with 7635 characters,
+and the built_in function-call counts, 9116 in all, are:
+= -- 948
+> -- 376
+< -- 15
++ -- 150
+- -- 126
+* -- 555
+:= -- 1394
+add.period$ -- 80
+call.type$ -- 22
+change.case$ -- 127
+chr.to.int$ -- 0
+cite$ -- 23
+duplicate$ -- 406
+empty$ -- 737
+format.name$ -- 126
+if$ -- 2046
+int.to.chr$ -- 0
+int.to.str$ -- 22
+missing$ -- 23
+newline$ -- 113
+num.names$ -- 44
+pop$ -- 173
+preamble$ -- 1
+purify$ -- 106
+quote$ -- 0
+skip$ -- 304
+stack$ -- 0
+substring$ -- 574
+swap$ -- 153
+text.length$ -- 15
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 86
+warning$ -- 1
+while$ -- 93
+width$ -- 24
+write$ -- 253
+(There were 29 error messages)

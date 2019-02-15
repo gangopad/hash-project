@@ -648,7 +648,7 @@ $p(z_{i+1j} | z_{ij}) = \frac{count(z_{i+1j}, z_{ij})}{count(z_{ij})}$.
 We can similarly derive $p(z_{i+1j} | x_{j}) = \frac{p(z_{i+1j} \cap x_{j})}{p(x_{j})}$ 
 \\
 \\
-$\rightarrow p(z_{i+1j} | x_{j}) = \frac{count(z_{i+1j}, x_{j})}{count(x_{j})}$ by MLE derivations. 
+which implies $p(z_{i+1j} | x_{j}) = \frac{count(z_{i+1j}, x_{j})}{count(x_{j})}$ by MLE derivations. 
 \\
 \\
 Therefore, we obtain our discrete probability distribution function that posits over our states $z_{ij}$ and input chunks $x_{j}$. We next define our state space and enumerate our training process.
@@ -663,16 +663,28 @@ We start by defining our state space $Z$. Since our random walk is defined over 
 Given a set of inputs $\hat{X}$, we train our probability distribution function by considering the sequence of step transforms $S_{0} \rightarrow B^{1}(X_{i}, S_{i}) \rightarrow S_{1},..., \rightarrow S_{p-1} \rightarrow B^{P}(X_{i}, S_{i}) \rightarrow S_{p}$ where $P$ is the number of steps in a round of $B(\cdot)$ for each $X$. 
 \\
 \\
-By using MLE estimates and applying the Markov assumption, we get $P(z^{i} | z^{j}) = \frac{count(B^{i}(x, S_{i} = z_{i}) \rightarrow S_{j} = z_{j})}{count(B^{i}(x, S_{i} = z_{i})}$. \textbf{Note:} \textcolor{red}{Can provide proof if necessary}. Similarly, we obtain $P(z^{i} | x^{i}) = \frac{count(B^{i}(x_{i}, S_{i} = z_{i}))}{count(B^{i}(x_{i}, S)}$
+By using MLE estimates and applying the Markov assumption, we get $P(z^{i} | z^{j}) = \frac{count(B^{i}(x, S_{i} = z_{i}) \rightarrow S_{j} = z_{j})}{count(B^{i}(x, S_{i} = z_{i})}$. 
 \\
 \\
-Hence, we can represent our Markov transition probabilities in matrix form and derive $p(z_{ij}$ accordingly. We note that the size of our transition matrix for $P(z^{i} | z^{j})$ and $P(z^{i} | x^{i})$ respectively are $M \times M$ and $M \times N$ respectively which are intractable for most hash functions. We note that for the purposes of finding weaknesses in our hash function, we dont need to learn the entire distribution but rather only a locally adversarial subset. We apply Laplace smoothing to initialize each element of our transition matrices via constant $\frac{\eta}{N^{2}}$ and $\frac{\eta}{N \cdot M}$ respectively. These represent uniform priors on the unobserved transition states. As we train our transition matrices, we renormalize the matrices to preserve stochasticity.
+Similarly, we obtain $P(z^{i} | x^{i}) = \frac{count(B^{i}(x_{i}, S_{i} = z_{i}))}{count(B^{i}(x_{i}, S)}$
+\\
+\\
+Hence, we can represent our Markov transition probabilities in matrix form and derive $p(z_{ij})$ accordingly. We note that the size of our transition matrix for $P(z^{i} | z^{j})$ and $P(z^{i} | x^{i})$ are $M \times M$ and $M \times N$ respectively which are intractable for most hash functions. We note that for the purposes of finding weaknesses in our hash function, we dont need to learn the entire distribution but rather only a locally adversarial subset. We apply Laplace smoothing to initialize each element of our transition matrices via constant $\frac{\eta}{N^{2}}$ and $\frac{\eta}{N \cdot M}$ respectively. These represent uniform priors on the unobserved transition states. As we train our transition matrices, we renormalize the matrices to preserve stochasticity.
 
 \subsubsection{Adversarial Set}
 Our goal is to identify given a set $\hat{X}$, where $\frac{P(\hat{Z})}{P_{ideal}(Z)} < \epsilon$ for some predefined $\epsilon$. If so we denote $\hat{X}$ adversarial. We note that $P_{ideal}(Z)$ denotes the transition matrix if the hash function were in its ideal state. We derive $P_{ideal}(Z)$ below based on the assumption of a perfect one way function.
 \\
 \\
-\textcolor{red}{Give definition of one way function and derive $P_{ideal}(Z)$ from there. Note that although there is a dimensionality reduction in the overall one way function (and hash definition), the steps (and hence states) themselves as they are defined map from $\{0,1\}^{M} \rightarrow \{0,1\}^{M}$.} 
+We start by providing the definition of a perfect one way function.
+\\
+\\
+\textbf{One Way Function:} A function $f: \{0,1\}^{*} \rightarrow \{0,1\}^{*}$ is strongly one way if the following two conditions hold:
+\begin{enumerate}
+\item There exists a polynomial-time algorithm, A, such that given input x, A outputs f(x) (i.e f(x)=A(x))
+\item For every probabilistic polynomial-time algorithm A', every polynomial p() , and all sufficently large n's, $P[A'(f(x)) \in f^{-1}f(x)] < \frac{1}{p(n)}$.  
+\end{enumerate}
+
+From a generative perspective, we can also view a perfect one way function as returning an output $f(x)$ uniformly over the set of outputs, given any input $x$. We note that although a one way function doesnt require $f(x)$ to be generated from a uniform distribution, it requires $f(x)$ to be non-distinguishable from a uniform distribution. Hence, we derive  $P_{ideal}(Z)$ as the entropy over the set of states $M$ such that $p(z) = \frac{1}{M}$ for all $z \in Z$. 
 \\
 \\
 We can define $P(Z)$ as the Shannon entropy over the elements of the state transition matrix $Z$. Specifically, we find the distribution of element values and then compute $H(Z) = -\sum_{i=1}^{n} P(z_{i}) log P(z_{i})$.
@@ -688,16 +700,22 @@ Consider the following theorem that, given the ability to query a subset $\hat{X
 
 \begin{theorem}
 \label{mainThm}
-For a given $\epsilon, \delta$ how many samples $m$, where $m = F(\epsilon, \delta)$ are needed such that $P(\frac{P(Z)}{P_{ideal}(Z)}< \epsilon) > 1 - \delta$ for the state space $Z$ where the set of states are defined in our Markov model. 
+For a given $\epsilon, \delta$  the expected number of examples $m$ needed such that $P(\frac{P(Z)}{P_{ideal}(Z)}< \epsilon) > 1 - \delta$  is $m = F(\epsilon, \delta)$ for the state space $Z$ where the set of states are defined in our Markov model. 
 \end{theorem}
 
-\textcolor{red}{We present a proof of \ref{mainThm} in the appendix.}
+We present the proof below. Our proof follows an inductive structure. We note that $H(Z) = -\sum_{k} p(z_{k}) log p(z_{k})$. We also note after a certain number of examples $m_{0}$, there is a high probability that the entropy goes down as we observe a new example. We derive how much the entropy is expected to go down with each example. 
+\\
+\\
+We wish to derive $E[H(Z_{new}) - H(Z_{old})]$ 
+\\
+\\
+This is equivalent to $E[-\sum_{k*} p(z_{k}^{*})log p(z_{k}^{*}) + \sum_{k} p(z_{k}) log p(z_{k})]$. 
 \\
 \\
 We note the presented paradigm represents the naive approach of sampling the hash function $m$ times and measure the change in entropy of the states. 
 \\
 \\
-Given the nature of the state space $|X|$, we note that $m$ is intractable over reasonable values of $\epsilon, \delta$.\textcolor{red}{Include a discussion on mapping $m$ to number of cores for different values of $m$. Maybe include a table}. Hence, we present an algorithm that uses our machine learning framework to derive adversarial examples given a set of seeded known adversarial examples $X_{init}$. 
+Given the nature of the state space $|X|$, we note that $m$ is intractable over reasonable values of $\epsilon, \delta$. Hence, we present an algorithm that uses our machine learning framework to derive adversarial examples given a set of seeded known adversarial examples $X_{init}$. 
 
 
 \subsubsection{Uncovering Adversarial Examples}

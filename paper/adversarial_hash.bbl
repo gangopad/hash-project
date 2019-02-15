@@ -1,0 +1,132 @@
+\begin{thebibliography}{10}
+
+\bibitem{den1991attack}
+Bert Den~Boer and Antoon Bosselaers.
+\newblock An attack on the last two rounds of md4.
+\newblock In {\em Annual International Cryptology Conference}, pages 194--203.
+  Springer, 1991.
+
+\bibitem{den1993collisions}
+Bert den Boer and Antoon Bosselaers.
+\newblock Collisions for the compression function of md5.
+\newblock In {\em Workshop on the Theory and Application of of Cryptographic
+  Techniques}, pages 293--304. Springer, 1993.
+
+\bibitem{goodfellow2014generative}
+Ian Goodfellow, Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley,
+  Sherjil Ozair, Aaron Courville, and Yoshua Bengio.
+\newblock Generative adversarial nets.
+\newblock In {\em Advances in neural information processing systems}, pages
+  2672--2680, 2014.
+
+\bibitem{gutterman2006analysis}
+Zvi Gutterman, Benny Pinkas, and Tzachy Reinman.
+\newblock Analysis of the linux random number generator.
+\newblock In {\em Security and Privacy, 2006 IEEE Symposium on}, pages 15--pp.
+  IEEE, 2006.
+
+\bibitem{heninger2009reconstructing}
+Nadia Heninger and Hovav Shacham.
+\newblock Reconstructing rsa private keys from random key bits.
+\newblock In {\em Advances in Cryptology-CRYPTO 2009}, pages 1--17. Springer,
+  2009.
+
+\bibitem{jovanovic2005logical}
+Dejan Jovanovi{\'c} and Predrag Jani{\v{c}}i{\'c}.
+\newblock Logical analysis of hash functions.
+\newblock In {\em International Workshop on Frontiers of Combining Systems},
+  pages 200--215. Springer, 2005.
+
+\bibitem{kelsey1998cryptanalytic}
+John Kelsey, Bruce Schneier, David Wagner, and Chris Hall.
+\newblock Cryptanalytic attacks on pseudorandom number generators.
+\newblock In {\em International Workshop on Fast Software Encryption}, pages
+  168--188. Springer, 1998.
+
+\bibitem{klima2005finding}
+Vlastimil Klima.
+\newblock Finding md5 collisions on a notebook pc using multi-message
+  modifications.
+\newblock {\em IACR Cryptology ePrint Archive}, 2005:102, 2005.
+
+\bibitem{klima2006tunnels}
+Vlastimil Klima.
+\newblock Tunnels in hash functions: Md5 collisions within a minute.
+\newblock {\em IACR Cryptology ePrint Archive}, 2006:105, 2006.
+
+\bibitem{kurakin2016adversarial}
+Alexey Kurakin, Ian Goodfellow, and Samy Bengio.
+\newblock Adversarial machine learning at scale.
+\newblock {\em arXiv preprint arXiv:1611.01236}, 2016.
+
+\bibitem{liang2007improved}
+Jie Liang and Xue-Jia Lai.
+\newblock Improved collision attack on hash function md5.
+\newblock {\em Journal of Computer Science and Technology}, 22(1):79--87, 2007.
+
+\bibitem{merkle1979secrecy}
+Ralph Merkle.
+\newblock Secrecy, authentication, and public key systems.
+\newblock {\em Ph. D. Thesis, Stanford University}, 1979.
+
+\bibitem{mironov2006applications}
+Ilya Mironov and Lintao Zhang.
+\newblock Applications of sat solvers to cryptanalysis of hash functions.
+\newblock In {\em International Conference on Theory and Applications of
+  Satisfiability Testing}, pages 102--115. Springer, 2006.
+
+\bibitem{rivest1991cryptography}
+Ronald~L Rivest.
+\newblock Cryptography and machine learning.
+\newblock In {\em International Conference on the Theory and Application of
+  Cryptology}, pages 427--439. Springer, 1991.
+
+\bibitem{sasaki2006construct}
+Yu~Sasaki, Yusuke Naito, Jun Yajima, Takeshi Shimoyama, Noboru Kunihiro, and
+  Kazuo Ohta.
+\newblock How to construct sufficient conditions for hash functions.
+\newblock In {\em Progress in Cryptology-VIETCRYPT 2006}, pages 243--259.
+  Springer, 2006.
+
+\bibitem{bruce2004}
+Bruce Schneier.
+\newblock Cryptanalysis of md5 and sha: Time for a new standard.
+\newblock 2004.
+
+\bibitem{stevens2017first}
+Marc Stevens, Elie Bursztein, Pierre Karpman, Ange Albertini, and Yarik Markov.
+\newblock The first collision for full sha-1.
+\newblock In {\em Annual International Cryptology Conference}, pages 570--596.
+  Springer, 2017.
+
+\bibitem{stevens2012attacks}
+Marc Martinus~Jacobus Stevens et~al.
+\newblock {\em Attacks on hash functions and applications}.
+\newblock Mathematical Institute, Faculty of Science, Leiden University, 2012.
+
+\bibitem{wang2005cryptanalysis}
+Xiaoyun Wang, Xuejia Lai, Dengguo Feng, Hui Chen, and Xiuyuan Yu.
+\newblock Cryptanalysis of the hash functions md4 and ripemd.
+\newblock In {\em Annual international conference on the theory and
+  applications of cryptographic techniques}, pages 1--18. Springer, 2005.
+
+\bibitem{wang2005break}
+Xiaoyun Wang and Hongbo Yu.
+\newblock How to break md5 and other hash functions.
+\newblock In {\em Annual international conference on the theory and
+  applications of cryptographic techniques}, pages 19--35. Springer, 2005.
+
+\bibitem{wang2005efficient}
+Xiaoyun Wang, Hongbo Yu, and Yiqun~Lisa Yin.
+\newblock Efficient collision search attacks on sha-0.
+\newblock In {\em Annual International Cryptology Conference}, pages 1--16.
+  Springer, 2005.
+
+\bibitem{yilek2009private}
+Scott Yilek, Eric Rescorla, Hovav Shacham, Brandon Enright, and Stefan Savage.
+\newblock When private keys are public: results from the 2008 debian openssl
+  vulnerability.
+\newblock In {\em Proceedings of the 9th ACM SIGCOMM Conference on Internet
+  Measurement}, pages 15--27. ACM, 2009.
+
+\end{thebibliography}
