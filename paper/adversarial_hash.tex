@@ -35,6 +35,14 @@
   year={2006}
   note =         {\url{https://pdfs.semanticscholar.org/303a/13faac4a76c2e249fcd9587257f276da1a02.pdf}}
 }
+@inproceedings{damgaard1989design,
+  title={A design principle for hash functions},
+  author={Damg{\aa}rd, Ivan Bjerre},
+  booktitle={Conference on the Theory and Application of Cryptology},
+  pages={416--427},
+  year={1989},
+  organization={Springer}
+}
 @inproceedings{papernot2017practical,
   title={Practical black-box attacks against machine learning},
   author={Papernot, Nicolas and McDaniel, Patrick and Goodfellow, Ian and Jha, Somesh and Celik, Z Berkay and Swami, Ananthram},
@@ -282,6 +290,14 @@
   journal={arXiv preprint arXiv:1802.00420},
   year={2018}
 }
+@incollection{stevens2009short,
+  title={Short chosen-prefix collisions for MD5 and the creation of a rogue CA certificate},
+  author={Stevens, Marc and Sotirov, Alexander and Appelbaum, Jacob and Lenstra, Arjen and Molnar, David and Osvik, Dag Arne and De Weger, Benne},
+  booktitle={Advances in Cryptology-CRYPTO 2009},
+  pages={55--69},
+  year={2009},
+  publisher={Springer}
+}
 
 @article{tramer2017ensemble,
   title={Ensemble adversarial training: Attacks and defenses},
@@ -367,12 +383,30 @@
   year={2017}
 }
 
+@inproceedings{wang2005finding,
+  title={Finding collisions in the full SHA-1},
+  author={Wang, Xiaoyun and Yin, Yiqun Lisa and Yu, Hongbo},
+  booktitle={Annual international cryptology conference},
+  pages={17--36},
+  year={2005},
+  organization={Springer}
+}
+
 @inproceedings{rivest1991cryptography,
   title={Cryptography and machine learning},
   author={Rivest, Ronald L},
   booktitle={International Conference on the Theory and Application of Cryptology},
   pages={427--439},
   year={1991},
+  organization={Springer}
+}
+
+@inproceedings{de2006finding,
+  title={Finding SHA-1 characteristics: General results and applications},
+  author={De Canniere, Christophe and Rechberger, Christian},
+  booktitle={International Conference on the Theory and Application of Cryptology and Information Security},
+  pages={1--20},
+  year={2006},
   organization={Springer}
 }
 
@@ -404,6 +438,20 @@
   year={2011},
   organization={ACM}
 }
+@book{katz2014introduction,
+  title={Introduction to modern cryptography},
+  author={Katz, Jonathan and Lindell, Yehuda},
+  year={2014},
+  publisher={CRC press}
+}
+@inproceedings{bogdanov2011biclique,
+  title={Biclique cryptanalysis of the full AES},
+  author={Bogdanov, Andrey and Khovratovich, Dmitry and Rechberger, Christian},
+  booktitle={International Conference on the Theory and Application of Cryptology and Information Security},
+  pages={344--371},
+  year={2011},
+  organization={Springer}
+}
 \end{filecontents}
 
 %-------------------------------------------------------------------------------
@@ -417,17 +465,17 @@
 \title{\Large \bf Adversarial Learning on Blackbox Hash Functions}
 
 %for single author (just remove % characters)
-%\author{
-%{\rm Anirban Gangopadhyay}\\
+\author{
+{\rm Anonymous}\\
 %Palantir Technologies
-%\and
-%{\rm Joshua Zweig}\\
+\and
+{\rm Anonymous}\\
 %Palantir Technologies
 % copy the following lines to add more authors
 % \and
 % {\rm Name}\\
 %Name Institution
-%} % end author
+} % end author
 
 \maketitle
 
@@ -440,20 +488,21 @@ We present a novel machine learning framework which we apply here to uncover wea
 %-------------------------------------------------------------------------------
 \section{Introduction}
 %-------------------------------------------------------------------------------
-There have been many domain based efforts that have attempted to find vulnerabilities in hash functions and cryptographic systems in general ~\cite{wang2005efficient, den1993collisions, heninger2009reconstructing, stevens2012attacks,  den1991attack, kelsey1998cryptanalytic}. Wang seminally uncovered vulnerabilities in MD5 and there has been much follow on work in applying novel methods to uncover weaknesses in hash functions, public key generators and the like ~\cite{wang2005break, gutterman2006analysis, yilek2009private}. Much of the work in this domain has either been of a cryptographic nature ~\cite{wang2005cryptanalysis}, exploiting mathematical weaknesses in the algorithms - or of an information security nature, exploiting weaknesses in the protocol design and implementation. Although these methods have the benefit of solid mathematical grounding and ease of reproducibility, due to the domain specific nature of such work, it has been very difficult to generalize such approaches to structurally finding weaknesses in cryptographic systems. 
+There have been many domain based efforts that have attempted to find vulnerabilities in hash functions and cryptographic systems ~\cite{wang2005efficient, den1993collisions, heninger2009reconstructing, stevens2012attacks,  den1991attack, kelsey1998cryptanalytic, wang2005finding, bogdanov2011biclique}. These attacks are in general highly dependent on specific properties of the system or protocol. With respect to hash functions, Wang seminally uncovered vulnerabilities in MD5 and there has been much follow on work in applying novel methods to uncover weaknesses in hash functions, public key generators and the like ~\cite{wang2005break, gutterman2006analysis, yilek2009private}. Much of the work in this domain has either been of a cryptographic nature ~\cite{wang2005cryptanalysis, de2006finding}, exploiting mathematical weaknesses in the algorithms - or of an information security nature, exploiting weaknesses in the protocol design and implementation. Although these methods have the benefit of solid mathematical grounding and ease of reproducibility, due to the domain specific nature of such work, it has been very difficult to generalize such approaches to structurally finding weaknesses in cryptographic systems. 
 \\
 \\
 We draw inspiration from the field of adversarial learning in machine learning and present a framework that can be used to assess the weaknesses of cryptographic systems and potentially uncover new vulnerabilities. Much work has been done in the study of finding adversarial examples against machine learning systems, including for blackbox machine learning systems. Goodfellow introduced seminal work in this domain and defined an adversarial example to be malicious input $x$ that fools a model into outputting a misclassified label $y'$ (where the true label was $y$)~\cite{goodfellow2014generative, kurakin2016adversarial}. 
 \\
 \\
-We expand the definition of adversarial learning to apply to the cryptographic context. This includes rigorously defining what it means for a given set of examples to be \emph{adversarial}, and justifying how the adversarial set can lead to uncovering weaknesses. We then apply this framework to the task of uncovering weaknesses in hash functions. We do this by constructing the notion of a blackbox for Merkle{\textendash}Damg\r{a}rd structured hash functions and present a framework that finds and validates adversarial examples. Lastly, we tie our framework back to the notion of weak properties as they apply to a hash function. Namely, we show how our results lead to the uncovering of collisions. We also describe how this framing and result could apply to correlative and preimage attacks in this context.\\
+We expand the definition of adversarial learning to apply to the cryptographic context. This includes rigorously defining what it means for a given set of examples to be \emph{adversarial}, and justifying how the adversarial set can lead to uncovering weaknesses. We then apply this framework to the task of uncovering weaknesses in hash functions. We do this by constructing the notion of a blackbox for Merkle{\textendash}Damg\r{a}rd structured hash functions and present a framework that finds and validates adversarial examples. Lastly, we tie our framework back to the notion of weak properties as they apply to a hash function. Namely, we show how our results lead to the uncovering of collisions. We also describe how this framing and result could apply to correlative and preimage attacks in this context.
+\\
 \\
 Our framework has the benefit of modularizing the process of defining, uncovering and validating adversariality. Hence, although we present an end to end pipeline specifically for Merkle{\textendash}Damg\r{a}rd structured hash functions, our framework can be applied to any cryptographic system that fits within our blackbox paradigm. We specifically present results in the context of the MD5 algorithm due to ease of comparison but we discuss how our methods can be applied similarly to the class of Merkle{\textendash}Damg\r{a}rd structured hash functions including the SHA1 and SHA2 algorithms. 
 
 %-------------------------------------------------------------------------------
 \subsection{Related Work}
 %-------------------------------------------------------------------------------
-We outline related work that has been conducted in the areas of exploiting hash function weaknesses, and using machine learning against cryptographic systems. ~\cite{jovanovic2005logical, rivest1991cryptography} conducted work in analyzing the hardness of hash functions. This paper introduced the notion of hash functions with regards to satisfiable and unsatisfiable problems within the NP hard class, establishing a framework to evaluate the class of hash functions. There is a class of work ~\cite{liang2007improved, stevens2017speeding, stevens2012attacks, de2007collisions, de2006finding,  den1993collisions} that focuses on domain based attack mechanisms against hash functions. This work focuses on precise and deterministic attacks against specific hash functions and aims to bring down the intractable nature of the problem. Although these attacks are easily reproducible and clearly uncover vulnerabilities, they are not generalizable and seldom can be used to infer weaknesses outside of what was uncovered.
+We outline related work that has been conducted in the areas of exploiting hash function weaknesses, and using machine learning against cryptographic systems. ~\cite{jovanovic2005logical, rivest1991cryptography} conducted work in analyzing the hardness of hash functions. This paper introduced the notion of hash functions with regards to satisfiable and unsatisfiable problems within the NP hard class, establishing a framework to evaluate the class of hash functions. There is a class of work ~\cite{liang2007improved, stevens2017speeding, stevens2012attacks, de2007collisions, de2006finding,  den1993collisions, stevens2009short} that focuses on domain based attack mechanisms against hash functions. This work focuses on precise and deterministic attacks against specific hash functions and aims to bring down the intractable nature of the problem. Although these attacks are easily reproducible and clearly uncover vulnerabilities, they are not generalizable and seldom can be used to infer weaknesses outside of what was uncovered.
 \\
 \\
 Much work has been done in relating machine learning methods to cryptography and cryptographic systems. Rivest's seminal paper on the topic ~\cite{rivest1991cryptography} outlines the mathematical and semantic relationships between the two fields. There have been many studies that attempt to use machine learning to find mathematical or implementation vulnerabilities in cryptographic systems ~\cite{hospodar2011machine, graepel2012ml}. 
@@ -486,10 +535,10 @@ There are three elements of hash functions that are important to our approach. T
 Cryptographic hash functions are the "workhorses of modern cryptography"~\cite{bruce2004}. These hash functions take an arbitrary length string as input, and deterministically produce a fixed length output. It is the goal of these hash functions to make it very hard to find to inputs $X, X'$ such that $H(X) = H(X')$. However, since the output is fixed length, but the  input length is arbitrary, it is necessary that some collisions must exist. For example, if the output of $H(X)$ for some hash function, $H$ is $b$ bits, and an attacker computes $H(X)$ for $2^b + 1$ values of $X$, the attacker will find a collision. Finding two values $X, X'$ such that $H(X) = H(X')$ is known as a second preimage attack or a collision attack. Cryptographic hash functions should also be resistant to preimage attacks, given a hash value $h$ finding an input $X$ such that $H(X) = h)$ should be difficult. Additionally, these functions should be resistant to correlation attacks, that is a set of correlated inputs $X$ should have hash values that appear random and uncorrelated. 
 \\
 \\
-The most popularly used cryptographic hash functions today all use the same construction, the Merkle{\textendash}Damg\r{a}rd construction~\cite{merkle1979secrecy, bruce2004}. The Merkle{\textendash}Damg\r{a}rd construction is detailed in Figure \ref{fig:merkleconstruction}. In this construction, some padding is applied on the input message to generate $X = X_0X_1X_2\cdots X_n$, where $n$ is the number of chunks the input is broken into. A function, $f$, is applied to each of these chunks, $X_i$ and also to the state information output from the previous step, $S_i$ (we will introduce the index $j$ in \ref{sec:reducmd5}). The state is seeded in some way for any particular function conforming to the Merkle{\textendash}Damg\r{a}rd construction. 
+The most popularly used cryptographic hash functions today all use the same construction, the Merkle{\textendash}Damg\r{a}rd construction~\cite{merkle1979secrecy, damgaard1989design, bruce2004}. The Merkle{\textendash}Damg\r{a}rd construction is detailed in Figure \ref{fig:merkleconstruction}. In this construction, some padding is applied on the input message to generate $X = X_0X_1X_2\cdots X_n$, where $n$ is the number of chunks the input is broken into. A function, $f$, is applied to each of these chunks, $X_i$ and also to the state information output from the previous step, $S_i$ (we will introduce the index $j$ in \ref{sec:reducmd5}). The state is seeded in some way for any particular function conforming to the Merkle{\textendash}Damg\r{a}rd construction. 
 \\
 \\
-In addition to the states $S$ in Figure \ref{fig:merkleconstruction}, there are generally additional state transitions within any function application block $f$, as is the case for MD5, SHA1 and SHA2.This will be further explored in section \label{bbdef} and a notion important to our methodology. 
+In addition to the states $S$ in Figure \ref{fig:merkleconstruction}, there are generally additional state transitions within any function application block $f$, as is the case for MD5, SHA1 and SHA2.This will be further explored in section \label{bbdef} and a notion important to our methodology. \\
 
 \begin{figure}
 \begin{center} 
@@ -541,7 +590,7 @@ In addition to the states $S$ in Figure \ref{fig:merkleconstruction}, there are 
 \end{figure} 
 
 
-Lastly we describe a structural attack that has been applied to multiple Merkle{\textendash}Damg\r{a}rd hash functions. Wang, et. al. ~\cite{wang2005break}. This attack works by changing any two consecutive input blocks such that the state outputs from the first blocks force a near collision and that the state outputs from the second blocks force a collision. This leverages the fact that in the Merkle{\textendash}Damg\r{a}rd construction, only the state information is carried to the next step. This structure has been used successfully in finding many collisions and will be again levered in applying of our methodology to MD5. 
+\noindent Lastly we describe a structural attack that has been applied to multiple Merkle{\textendash}Damg\r{a}rd hash functions. Wang, et. al. ~\cite{wang2005break}. This attack works by changing any two consecutive input blocks such that the state outputs from the first blocks force a near collision and that the state outputs from the second blocks force a collision. This leverages the fact that in the Merkle{\textendash}Damg\r{a}rd construction, only the state information is carried to the next step. This structure has been used successfully in finding many collisions and will be again levered in applying of our methodology to MD5. 
 
 %%%%%%
 \subsection{Background on Machine Learning and Adversarial Attacks} 
@@ -600,7 +649,7 @@ We discuss our notion of adversarial learning in the context of general cryptogr
 Assuming we define our blackbox to be $F(\cdot)$, our definition of an adversarial examples very naturally maps to the class of PRNGs. Specifically, if we assume $E[H(Y)]$ to be the expected entropy over a randomly generated sequence of numbers $Y$ of size $M$, we can define an adversarial seed $s$ to be one that produces a sequence of numbers $Y_{adv}$ such that $H(Y_{adv}) < K \cdot H(Y)$. 
 \\
 \\
-\textbf{Public Key Generators:} We consider the blackbox system $B(\cdot)$ to be the generation of the public key and private key pair. This is used for public key encryption algorithms including RSA. The algorithm works as follows:
+\textbf{Public Key Generators:} We consider the blackbox system $B(\cdot)$ to be the generation of the public key and private key pair. This is used for public key encryption algorithms including RSA ~\cite{katz2014introduction}. The algorithm works as follows:
 
 \begin{enumerate}
 \item Choose two distinct prime numbers $p$ and $q$
@@ -849,7 +898,7 @@ We show how finding adversarial examples can lead us to exploit certain properti
 \item Preimage - Preimage resistance is the property of a hash function that it is hard to invert, that is, given an element in the range of a hash function, it should be computationally infeasible to find an input that maps to that element.
 \end{itemize}
 
-In the following section we explore how given a low entropy set of states $Z_{adv}$ and the corresponding input $X_{adv}$, we can uncover collisions. We present the algorithm and provide theoretical bounds on the expected number of examples we need in $X_{adv}$ to uncover a collision. Our theoretical bounds are derived as a direct function of the entropy of the states in $Z_{adv}$.  
+In the following section we explore how given a low entropy set of states $Z_{adv}$ and the corresponding input $X_{adv}$, we can uncover collisions. We present the algorithm and provide theoretical bounds on the expected number of examples we need in $X_{adv}$ to uncover a collision. Our theoretical bounds are derived as a direct function of the entropy of the states in $Z_{adv}$. For brevity, we will neglect to present specific algorithms for deriving adversarial examples that breach the  preimage and correlation properties, but note that such algorithms could be developed within the reduced entropy framework. 
 
 
 \subsubsection{Collisions}
