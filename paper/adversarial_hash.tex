@@ -434,7 +434,7 @@
 %-------------------------------------------------------------------------------
 \begin{abstract}
 %-------------------------------------------------------------------------------
-We present a novel machine learning framework which we apply here to uncover weaknesses in hash functions. Our framework extends the definition of adversarial learning to the domain of cryptographic systems. In this paper, we uncover weaknesses in Merkle{\textendash}Damg\r{a}rd structured hash functions, which include MD5, SHA-1 and SHA-2 and are critical components of cryptographic systems such as key exchange, digital signatures, and password and file verification. Most attacks against these hash functions leverage properties of the particular function. We develop a broader framework of adversarial learning to probabilistically determine how a hash function differs from its ideal state. We show the efficacy of our framework by theoretically and empirically discovering known vulnerabilities in MD5 and discuss how our method can be applied to uncovering potential unknown weaknesses in other hash functions in the Merkle{\textendash}Damg\r{a}rd class.
+We present a novel machine learning framework which we apply here to uncover weaknesses in hash functions. Our framework extends the definition of adversarial learning to the domain of cryptographic systems. In this paper, we uncover weaknesses in Merkle{\textendash}Damg\r{a}rd structured hash functions, which includes MD5, SHA-1 and SHA-2. which are critical components of modern cryptographic systems such as those of key exchange, digital signatures, and password and file verification. Most attacks against these hash functions leverage properties of the particular function, while the framework we present applied to the construction itself. We develop a framework of adversarial learning to probabilistically determine how a hash function differs from its ideal state. We show the efficacy of our framework by theoretically and empirically discovering known vulnerabilities in MD5 and discuss how our method can be applied to uncovering weaknesses in other hash functions in the Merkle{\textendash}Damg\r{a}rd class, as well as other types of cryptographic systems.
 \end{abstract}
 
 %-------------------------------------------------------------------------------
@@ -826,7 +826,6 @@ Our algorithm presented above simply loops through the final states of each $x_{
 \\
 \\
 We present Theorem 2 below which outlines the probability of finding a collision as a function of the entropy of the states in  $Z_{adv}$.
-
 
 \begin{theorem}
 Given an $\epsilon$-reduction in the entropy of states (where we define the $\epsilon$-reduction to be such that $\frac{H(Z_{adv})}{H(Z_{ideal})} < \epsilon$), the probability of a collision in the final states is \textcolor{red}{ANSWER}
