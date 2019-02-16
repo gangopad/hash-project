@@ -898,7 +898,10 @@ We show how finding adversarial examples can lead us to exploit certain properti
 \item Preimage - Preimage resistance is the property of a hash function that it is hard to invert, that is, given an element in the range of a hash function, it should be computationally infeasible to find an input that maps to that element.
 \end{itemize}
 
-In the following section we explore how given a low entropy set of states $Z_{adv}$ and the corresponding input $X_{adv}$, we can uncover collisions. We present the algorithm and provide theoretical bounds on the expected number of examples we need in $X_{adv}$ to uncover a collision. Our theoretical bounds are derived as a direct function of the entropy of the states in $Z_{adv}$. For brevity, we will neglect to present specific algorithms for deriving adversarial examples that breach the  preimage and correlation properties, but note that such algorithms could be developed within the reduced entropy framework. 
+In the following section we explore how given a low entropy set of states $Z_{adv}$ and the corresponding input $X_{adv}$, we can uncover collisions. We present the algorithm and provide theoretical bounds on the expected number of examples we need in $X_{adv}$ to uncover a collision. Our theoretical bounds are derived as a direct function of the entropy of the states in $Z_{adv}$. 
+\\
+\\
+For brevity, we will neglect to present specific algorithms for deriving adversarial examples that breach the  preimage and correlation properties, but note that such algorithms could be developed within the reduced entropy framework. 
 
 
 \subsubsection{Collisions}
@@ -987,10 +990,13 @@ We note that domain based attacks mostly look to exploit weak function compositi
 In this section we outline our experiments, present the results and analyze them. 
 
 \subsection{Experiments} 
-We design experiments to observe parameter values of Theorem 1 and Theorem 2 in practice. We experiment exclusively on MD5 for ease of validation given the scale of its' known weaknesses, noting that our methodology is equally applicable to SHA1 and SHA2. We apply our framework to MD5 given the reduction in Section {refsec:reducmd5}. All of our experiments were run on a box with 16 2.3 GHz Intel Xeon E5-2686 v4 Processors and 122 GiB RAM.
+We design experiments to observe parameter values of Theorem 1 and Theorem 2 in practice. Specifically, we empirically validate the result of Theorem 1, regarding the expected number of examples needed before we can expect the entropy of the states $H(Z) < H(Z_{ideal}) \cdot \epsilon$. We also use the machine learning construction of Theorem 2 to derive new inputs that yield collisions with high probability given a set of seeded inputs. Our empirical results for Theorem 2 illustrate the relationship between states and inputs and shows how new adversarial examples can be generated from a set of seeds based on trained probability distribution functions.
 \\
 \\
-To observe parameters of Theorem 1 for MD5, we compute values of $m$ as a function of $epsilon$ for multiple input spaces $X$. In addition to running this experiment on all states observed during the computation of MD5, we also narrow our focus to states observed by a particular blackbox component, in the case of MD5 being $B^0, B^1, B^2, B^3$, mapping to MD5 rounds $F, G, H, I$, respectively. 
+We experiment exclusively on MD5 for ease of validation given the scale of its' known weaknesses, noting that our methodology is equally applicable to SHA1 and SHA2. We apply our framework to MD5 given the reduction in Section \ref{sec:reducmd5}. All of our experiments were run on a box with 16 2.3 GHz Intel Xeon E5-2686 v4 Processors and 122 GiB RAM.
+\\
+\\
+To observe parameters of Theorem 1 for MD5, we compute values of $m$ as a function of $\epsilon$ for multiple input spaces $X$. In addition to running this experiment on all states observed during the computation of MD5, we also narrow our focus to states observed by a particular blackbox component, in the case of MD5 being $B^0, B^1, B^2, B^3$, mapping to MD5 rounds $F, G, H, I$, respectively. 
 \\
 \\
 To observe parameters of Theorem 2, we leverage Algorithms \ref{alg:adv} and \ref{alg:col} in order to find collisions in the predefined input spaces $X$, also observing results for all states observed during the MD5 computation as well as for the individual blackbox components. 
@@ -1033,12 +1039,14 @@ $B^1$ and $B^3$ are the blackbox components that never experiences a reduced ent
 \end{figure} 
 
 We observe this claim holds in our framework in Figure \ref{fig:thm1}, which observes duplicated states over all blackbox components $B^{0,1,2,3}$. Here we see a reduction in entropy of each of the seeded input sets, demonstrated by the reduced $m$ values that occur in each of these series. As expected, we also observe that the entropy of the random sets is never reduced, even after exhausting the full input space, which is observed in that the random series in Figure \ref{fig:thm1} never show a reduction in entropy even after all $M$ possible input states are observed. 
-
+\\
+\\
 From Figure \ref{fig:thm1} we can also observe the expected behavior of $m$ decreasing for larger values of $\epsilon$. When the $\epsilon$ tolerance for a sufficient entropy reduction was $\geq .65$, each of the seeded input sets showed a maximum reduction in entropy for small values $m$. The reduced entropies in the seeded sets before this $\epsilon$ value can be attributed to the fact that the $m$th input value $x$ is selected at random from the input space, treated as a uniform distrobution. It is therefore expected that for small values of $\epsilon$ the $m$ value will in some cases be small.
-
-
+\\
+\\
 In Figures \ref{fig:b0}, \ref{fig:b1}, \ref{fig:b2}, \ref{fig:b3} we observe the same, but within the context of each particular blackbox component. In the case of $B^0$, we observe in Figure \ref{fig:b0} the same trend holds wherein each of the seeded sets experience reduced entropy when $\epsilon \geq 0.5$, and additionally that there is never an observed reduced entropy for the randomly generated sets. The same is observed for component $B^2$ in Figure \ref{fig:b2}.
-
+\\
+\\
 $B^1$ and $B^3$ are the blackbox components that never experiences a reduced entropy. In \ref{fig:b1} and \ref{fig:b3} we observe that there is no reduced entropy caused by any of the input spaces. In each of these cases, the all of the elements from the input space are selected without a reduced entropy every being observed, signifying that there are also no repeated states. These blackbox components map to the $G$ and $I$ rounds in MD5, respectively, suggesting they increase collision resistance over the other rounds. 
 
 \begin{figure}

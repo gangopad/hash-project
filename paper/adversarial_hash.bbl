@@ -1,5 +1,35 @@
 \begin{thebibliography}{10}
 
+\bibitem{athalye2018obfuscated}
+Anish Athalye, Nicholas Carlini, and David Wagner.
+\newblock Obfuscated gradients give a false sense of security: Circumventing
+  defenses to adversarial examples.
+\newblock {\em arXiv preprint arXiv:1802.00420}, 2018.
+
+\bibitem{bogdanov2011biclique}
+Andrey Bogdanov, Dmitry Khovratovich, and Christian Rechberger.
+\newblock Biclique cryptanalysis of the full aes.
+\newblock In {\em International Conference on the Theory and Application of
+  Cryptology and Information Security}, pages 344--371. Springer, 2011.
+
+\bibitem{damgaard1989design}
+Ivan~Bjerre Damg{\aa}rd.
+\newblock A design principle for hash functions.
+\newblock In {\em Conference on the Theory and Application of Cryptology},
+  pages 416--427. Springer, 1989.
+
+\bibitem{de2007collisions}
+Christophe De~Canniere, Florian Mendel, and Christian Rechberger.
+\newblock Collisions for 70-step sha-1: on the full cost of collision search.
+\newblock In {\em International Workshop on Selected Areas in Cryptography},
+  pages 56--73. Springer, 2007.
+
+\bibitem{de2006finding}
+Christophe De~Canniere and Christian Rechberger.
+\newblock Finding sha-1 characteristics: General results and applications.
+\newblock In {\em International Conference on the Theory and Application of
+  Cryptology and Information Security}, pages 1--20. Springer, 2006.
+
 \bibitem{den1991attack}
 Bert Den~Boer and Antoon Bosselaers.
 \newblock An attack on the last two rounds of md4.
@@ -19,6 +49,12 @@ Ian Goodfellow, Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley,
 \newblock In {\em Advances in neural information processing systems}, pages
   2672--2680, 2014.
 
+\bibitem{graepel2012ml}
+Thore Graepel, Kristin Lauter, and Michael Naehrig.
+\newblock Ml confidential: Machine learning on encrypted data.
+\newblock In {\em International Conference on Information Security and
+  Cryptology}, pages 1--21. Springer, 2012.
+
 \bibitem{gutterman2006analysis}
 Zvi Gutterman, Benny Pinkas, and Tzachy Reinman.
 \newblock Analysis of the linux random number generator.
@@ -31,11 +67,29 @@ Nadia Heninger and Hovav Shacham.
 \newblock In {\em Advances in Cryptology-CRYPTO 2009}, pages 1--17. Springer,
   2009.
 
+\bibitem{hospodar2011machine}
+Gabriel Hospodar, Benedikt Gierlichs, Elke De~Mulder, Ingrid Verbauwhede, and
+  Joos Vandewalle.
+\newblock Machine learning in side-channel analysis: a first study.
+\newblock {\em Journal of Cryptographic Engineering}, 1(4):293, 2011.
+
+\bibitem{huang2011adversarial}
+Ling Huang, Anthony~D Joseph, Blaine Nelson, Benjamin~IP Rubinstein, and
+  JD~Tygar.
+\newblock Adversarial machine learning.
+\newblock In {\em Proceedings of the 4th ACM workshop on Security and
+  artificial intelligence}, pages 43--58. ACM, 2011.
+
 \bibitem{jovanovic2005logical}
 Dejan Jovanovi{\'c} and Predrag Jani{\v{c}}i{\'c}.
 \newblock Logical analysis of hash functions.
 \newblock In {\em International Workshop on Frontiers of Combining Systems},
   pages 200--215. Springer, 2005.
+
+\bibitem{katz2014introduction}
+Jonathan Katz and Yehuda Lindell.
+\newblock {\em Introduction to modern cryptography}.
+\newblock CRC press, 2014.
 
 \bibitem{kelsey1998cryptanalytic}
 John Kelsey, Bruce Schneier, David Wagner, and Chris Hall.
@@ -75,6 +129,13 @@ Ilya Mironov and Lintao Zhang.
 \newblock In {\em International Conference on Theory and Applications of
   Satisfiability Testing}, pages 102--115. Springer, 2006.
 
+\bibitem{papernot2017practical}
+Nicolas Papernot, Patrick McDaniel, Ian Goodfellow, Somesh Jha, Z~Berkay Celik,
+  and Ananthram Swami.
+\newblock Practical black-box attacks against machine learning.
+\newblock In {\em Proceedings of the 2017 ACM on Asia Conference on Computer
+  and Communications Security}, pages 506--519. ACM, 2017.
+
 \bibitem{rivest1991cryptography}
 Ronald~L Rivest.
 \newblock Cryptography and machine learning.
@@ -99,16 +160,47 @@ Marc Stevens, Elie Bursztein, Pierre Karpman, Ange Albertini, and Yarik Markov.
 \newblock In {\em Annual International Cryptology Conference}, pages 570--596.
   Springer, 2017.
 
+\bibitem{stevens2017speeding}
+Marc Stevens and Daniel Shumow.
+\newblock Speeding up detection of sha-1 collision attacks using unavoidable
+  attack conditions.
+\newblock {\em IACR Cryptology ePrint Archive}, 2017:173, 2017.
+
+\bibitem{stevens2009short}
+Marc Stevens, Alexander Sotirov, Jacob Appelbaum, Arjen Lenstra, David Molnar,
+  Dag~Arne Osvik, and Benne De~Weger.
+\newblock Short chosen-prefix collisions for md5 and the creation of a rogue ca
+  certificate.
+\newblock In {\em Advances in Cryptology-CRYPTO 2009}, pages 55--69. Springer,
+  2009.
+
 \bibitem{stevens2012attacks}
 Marc Martinus~Jacobus Stevens et~al.
 \newblock {\em Attacks on hash functions and applications}.
 \newblock Mathematical Institute, Faculty of Science, Leiden University, 2012.
+
+\bibitem{su2019one}
+Jiawei Su, Danilo~Vasconcellos Vargas, and Kouichi Sakurai.
+\newblock One pixel attack for fooling deep neural networks.
+\newblock {\em IEEE Transactions on Evolutionary Computation}, 2019.
+
+\bibitem{tramer2017ensemble}
+Florian Tram{\`e}r, Alexey Kurakin, Nicolas Papernot, Ian Goodfellow, Dan
+  Boneh, and Patrick McDaniel.
+\newblock Ensemble adversarial training: Attacks and defenses.
+\newblock {\em arXiv preprint arXiv:1705.07204}, 2017.
 
 \bibitem{wang2005cryptanalysis}
 Xiaoyun Wang, Xuejia Lai, Dengguo Feng, Hui Chen, and Xiuyuan Yu.
 \newblock Cryptanalysis of the hash functions md4 and ripemd.
 \newblock In {\em Annual international conference on the theory and
   applications of cryptographic techniques}, pages 1--18. Springer, 2005.
+
+\bibitem{wang2005finding}
+Xiaoyun Wang, Yiqun~Lisa Yin, and Hongbo Yu.
+\newblock Finding collisions in the full sha-1.
+\newblock In {\em Annual international cryptology conference}, pages 17--36.
+  Springer, 2005.
 
 \bibitem{wang2005break}
 Xiaoyun Wang and Hongbo Yu.
