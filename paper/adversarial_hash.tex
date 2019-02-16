@@ -806,7 +806,7 @@ Given the nature of the state space $|X|$, we note that $m$ is intractable over 
 We present an algorithm that uses the presented Markovian framework, blackbox definition $B(\cdot)$ and an initial set of known adversarial examples $X_{init}$ to uncover a larger set of adversarial examples $X_{adv}$. 
 \\
 \\
-We present our algorithm below:
+We present our algorithm on the next page. 
 
 \begin{algorithm} \label{alg:adv}
 \caption{Adversarial Alg}\label{sampling}
@@ -856,7 +856,7 @@ In the following section we explore how given a low entropy set of states $Z_{ad
 We first present our algorithm for finding collisions. We assume we have a set of inputs $X_{adv}$ such that $H(Z_{adv}) < K \cdot \epsilon$ where $K = H(Z_{ideal})$.
 
 \begin{algorithm} \label{alg:col}
-\caption{Collisions Alg}\label{sampling}
+\caption{Collisions Alg}
 \begin{algorithmic}[1]
 \State Assume as input $X_{adv}$, $Z_{adv}$ and the hash function $B(\cdot)$
 \State Initialize $Z_{seen} = \{\}$, num-col = 0
@@ -877,13 +877,13 @@ We present Theorem 2 below which outlines the probability of finding a collision
 
 
 \begin{theorem}
-Given an $\epsilon$-reduction in the entropy of states (where we define the $\epsilon$-reduction to be such that $\frac{H(Z_{adv})}{H(Z_{ideal})} < \epsilon$), the probability of a collision in the final states is \textcolor{red}{ANSWER}
+Given an $\epsilon$-reduction in the entropy of states (where we define it to be such that $\frac{H(Z_{adv})}{H(Z_{ideal})} < \epsilon$), the probability of a collision in the final states is $\geq f(\epsilon)$. 
 \end{theorem}
 
+We derive $f(\epsilon)$ and give the proof below:
+\\
+\\
 More rigorously, given $X_{adv}$, assume we have $\{x_{i}^{n}, z_{ij}^{n}\}$ pairs such that $H(Z) < K \cdot \epsilon$ where $K = H(Z_{ideal})$, $Z$ is the set of states indexed over $i, j, n$. (note $i$ indexes over the chunks of size $I$, $j$ indexes over the set of states for a given chunk of size $J$, $n$ indexes over the set of inputs in $X_{adv}$ of size $N$). We derive the probability that two elements in $Z_{Final}$ collide where $Z_{Final}$ denotes a subset of $Z$ that contains the final states (more specifically a given element in $Z_{final}$ is the output of the hash function given an input $x^{n}$). Note that the size of our set $Z_{final}$ is $N$ 
-\\
-\\
-We give the proof below:
 \\
 \\
 We first derive P(two states in Z collide | $H(Z) < K \cdot \epsilon$) $= P_{A}$. We then find P(two states in $Z_{final}$ collide | two states in $Z$ collide) $= P_{B}$. We note that P(two states in $Z_{final}$ collide |  $H(Z) < K \cdot \epsilon$) $=  P_{A} \cdot P_{B}$. 
@@ -901,22 +901,28 @@ $P(A) = 1 - \prod_{k=1}^{Z} (1- \sum_{j=1}^{k} p(z_{j}))$ where $\prod_{k=1}^{Z}
 We are given that $\sum_{j=1}^{|Z|} -p(z_{j}) \cdot log p(z_{j}) < K \cdot \epsilon$. 
 \\
 \\
-We note that $(1 - \sum_{j=1}^{k} p(z_{j})) < \sum_{j=1}^{|Z|} -p(z_{j}) \cdot log p(z_{j})$ \textcolor{red}{PROVE THIS}
+It can be shown that $(1 - \sum_{j=1}^{k} p(z_{j})) < \sum_{j=1}^{|Z|} -p(z_{j}) \cdot log p(z_{j})$ when the entropy $H(Z)$ is below a threshold.
 \\
 \\
-$ \prod_{k=1}^{|Z|} (1 - \sum_{j=1}^{k} p(z_{j})) < \prod_{k=1}^{|Z|} K \cdot \epsilon$$ since $$\prod_{k=1}^{|Z|} K \cdot \epsilon > 0$
+This implies $ \prod_{k=1}^{|Z|} (1 - \sum_{j=1}^{k} p(z_{j})) < \prod_{k=1}^{|Z|} K \cdot \epsilon$$ since $$\prod_{k=1}^{|Z|} K \cdot \epsilon > 0$
 \\
 \\
-$ 1 - \prod_{k=1}^{|Z|} (1 - \sum_{j=1}^{k} p(z_{j}) \geq 1 - \prod_{k=1}^{|Z|} K \cdot \epsilon$
+Hence we have $ 1 - \prod_{k=1}^{|Z|} (1 - \sum_{j=1}^{k} p(z_{j}) \geq 1 - \prod_{k=1}^{|Z|} K \cdot \epsilon$
 \\
 \\
-$\rightarrow P_{A} \geq 1 - \prod_{k=1}^{|Z|} K \cdot \epsilon$. 
+which implies $P_{A} \geq 1 - \prod_{k=1}^{|Z|} K \cdot \epsilon$. Thus we have bounded $P_{A}$ from below as a function of $\epsilon$. 
 \\
 \\
-We derive $P_{B}$ as follows
+We derive $P_{B}$ as follows. We wish to find the probability that two states in $Z_{final}$ collide given that two states in $Z$ collide. We note that $|Z_{final}| = N$ and $|Z| = I \cdot J \cdot N$. We also assume that $|Z_{final}|$ is a uniformly sampled subset of $Z$ for the purposes of this proof. Hence, we can view this as a problem of sampling without replacement. We note that $P(B) = \frac{N \cdot (N-1)}{(I \cdot J \cdot N) \cdot (I \cdot J \cdot N) -1}$. 
 \\
 \\
-Hence, we see that the probability of a collision in the final states is $P_{A} \cdot P_{B} \geq f$. We have established a lower bound on the probability of a collision as a function of the entropy.
+We also note that if there is more than one collision in $Z$, the probability of atleast one collision goes up. For the purposes of our proof, we bound $P(B) \geq \frac{N \cdot (N-1)}{(I \cdot J \cdot N) \cdot (I \cdot J \cdot N) -1}$.
+\\
+\\
+Hence, we see that the probability of a collision in the final states is $P_{A} \cdot P_{B} \geq f(\epsilon)$ where $f(\epsilon) = (1 - \prod_{k=1}^{|Z|} K \cdot \epsilon) \cdot \frac{N \cdot (N-1)}{(I \cdot J \cdot N) \cdot (I \cdot J \cdot N) -1}$ . 
+\\
+\\
+This We have established a lower bound on the probability of a collision as a function of the entropy.
 
 
 \subsection{Validating Adversarial Examples}
