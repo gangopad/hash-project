@@ -709,13 +709,13 @@ For the Merkle{\textendash}Damg\r{a}rd class of hash functions, we define a sing
 \end{center}
 
  
-We limit the scope of the empirical portion of our study to the Merkle{\textendash}Damg\r{a}rd class of hash functions, which includes MD5, SHA-1, and SHA-2. We limit the scope in this way to be able to give a definition for a blackbox component $B$ towards validating our framework, noting that our methods remain general and applicable to other contexts and for different definitions of $B$. 
+We limit the scope of the empirical portion of our study to the Merkle{\textendash}Damg\r{a}rd class of hash functions, which includes MD5, SHA1, and SHA2. We limit the scope in this way to be able to give a definition for a blackbox component $B$ towards validating our framework, noting that our methods remain general and applicable to other contexts and for different definitions of $B$. 
 \\
 \\
-The primary creativity any particular hash function of the Merkle{\textendash}Damg\r{a}rd construction can apply is in the definition of the seed, the padding function and the definition of $f$. Each particular hash function, though, must define some function $f$ which takes as an input a chunk of the input message $X_i$ and state information from the previous state and only the previous state, $S_i$, and output its own state information for consumption by the next application of $f$. In many hash functions of this construction, including MD5, SHA-1, and SHA-2, $f$ is a piecewise function of the step of the hash function.  
+The primary creativity any particular hash function of the Merkle{\textendash}Damg\r{a}rd construction can apply is in the definition of the seed, the padding function and the definition of $f$. Each particular hash function, though, must define some function $f$ which takes as an input a chunk of the input message $X_i$ and state information from the previous state and only the previous state, $S_i$, and output its own state information for consumption by the next application of $f$. In many hash functions of this construction, including MD5, SHA1, and SHA2, $f$ is a piecewise function of the step of the hash function.  
 \\
 \\
-We model the blackbox component $B(S_{i-1,j-1}, x_{i-1})$ to assume these properties and only these properties. The model remains agnostic to any particular padding function, seed, and especially definition of $f$ as defined by any conforming hash function, be it MD5, SHA-1, or SHA-2. This implies that this methodology, unchanged, can be freely applied to any of these three hash functions towards analyzing their weaknesses. 
+We model the blackbox component $B(S_{i-1,j}, x_{i-1})$ to assume these properties and only these properties. The model remains agnostic to any particular padding function, seed, and especially definition of $f$ as defined by any conforming hash function, be it MD5, SHA1, or SHA2. This implies that this methodology, unchanged, can be freely applied to any of these three hash functions towards analyzing their weaknesses. 
 
 \subsubsection{Reduction to MD5} \label{sec:reducmd5}
 
